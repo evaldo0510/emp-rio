@@ -39,7 +39,12 @@ import {
   Area,
 } from "recharts";
 
+const vendorSearchSchema = z.object({
+  period: z.enum(["7", "30"]).optional(),
+});
+
 export const Route = createFileRoute("/_app/vendedor")({
+  validateSearch: (search) => vendorSearchSchema.parse(search),
   head: () => ({ meta: [{ title: "Painel do Vendedor — Licuri Hub" }] }),
   component: VendorDashboard,
 });
