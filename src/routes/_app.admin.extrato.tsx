@@ -283,7 +283,7 @@ function AdminExtratoPage() {
               type="date"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--cream)] p-2 text-sm outline-none focus:border-[var(--clay)]"
               value={dateRange.start}
-              onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+              onChange={(e) => updateSearch({ start: e.target.value })}
             />
             <span className="text-[var(--muted-foreground)]">—</span>
             <input
