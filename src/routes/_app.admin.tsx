@@ -12,7 +12,20 @@ import {
   Settings,
   RefreshCcw,
   History,
+  Target,
+  BarChart3,
 } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from "recharts";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -46,8 +59,11 @@ function AdminPage() {
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [commissionSettings, setCommissionSettings] = useState<any[]>([]);
   const [commissionHistory, setCommissionHistory] = useState<any[]>([]);
+  const [topSellers, setTopSellers] = useState<any[]>([]);
+  const [salesByDay, setSalesByDay] = useState<any[]>([]);
   const [stats, setStats] = useState({
     totalSales: 0,
+    platformRevenue: 0,
     orderCount: 0,
     sellerCount: 0,
     userCount: 0,
@@ -196,21 +212,74 @@ function AdminPage() {
   };
 
   const fetchStats = async () => {
-    const [{ data: ordersData }, { count: sellersCount }, { count: usersCount }] =
-      await Promise.all([
-        supabase.from("orders").select("total"),
-        supabase.from("sellers").select("*", { count: "exact", head: true }),
+    try {
+      const [
+        { data: ordersData }, 
+        { data: sellersData }, 
+        { count: usersCount },
+        { data: transactionsData }
+      ] = await Promise.all([
+        supabase.from("orders").select("total, created_at"),
+        supabase.from("sellers").select("id, store_name"),
         supabase.from("orders").select("user_id", { count: "exact", head: true }),
+        supabase.from("wallet_transactions").select(`
+          amount, 
+          commission, 
+          type, 
+          created_at, 
+          seller_wallet(seller_id)
+        `)
       ]);
 
-    const total = ordersData?.reduce((acc, o) => acc + Number(o.total), 0) || 0;
+      const total = ordersData?.reduce((acc, o) => acc + Number(o.total || 0), 0) || 0;
+      const platformTotal = (transactionsData as any[])?.reduce((acc, t) => acc + Number(t.commission || 0), 0) || 0;
 
-    setStats({
-      totalSales: total,
-      orderCount: ordersData?.length || 0,
-      sellerCount: sellersCount || 0,
-      userCount: usersCount || 0,
-    });
+      // Top Sellers calculation
+      const sellerMap: Record<string, number> = {};
+      (transactionsData as any[])?.filter(t => t.type === 'sale').forEach(t => {
+        const amount = Number(t.amount || 0) + Number(t.commission || 0); // Gross sale
+        const sellerId = t.seller_wallet?.seller_id;
+        if (sellerId) {
+          sellerMap[sellerId] = (sellerMap[sellerId] || 0) + amount;
+        }
+      });
+
+      const sortedSellers = Object.entries(sellerMap)
+        .map(([id, total]) => ({
+          id,
+          total,
+          name: sellersData?.find(s => s.id === id)?.store_name || "Vendedor " + id.slice(0, 4)
+        }))
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 5);
+
+      // Sales by day (last 7 days)
+      const last7Days = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        return d.toISOString().split('T')[0];
+      }).reverse();
+
+      const dailyData = last7Days.map(date => {
+        const dayOrders = ordersData?.filter(o => o.created_at?.startsWith(date)) || [];
+        return {
+          date: new Date(date).toLocaleDateString('pt-BR', { weekday: 'short' }),
+          vendas: dayOrders.reduce((acc, o) => acc + Number(o.total || 0), 0)
+        };
+      });
+
+      setStats({
+        totalSales: total,
+        platformRevenue: platformTotal,
+        orderCount: ordersData?.length || 0,
+        sellerCount: sellersData?.length || 0,
+        userCount: usersCount || 0,
+      });
+      setTopSellers(sortedSellers);
+      setSalesByDay(dailyData);
+    } catch (err) {
+      console.error("Error fetching dashboard stats:", err);
+    }
   };
 
   const generateReport = async () => {
@@ -301,74 +370,94 @@ function AdminPage() {
       <div className="mt-8 grid gap-4 md:grid-cols-4">
         <Stat
           icon={DollarSign}
-          label="Vendas totais"
-          value={formatBRL(stats.totalSales || 156890)}
+          label="Faturamento Total"
+          value={formatBRL(stats.totalSales)}
         />
-        <Stat icon={ShoppingBag} label="Pedidos" value={(stats.orderCount || 2345).toString()} />
-        <Stat icon={Store} label="Vendedores" value={(stats.sellerCount || 87).toString()} />
-        <Stat icon={Users} label="Clientes" value={(stats.userCount || 1890).toString()} />
+        <Stat 
+          icon={Target} 
+          label="Comissão Plataforma" 
+          value={formatBRL(stats.platformRevenue)}
+          color="var(--clay)"
+        />
+        <Stat icon={ShoppingBag} label="Pedidos" value={stats.orderCount.toString()} />
+        <Stat icon={Users} label="Clientes" value={stats.userCount.toString()} />
       </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-[1.7fr_1fr]">
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-          <h2 className="font-display text-lg font-semibold">Vendas (últimos 30 dias)</h2>
-          <svg viewBox="0 0 600 200" className="mt-4 h-48 w-full">
-            <polyline
-              fill="none"
-              stroke="var(--clay)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              points={monthly
-                .map((v, i) => `${(i / (monthly.length - 1)) * 580 + 10},${190 - (v / max) * 170}`)
-                .join(" ")}
-            />
-            <polygon
-              fill="color-mix(in oklab, var(--clay) 18%, transparent)"
-              points={
-                monthly
-                  .map(
-                    (v, i) => `${(i / (monthly.length - 1)) * 580 + 10},${190 - (v / max) * 170}`,
-                  )
-                  .join(" ") + " 590,190 10,190"
-              }
-            />
-          </svg>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-display text-lg font-semibold">Evolução de Vendas</h2>
+            <div className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
+              <span className="flex h-2 w-2 rounded-full bg-[var(--clay)]" />
+              Últimos 7 dias
+            </div>
+          </div>
+          <div className="h-[240px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={salesByDay}>
+                <defs>
+                  <linearGradient id="colorVendas" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--clay)" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="var(--clay)" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                <XAxis 
+                  dataKey="date" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} 
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }}
+                  tickFormatter={(value) => `R$${value}`}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'var(--card)', 
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    fontSize: '12px'
+                  }} 
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="vendas" 
+                  stroke="var(--clay)" 
+                  fillOpacity={1} 
+                  fill="url(#colorVendas)" 
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-          <h2 className="font-display text-lg font-semibold">Pedidos por status</h2>
-          <div className="mt-4 flex items-center gap-6">
-            <svg viewBox="0 0 100 100" className="h-32 w-32 -rotate-90">
-              {arcs.map((a) => {
-                const r = 40;
-                const c = 2 * Math.PI * r;
-                const len = ((a.end - a.start) / 360) * c;
-                const offset = (a.start / 360) * c;
-                return (
-                  <circle
-                    key={a.label}
-                    cx="50"
-                    cy="50"
-                    r={r}
-                    fill="transparent"
-                    stroke={a.color}
-                    strokeWidth="14"
-                    strokeDasharray={`${len} ${c - len}`}
-                    strokeDashoffset={-offset}
-                  />
-                );
-              })}
-            </svg>
-            <ul className="space-y-2 text-sm">
-              {statuses.map((s) => (
-                <li key={s.label} className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: s.color }} />
-                  {s.label}
-                  <span className="ml-1 text-[var(--muted-foreground)]">{s.value}%</span>
-                </li>
-              ))}
-            </ul>
+          <div className="flex items-center gap-2 mb-6">
+            <TrendingUp className="h-5 w-5 text-[var(--leaf)]" />
+            <h2 className="font-display text-lg font-semibold">Top Vendedores</h2>
+          </div>
+          <div className="space-y-4">
+            {topSellers.length === 0 ? (
+              <p className="text-sm text-[var(--muted-foreground)] text-center py-8">
+                Nenhuma venda registrada ainda.
+              </p>
+            ) : (
+              topSellers.map((s, i) => (
+                <div key={s.id} className="flex items-center justify-between p-3 rounded-xl border border-[var(--border)] bg-[var(--sand)]/5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--coffee)] text-[10px] font-bold text-white">
+                      {i + 1}
+                    </span>
+                    <span className="text-sm font-medium text-[var(--coffee)] line-clamp-1">{s.name}</span>
+                  </div>
+                  <span className="text-sm font-bold text-[var(--leaf)]">{formatBRL(s.total)}</span>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -680,10 +769,12 @@ function Stat({
   icon: Icon,
   label,
   value,
+  color = "var(--clay)",
 }: {
-  icon: React.ComponentType<{ className?: string }>;
+  icon: any;
   label: string;
   value: string;
+  color?: string;
 }) {
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
@@ -691,7 +782,7 @@ function Stat({
         <span className="text-xs uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
           {label}
         </span>
-        <Icon className="h-4 w-4 text-[var(--clay)]" />
+        <Icon className="h-4 w-4" style={{ color }} />
       </div>
       <div className="mt-3 font-display text-2xl font-bold text-[var(--coffee)]">{value}</div>
     </div>
