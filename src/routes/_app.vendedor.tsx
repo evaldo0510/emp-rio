@@ -185,7 +185,9 @@ function VendorDashboard() {
       const { error } = await supabase.from("sellers").insert([{
         user_id: user.id,
         store_name: name,
-        description: desc
+        description: desc,
+        approved: false,
+        commission_rate: 10.0
       }]);
 
       if (error) throw error;
@@ -204,6 +206,21 @@ function VendorDashboard() {
         .eq('id', itemId);
       
       if (error) throw error;
+      
+      // If status is "shipped", ensure a shipment record exists or update it
+      if (status === 'shipped') {
+        const item = realOrders.find(o => o.id === itemId);
+        if (item) {
+          const existingShipment = shipments.find(s => s.order_id === item.order_id);
+          if (!existingShipment) {
+            await supabase.from("shipments").insert([{
+              order_id: item.order_id,
+              status: 'shipped'
+            }]);
+          }
+        }
+      }
+
       toast.success("Status do item atualizado!");
       fetchDashboardData();
     } catch (e: any) {
@@ -484,6 +501,7 @@ function VendorDashboard() {
                       <option value="pending">Pendente</option>
                       <option value="processing">Preparando</option>
                       <option value="shipped">Enviado</option>
+                      <option value="paid">Pago (Liberar Saldo)</option>
                       <option value="delivered">Entregue</option>
                       <option value="cancelled">Cancelado</option>
                     </select>
