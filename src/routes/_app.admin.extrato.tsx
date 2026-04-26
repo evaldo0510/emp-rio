@@ -234,7 +234,7 @@ function AdminExtratoPage() {
               placeholder="Vendedor, ID, descrição..."
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--cream)] py-2 pl-9 pr-3 text-sm outline-none focus:border-[var(--clay)]"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => updateSearch({ q: e.target.value })}
               onKeyDown={(e) => e.key === "Enter" && fetchTransactions()}
             />
           </div>
