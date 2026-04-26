@@ -22,18 +22,7 @@ export const Route = createFileRoute("/_app/vendedor")({
   component: VendorDashboard,
 });
 
-const sales = [
-  { day: "13/05", v: 320 }, { day: "14/05", v: 410 },
-  { day: "15/05", v: 360 }, { day: "16/05", v: 520 },
-  { day: "17/05", v: 480 }, { day: "18/05", v: 610 }, { day: "19/05", v: 730 },
-];
-
-const orders = [
-  { id: "#1245", date: "19/05/2024", value: "R$ 98,80", status: "Entregue" },
-  { id: "#1244", date: "18/05/2024", value: "R$ 49,90", status: "Enviado" },
-  { id: "#1243", date: "18/05/2024", value: "R$ 75,90", status: "Pago" },
-  { id: "#1242", date: "17/05/2024", value: "R$ 159,90", status: "Pago" },
-];
+// Constants for mock data removed. Using real database data.
 
 function VendorDashboard() {
   const [isUploading, setIsUploading] = useState(false);
@@ -55,11 +44,12 @@ function VendorDashboard() {
     category: "alimentos",
     description: "",
     image_url: "",
-    shop_name: "Sertão Natural", // Default shop
+    shop_name: "", 
     stock_quantity: 10
   });
 
-  const max = Math.max(...sales.map((s) => s.v));
+  const [dailySales, setDailySales] = useState<any[]>([]);
+  const maxSales = Math.max(...dailySales.map((s) => s.v), 1);
 
   useEffect(() => {
     fetchDashboardData();
@@ -72,9 +62,12 @@ function VendorDashboard() {
     // Fetch Seller Profile
     const { data: profile } = await supabase.from("sellers").select("*").eq('user_id', user.id).maybeSingle();
     setSellerProfile(profile);
+    if (profile && !newProduct.shop_name) {
+      setNewProduct(prev => ({ ...prev, shop_name: profile.store_name }));
+    }
 
     // Fetch products
-    const { data: prods } = await supabase.from("products").select("*").eq('vendor_id', user.id).order("created_at", { ascending: false });
+    const { data: prods } = await supabase.from("products").select("*").eq('seller_id', user.id).order("created_at", { ascending: false });
     if (prods) setDbProducts(prods);
 
     // Fetch Wallet
@@ -102,8 +95,23 @@ function VendorDashboard() {
     if (salesData) {
       setRealOrders(salesData);
       
+      // Calculate daily sales for chart (last 7 days)
+      const last7Days = [...Array(7)].map((_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+      }).reverse();
+
+      const dailyTotals = last7Days.map(day => {
+        const total = salesData
+          .filter(o => o.created_at && new Date(o.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) === day)
+          .reduce((acc, o) => acc + (Number(o.net_amount) || (Number(o.price) * o.quantity)), 0);
+        return { day, v: total };
+      });
+      setDailySales(dailyTotals);
+
       // Fetch Shipments for these orders
-      const orderIds = [...new Set(salesData.map(o => o.order_id))];
+      const orderIds = [...new Set(salesData.map(o => o.order_id))].filter((id): id is string => id !== null);
       if (orderIds.length > 0) {
         const { data: shipData } = await supabase.from("shipments").select("*").in('order_id', orderIds);
         if (shipData) setShipments(shipData);
@@ -182,6 +190,21 @@ function VendorDashboard() {
 
       if (error) throw error;
       toast.success("Perfil enviado para aprovação!");
+      fetchDashboardData();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
+  const updateOrderItemStatus = async (itemId: string, status: string) => {
+    try {
+      const { error } = await supabase
+        .from("order_items")
+        .update({ status })
+        .eq('id', itemId);
+      
+      if (error) throw error;
+      toast.success("Status do item atualizado!");
       fetchDashboardData();
     } catch (e: any) {
       toast.error(e.message);
@@ -282,7 +305,7 @@ function VendorDashboard() {
       {sellerProfile && (
         <>
           <div className="mt-8 grid gap-4 md:grid-cols-4">
-            <Stat icon={TrendingUp} label="Vendas Brutas" value={formatBRL(realOrders.reduce((acc, o) => acc + (o.price * o.quantity), 0))} />
+            <Stat icon={TrendingUp} label="Vendas Líquidas" value={formatBRL(realOrders.reduce((acc, o) => acc + (Number(o.net_amount) || (o.price * o.quantity)), 0))} />
             <Stat icon={ShoppingBag} label="Pedidos" value={realOrders.length.toString()} />
             <Stat icon={Package} label="Produtos" value={dbProducts.length.toString()} />
             <Stat icon={Star} label="Saldo Disponível" value={formatBRL(wallet?.balance || 0)}>
@@ -353,11 +376,11 @@ function VendorDashboard() {
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
           <h2 className="font-display text-lg font-semibold">Vendas nos últimos 7 dias</h2>
           <div className="mt-6 flex h-52 items-end gap-3">
-            {sales.map((s) => (
+            {dailySales.map((s) => (
               <div key={s.day} className="flex flex-1 flex-col items-center gap-2">
                 <div
                   className="w-full rounded-md bg-gradient-to-t from-[var(--clay)] to-[color-mix(in_oklab,var(--clay)_60%,white)]"
-                  style={{ height: `${(s.v / max) * 100}%` }}
+                  style={{ height: `${(s.v / maxSales) * 100}%` }}
                 />
                 <span className="text-[10px] text-[var(--muted-foreground)]">{s.day}</span>
               </div>
@@ -453,9 +476,17 @@ function VendorDashboard() {
       )}
                   <div className="text-right">
                     <div className="font-medium">{formatBRL(o.price * o.quantity)}</div>
-                    <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--leaf)]">
-                      {o.orders.status}
-                    </span>
+                    <select 
+                      value={o.status || 'pending'} 
+                      onChange={(e) => updateOrderItemStatus(o.id, e.target.value)}
+                      className="text-[10px] uppercase tracking-[0.18em] text-[var(--leaf)] bg-transparent border-none outline-none cursor-pointer"
+                    >
+                      <option value="pending">Pendente</option>
+                      <option value="processing">Preparando</option>
+                      <option value="shipped">Enviado</option>
+                      <option value="delivered">Entregue</option>
+                      <option value="cancelled">Cancelado</option>
+                    </select>
                   </div>
                 </li>
               ))
@@ -545,6 +576,7 @@ function VendorDashboard() {
                       price: parseFloat(newProduct.price),
                       slug: newProduct.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
                       region: "Bahia",
+                      seller_id: user.id,
                       vendor_id: user.id
                     }]);
                     if (error) throw error;

@@ -63,37 +63,46 @@ export type Database = {
       }
       order_items: {
         Row: {
+          commission_amount: number | null
           created_at: string | null
           id: string
           image_url: string | null
           name: string
+          net_amount: number | null
           order_id: string | null
           price: number
           product_id: string | null
           quantity: number
           seller_id: string | null
+          status: string | null
         }
         Insert: {
+          commission_amount?: number | null
           created_at?: string | null
           id?: string
           image_url?: string | null
           name: string
+          net_amount?: number | null
           order_id?: string | null
           price: number
           product_id?: string | null
           quantity: number
           seller_id?: string | null
+          status?: string | null
         }
         Update: {
+          commission_amount?: number | null
           created_at?: string | null
           id?: string
           image_url?: string | null
           name?: string
+          net_amount?: number | null
           order_id?: string | null
           price?: number
           product_id?: string | null
           quantity?: number
           seller_id?: string | null
+          status?: string | null
         }
         Relationships: [
           {
@@ -177,6 +186,7 @@ export type Database = {
           rating: number | null
           region: string | null
           reviews: number | null
+          seller_id: string | null
           shop: string | null
           shop_name: string | null
           short_description: string | null
@@ -198,6 +208,7 @@ export type Database = {
           rating?: number | null
           region?: string | null
           reviews?: number | null
+          seller_id?: string | null
           shop?: string | null
           shop_name?: string | null
           short_description?: string | null
@@ -219,6 +230,7 @@ export type Database = {
           rating?: number | null
           region?: string | null
           reviews?: number | null
+          seller_id?: string | null
           shop?: string | null
           shop_name?: string | null
           short_description?: string | null
@@ -256,6 +268,7 @@ export type Database = {
       sellers: {
         Row: {
           approved: boolean | null
+          commission_rate: number | null
           created_at: string | null
           description: string | null
           id: string
@@ -266,6 +279,7 @@ export type Database = {
         }
         Insert: {
           approved?: boolean | null
+          commission_rate?: number | null
           created_at?: string | null
           description?: string | null
           id?: string
@@ -276,6 +290,7 @@ export type Database = {
         }
         Update: {
           approved?: boolean | null
+          commission_rate?: number | null
           created_at?: string | null
           description?: string | null
           id?: string
