@@ -268,6 +268,27 @@ export type Database = {
         }
         Relationships: []
       }
+      seller_type_settings: {
+        Row: {
+          commission_rate: number
+          created_at: string | null
+          seller_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          commission_rate?: number
+          created_at?: string | null
+          seller_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          commission_rate?: number
+          created_at?: string | null
+          seller_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       seller_wallet: {
         Row: {
           balance: number | null
