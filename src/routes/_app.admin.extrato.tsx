@@ -57,11 +57,7 @@ function AdminExtratoPage() {
     try {
       let query = supabase
         .from("wallet_transactions")
-        .select(`
-          *,
-          orders(status, customer_name, id),
-          seller_wallet(seller_id)
-        `)
+        .select("*, orders(status, customer_name, id), seller_wallet(seller_id)")
         .order("created_at", { ascending: false });
 
       if (filterType !== "all") {
