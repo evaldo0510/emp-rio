@@ -196,6 +196,21 @@ function VendorDashboard() {
     }
   };
 
+  const updateOrderItemStatus = async (itemId: string, status: string) => {
+    try {
+      const { error } = await supabase
+        .from("order_items")
+        .update({ status })
+        .eq('id', itemId);
+      
+      if (error) throw error;
+      toast.success("Status do item atualizado!");
+      fetchDashboardData();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
   const updateShipmentStatus = async (shipmentId: string, status: string, trackingCode?: string) => {
     try {
       const updateData: any = { status };
