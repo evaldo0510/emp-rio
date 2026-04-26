@@ -16,6 +16,7 @@ import {
   Target,
   BarChart3,
   Calendar,
+  Share2,
 } from "lucide-react";
 import {
   BarChart,
