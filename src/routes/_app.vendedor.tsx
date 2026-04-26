@@ -402,6 +402,11 @@ function VendorDashboard() {
               <div key={p.id} className="group relative overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--background)]">
                 <div className="aspect-square overflow-hidden bg-[var(--sand)]">
                   <img src={p.image_url} alt={p.name} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                  {!p.is_published && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-4 text-center">
+                      <span className="text-[10px] font-bold text-white uppercase tracking-widest bg-amber-600 px-2 py-1 rounded">Aguardando Aprovação do Vendedor</span>
+                    </div>
+                  )}
                 </div>
                 <div className="p-3">
                   <h3 className="font-medium text-sm text-[var(--coffee)] truncate">{p.name}</h3>
