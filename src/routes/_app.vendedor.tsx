@@ -501,6 +501,7 @@ function VendorDashboard() {
                       <option value="pending">Pendente</option>
                       <option value="processing">Preparando</option>
                       <option value="shipped">Enviado</option>
+                      <option value="paid">Pago (Liberar Saldo)</option>
                       <option value="delivered">Entregue</option>
                       <option value="cancelled">Cancelado</option>
                     </select>
