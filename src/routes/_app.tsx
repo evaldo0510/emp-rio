@@ -1,5 +1,6 @@
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
+import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -13,8 +14,8 @@ function AppLayout() {
         <Outlet />
       </main>
       <SiteFooter />
+      <Toaster richColors position="top-right" />
     </div>
   );
 }
 
-export { Link };
