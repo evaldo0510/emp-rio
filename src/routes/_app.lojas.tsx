@@ -1,19 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MapPin, Star } from "lucide-react";
+import { MapPin, Star, Loader2, Store } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_app/lojas")({
   head: () => ({ meta: [{ title: "Lojas parceiras — Licuri Hub" }] }),
   component: ShopsPage,
 });
 
-const shops = [
-  { name: "Sertão Natural", region: "Senhor do Bonfim — BA", rating: 4.9, items: 12 },
-  { name: "Licuri da Caatinga", region: "Capim Grosso — BA", rating: 4.8, items: 18 },
-  { name: "Sabor do Sertão", region: "Picos — PI", rating: 4.9, items: 9 },
-  { name: "Delícias do Cerrado", region: "Crateús — CE", rating: 4.7, items: 7 },
-  { name: "Mãos da Caatinga", region: "Jeremoabo — BA", rating: 5, items: 15 },
-  { name: "Nutri Sertão", region: "Montes Claros — MG", rating: 4.9, items: 11 },
-];
+type Seller = {
+  id: string;
+  store_name: string;
+  description: string;
+  region: string;
+  rating: number;
+  product_count: number;
+};
 
 function ShopsPage() {
   return (
