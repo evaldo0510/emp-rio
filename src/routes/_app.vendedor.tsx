@@ -185,7 +185,9 @@ function VendorDashboard() {
       const { error } = await supabase.from("sellers").insert([{
         user_id: user.id,
         store_name: name,
-        description: desc
+        description: desc,
+        approved: false,
+        commission_rate: 10.0
       }]);
 
       if (error) throw error;
