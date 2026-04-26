@@ -9,6 +9,8 @@ export type CartItem = {
   price: number;
   image: string;
   quantity: number;
+  vendor_id?: string;
+  seller_id?: string;
 };
 
 type CartState = {
@@ -38,7 +40,15 @@ export const useCart = create<CartState>()(
           return {
             items: [
               ...s.items,
-              { id: p.id, slug: p.slug, name: p.name, price: p.price, image: p.image, quantity: qty },
+              { 
+                id: p.id, 
+                slug: p.slug, 
+                name: p.name, 
+                price: p.price, 
+                image: p.image, 
+                quantity: qty,
+                vendor_id: (p as any).vendor_id || (p as any).seller_id
+              },
             ],
           };
         }),

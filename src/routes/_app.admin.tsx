@@ -38,15 +38,19 @@ function AdminPage() {
   }, []);
 
   const fetchStats = async () => {
-    // In a real app, these would be RPCs or aggregated queries
-    const { data: orders } = await supabase.from("orders").select("total");
+    const [{ data: orders }, { count: sellers }, { count: users }] = await Promise.all([
+      supabase.from("orders").select("total"),
+      supabase.from("products").select("vendor_id", { count: 'exact', head: true }),
+      supabase.from("orders").select("user_id", { count: 'exact', head: true })
+    ]);
+
     const total = orders?.reduce((acc, o) => acc + Number(o.total), 0) || 0;
     
     setStats({
       totalSales: total,
       orderCount: orders?.length || 0,
-      sellerCount: 12, // Mocked for now
-      userCount: 84    // Mocked for now
+      sellerCount: sellers || 0,
+      userCount: users || 0
     });
   };
 

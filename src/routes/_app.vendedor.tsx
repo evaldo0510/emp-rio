@@ -27,6 +27,9 @@ const orders = [
 function VendorDashboard() {
   const [isUploading, setIsUploading] = useState(false);
   const [dbProducts, setDbProducts] = useState<any[]>([]);
+  const [wallet, setWallet] = useState<{ balance: number; total_withdrawn: number } | null>(null);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [realOrders, setRealOrders] = useState<any[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -41,12 +44,40 @@ function VendorDashboard() {
   const max = Math.max(...sales.map((s) => s.v));
 
   useEffect(() => {
-    fetchProducts();
+    fetchDashboardData();
   }, []);
 
-  const fetchProducts = async () => {
-    const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false });
-    if (data) setDbProducts(data);
+  const fetchDashboardData = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // Fetch products
+    const { data: prods } = await supabase.from("products").select("*").eq('vendor_id', user.id).order("created_at", { ascending: false });
+    if (prods) setDbProducts(prods);
+
+    // Fetch Wallet
+    const { data: walletData } = await supabase.from("seller_wallet").select("*").eq('seller_id', user.id).maybeSingle();
+    if (walletData) {
+      setWallet(walletData);
+      
+      // Fetch Transactions
+      const { data: txs } = await supabase
+        .from("wallet_transactions")
+        .select("*")
+        .eq('wallet_id', walletData.id)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (txs) setTransactions(txs);
+    }
+
+    // Fetch Real Orders (sales)
+    const { data: salesData } = await supabase
+      .from("order_items")
+      .select("*, orders!inner(*)")
+      .eq('seller_id', user.id)
+      .order("created_at", { ascending: false });
+    
+    if (salesData) setRealOrders(salesData);
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +103,7 @@ function VendorDashboard() {
       if (error) throw error;
       
       toast.success("Imagem enviada e produto criado!");
-      fetchProducts();
+      fetchDashboardData();
     } catch (error) {
       console.error(error);
       toast.error("Erro ao enviar imagem.");
@@ -98,10 +129,10 @@ function VendorDashboard() {
       </header>
 
       <div className="mt-8 grid gap-4 md:grid-cols-4">
-        <Stat icon={TrendingUp} label="Vendas" value="R$ 8.450,00" />
-        <Stat icon={ShoppingBag} label="Pedidos" value="126" />
-        <Stat icon={Package} label="Produtos" value="24" />
-        <Stat icon={Star} label="Avaliação" value="4,9" />
+        <Stat icon={TrendingUp} label="Vendas Brutas" value={formatBRL(realOrders.reduce((acc, o) => acc + (o.price * o.quantity), 0))} />
+        <Stat icon={ShoppingBag} label="Pedidos" value={realOrders.length.toString()} />
+        <Stat icon={Package} label="Produtos" value={dbProducts.length.toString()} />
+        <Stat icon={Star} label="Saldo Disponível" value={formatBRL(wallet?.balance || 0)} />
       </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-[1.6fr_1fr]">
@@ -121,31 +152,62 @@ function VendorDashboard() {
         </div>
 
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-          <h2 className="font-display text-lg font-semibold">Pedidos recentes</h2>
+          <h2 className="font-display text-lg font-semibold">Vendas Recentes</h2>
           <ul className="mt-4 divide-y divide-[var(--border)]">
-            {orders.map((o) => (
-              <li key={o.id} className="flex items-center justify-between py-3 text-sm">
-                <div>
-                  <div className="font-semibold">{o.id}</div>
-                  <div className="text-xs text-[var(--muted-foreground)]">{o.date}</div>
-                </div>
-                <div className="text-right">
-                  <div className="font-medium">{o.value}</div>
-                  <span
-                    className={
-                      "text-[10px] uppercase tracking-[0.18em] " +
-                      (o.status === "Entregue"
-                        ? "text-[var(--leaf)]"
-                        : o.status === "Enviado"
-                          ? "text-[var(--clay)]"
-                          : "text-[var(--muted-foreground)]")
-                    }
-                  >
-                    {o.status}
-                  </span>
-                </div>
-              </li>
-            ))}
+            {realOrders.length === 0 ? (
+              <p className="py-4 text-sm text-[var(--muted-foreground)]">Nenhuma venda realizada ainda.</p>
+            ) : (
+              realOrders.slice(0, 5).map((o) => (
+                <li key={o.id} className="flex items-center justify-between py-3 text-sm">
+                  <div>
+                    <div className="font-semibold line-clamp-1">{o.name}</div>
+                    <div className="text-xs text-[var(--muted-foreground)]">{new Date(o.created_at).toLocaleDateString()}</div>
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+        <h2 className="font-display text-lg font-semibold mb-4">Histórico da Carteira</h2>
+        {transactions.length === 0 ? (
+          <p className="text-sm text-[var(--muted-foreground)]">Nenhuma transação registrada.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
+                <tr>
+                  <th className="pb-3 font-bold">Data</th>
+                  <th className="pb-3 font-bold">Tipo</th>
+                  <th className="pb-3 font-bold">Descrição</th>
+                  <th className="pb-3 font-bold text-right">Valor Líquido</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {transactions.map(tx => (
+                  <tr key={tx.id}>
+                    <td className="py-3">{new Date(tx.created_at).toLocaleDateString()}</td>
+                    <td className="py-3">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${tx.type === 'sale' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                        {tx.type === 'sale' ? 'VENDA' : 'SAQUE'}
+                      </span>
+                    </td>
+                    <td className="py-3 text-[var(--muted-foreground)]">{tx.description}</td>
+                    <td className={`py-3 text-right font-bold ${tx.amount >= 0 ? 'text-[var(--leaf)]' : 'text-red-600'}`}>
+                      {formatBRL(tx.amount)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+                  <div className="text-right">
+                    <div className="font-medium">{formatBRL(o.price * o.quantity)}</div>
+                    <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--leaf)]">
+                      {o.orders.status}
+                    </span>
+                  </div>
+                </li>
+              ))
+            )}
           </ul>
         </div>
       </div>
@@ -236,7 +298,7 @@ function VendorDashboard() {
                     if (error) throw error;
                     toast.success("Produto cadastrado com sucesso!");
                     setShowAddForm(false);
-                    fetchProducts();
+                    fetchDashboardData();
                   } catch (e: any) {
                     toast.error("Erro ao salvar: " + e.message);
                   }
