@@ -225,6 +225,7 @@ export function VendorDashboard() {
     const formData = new FormData(e.currentTarget);
     const name = formData.get("store_name") as string;
     const desc = formData.get("description") as string;
+    const type = formData.get("seller_type") as string;
 
     try {
       const {
@@ -237,8 +238,9 @@ export function VendorDashboard() {
           user_id: user.id,
           store_name: name,
           description: desc,
+          seller_type: type,
           approved: false,
-          commission_rate: 10.0,
+          commission_rate: 0.15,
         },
       ]);
 
@@ -361,12 +363,27 @@ export function VendorDashboard() {
             Torne-se um Vendedor
           </h2>
           <p className="text-[var(--muted-foreground)] mb-8">
-            Cadastre sua loja ou associação para começar a vender no Licuri Hub.
+            Cadastre sua loja, associação ou cooperativa para começar a vender no Licuri Hub.
           </p>
           <form onSubmit={handleRegisterSeller} className="max-w-md mx-auto space-y-4 text-left">
             <div className="space-y-1">
               <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                Nome da Loja
+                Tipo de Empreendimento
+              </label>
+              <select
+                name="seller_type"
+                required
+                className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)] text-sm"
+              >
+                <option value="store">Loja / Comércio</option>
+                <option value="association">Associação</option>
+                <option value="cooperative">Cooperativa</option>
+                <option value="individual">Produtor Individual</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+                Nome do Empreendimento
               </label>
               <input
                 name="store_name"
