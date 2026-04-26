@@ -210,9 +210,15 @@ function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
-          {featured.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
+          {isLoading ? (
+            <div className="col-span-full flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-[var(--clay)]" />
+            </div>
+          ) : (
+            featured.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))
+          )}
         </div>
       </section>
 
