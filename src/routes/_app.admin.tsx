@@ -370,74 +370,94 @@ function AdminPage() {
       <div className="mt-8 grid gap-4 md:grid-cols-4">
         <Stat
           icon={DollarSign}
-          label="Vendas totais"
-          value={formatBRL(stats.totalSales || 156890)}
+          label="Faturamento Total"
+          value={formatBRL(stats.totalSales)}
         />
-        <Stat icon={ShoppingBag} label="Pedidos" value={(stats.orderCount || 2345).toString()} />
-        <Stat icon={Store} label="Vendedores" value={(stats.sellerCount || 87).toString()} />
-        <Stat icon={Users} label="Clientes" value={(stats.userCount || 1890).toString()} />
+        <Stat 
+          icon={Target} 
+          label="Comissão Plataforma" 
+          value={formatBRL(stats.platformRevenue)}
+          color="var(--clay)"
+        />
+        <Stat icon={ShoppingBag} label="Pedidos" value={stats.orderCount.toString()} />
+        <Stat icon={Users} label="Clientes" value={stats.userCount.toString()} />
       </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-[1.7fr_1fr]">
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-          <h2 className="font-display text-lg font-semibold">Vendas (últimos 30 dias)</h2>
-          <svg viewBox="0 0 600 200" className="mt-4 h-48 w-full">
-            <polyline
-              fill="none"
-              stroke="var(--clay)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              points={monthly
-                .map((v, i) => `${(i / (monthly.length - 1)) * 580 + 10},${190 - (v / max) * 170}`)
-                .join(" ")}
-            />
-            <polygon
-              fill="color-mix(in oklab, var(--clay) 18%, transparent)"
-              points={
-                monthly
-                  .map(
-                    (v, i) => `${(i / (monthly.length - 1)) * 580 + 10},${190 - (v / max) * 170}`,
-                  )
-                  .join(" ") + " 590,190 10,190"
-              }
-            />
-          </svg>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-display text-lg font-semibold">Evolução de Vendas</h2>
+            <div className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
+              <span className="flex h-2 w-2 rounded-full bg-[var(--clay)]" />
+              Últimos 7 dias
+            </div>
+          </div>
+          <div className="h-[240px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={salesByDay}>
+                <defs>
+                  <linearGradient id="colorVendas" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--clay)" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="var(--clay)" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                <XAxis 
+                  dataKey="date" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} 
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }}
+                  tickFormatter={(value) => `R$${value}`}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'var(--card)', 
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    fontSize: '12px'
+                  }} 
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="vendas" 
+                  stroke="var(--clay)" 
+                  fillOpacity={1} 
+                  fill="url(#colorVendas)" 
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-          <h2 className="font-display text-lg font-semibold">Pedidos por status</h2>
-          <div className="mt-4 flex items-center gap-6">
-            <svg viewBox="0 0 100 100" className="h-32 w-32 -rotate-90">
-              {arcs.map((a) => {
-                const r = 40;
-                const c = 2 * Math.PI * r;
-                const len = ((a.end - a.start) / 360) * c;
-                const offset = (a.start / 360) * c;
-                return (
-                  <circle
-                    key={a.label}
-                    cx="50"
-                    cy="50"
-                    r={r}
-                    fill="transparent"
-                    stroke={a.color}
-                    strokeWidth="14"
-                    strokeDasharray={`${len} ${c - len}`}
-                    strokeDashoffset={-offset}
-                  />
-                );
-              })}
-            </svg>
-            <ul className="space-y-2 text-sm">
-              {statuses.map((s) => (
-                <li key={s.label} className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: s.color }} />
-                  {s.label}
-                  <span className="ml-1 text-[var(--muted-foreground)]">{s.value}%</span>
-                </li>
-              ))}
-            </ul>
+          <div className="flex items-center gap-2 mb-6">
+            <TrendingUp className="h-5 w-5 text-[var(--leaf)]" />
+            <h2 className="font-display text-lg font-semibold">Top Vendedores</h2>
+          </div>
+          <div className="space-y-4">
+            {topSellers.length === 0 ? (
+              <p className="text-sm text-[var(--muted-foreground)] text-center py-8">
+                Nenhuma venda registrada ainda.
+              </p>
+            ) : (
+              topSellers.map((s, i) => (
+                <div key={s.id} className="flex items-center justify-between p-3 rounded-xl border border-[var(--border)] bg-[var(--sand)]/5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--coffee)] text-[10px] font-bold text-white">
+                      {i + 1}
+                    </span>
+                    <span className="text-sm font-medium text-[var(--coffee)] line-clamp-1">{s.name}</span>
+                  </div>
+                  <span className="text-sm font-bold text-[var(--leaf)]">{formatBRL(s.total)}</span>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
