@@ -104,7 +104,7 @@ function AdminPage() {
   const fetchCommissionHistory = async () => {
     const { data } = await supabase
       .from("commission_rate_history")
-      .select("*")
+      .select("*, profiles:admin_id(email)")
       .order("created_at", { ascending: false })
       .limit(10);
     if (data) setCommissionHistory(data);
