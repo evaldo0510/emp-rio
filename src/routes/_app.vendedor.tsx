@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_app/vendedor")({
 
 // Constants for mock data removed. Using real database data.
 
-function VendorDashboard() {
+export function VendorDashboard() {
   const [isUploading, setIsUploading] = useState(false);
   const [dbProducts, setDbProducts] = useState<any[]>([]);
   const [wallet, setWallet] = useState<any>(null);
