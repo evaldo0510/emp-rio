@@ -1,10 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Package, ShoppingBag, Star, TrendingUp, Upload, Loader2, Plus } from "lucide-react";
+import { Package, ShoppingBag, Star, TrendingUp, Upload, Loader2, Plus, Wallet, ArrowUpRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase, uploadProductImage } from "@/lib/supabase";
 import { toast } from "sonner";
 import { formatBRL } from "@/lib/products";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/_app/vendedor")({
   head: () => ({ meta: [{ title: "Painel do Vendedor — Licuri Hub" }] }),
