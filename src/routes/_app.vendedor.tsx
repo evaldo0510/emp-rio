@@ -49,6 +49,7 @@ function VendorDashboard() {
   });
 
   const [dailySales, setDailySales] = useState<any[]>([]);
+  const maxSales = Math.max(...dailySales.map((s) => s.v), 1);
 
   useEffect(() => {
     fetchDashboardData();
