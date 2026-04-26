@@ -323,6 +323,118 @@ function VendorDashboard() {
 
       {sellerProfile && (
         <>
+          {/* Logo Generation Tool */}
+          <div className="mt-8 rounded-2xl border border-[var(--clay)]/20 bg-[var(--sand)]/5 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-semibold text-[var(--coffee)]">Branding & Logo Insights (IA)</h2>
+              <span className="text-[10px] bg-[var(--clay)]/10 text-[var(--clay)] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">Experimental</span>
+            </div>
+            <p className="text-sm text-[var(--muted-foreground)] mb-6">
+              Use nossa inteligência artificial para obter sugestões de cores, símbolos e conceitos espirituais para a identidade da sua loja baseada no Licuri.
+            </p>
+            
+            <div className="flex gap-2">
+              <Input 
+                id="logo-prompt"
+                placeholder="Ex: Uma cooperativa de mulheres focada em cosméticos naturais e sustentabilidade..."
+                className="flex-1 rounded-xl border-[var(--border)] focus:border-[var(--clay)] bg-white"
+              />
+              <Button 
+                variant="hero" 
+                disabled={isGeneratingLogo}
+                onClick={async () => {
+                  const prompt = (document.getElementById('logo-prompt') as HTMLInputElement)?.value;
+                  if (!prompt) {
+                    toast.error("Por favor, descreva sua loja para gerar os insights.");
+                    return;
+                  }
+                  
+                  try {
+                    setIsGeneratingLogo(true);
+                    setGenerationError(null);
+                    
+                    const { data, error } = await supabase.functions.invoke('logos-spiritual-insight', {
+                      body: { prompt, model: "gemini-1.5-flash" }
+                    });
+                    
+                    if (error) throw error;
+                    
+                    setLogoInsight(data);
+                    toast.success("Insights gerados com sucesso!");
+                  } catch (e: any) {
+                    console.error("Erro na geração de logo:", e);
+                    // Return detailed error message as requested
+                    const detailedError = e.message || (e.details ? JSON.stringify(e.details) : "Erro desconhecido");
+                    setGenerationError(`Falha na geração: ${detailedError}`);
+                    toast.error("Falha ao gerar insights da marca.");
+                  } finally {
+                    setIsGeneratingLogo(false);
+                  }
+                }}
+              >
+                {isGeneratingLogo ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Gerando...
+                  </>
+                ) : (
+                  "Gerar Insights"
+                )}
+              </Button>
+            </div>
+
+            {generationError && (
+              <div className="mt-4 p-4 rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm">
+                <p className="font-bold mb-1">Ops! Ocorreu um erro no Gateway de IA:</p>
+                <p className="font-mono text-xs overflow-auto max-h-20">{generationError}</p>
+                <p className="mt-2 text-xs">Tentamos usar modelos de fallback, mas o serviço está temporariamente instável. Por favor, tente novamente em instantes.</p>
+              </div>
+            )}
+
+            {logoInsight && (
+              <div className="mt-6 p-6 rounded-xl border border-[var(--clay)]/20 bg-white animate-in fade-in slide-in-from-top-4 duration-500">
+                <h3 className="font-display font-semibold text-[var(--coffee)] mb-4 flex items-center gap-2">
+                  <Star className="h-4 w-4 text-amber-500" />
+                  Sugestão de Identidade Visual
+                </h3>
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="text-[10px] uppercase tracking-widest font-bold text-[var(--muted-foreground)] mb-1">Conceito e Descrição</h4>
+                      <p className="text-sm text-[var(--coffee)] leading-relaxed">{logoInsight.description}</p>
+                    </div>
+                    <div>
+                      <h4 className="text-[10px] uppercase tracking-widest font-bold text-[var(--muted-foreground)] mb-1">Símbolos Recomendados</h4>
+                      <p className="text-sm text-[var(--coffee)]">{logoInsight.symbols}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="text-[10px] uppercase tracking-widest font-bold text-[var(--muted-foreground)] mb-1">Paleta de Cores</h4>
+                      <div className="flex gap-2 mt-2">
+                        {logoInsight.colors && Array.isArray(logoInsight.colors) ? logoInsight.colors.map((color: string, i: number) => (
+                          <div key={i} className="group relative">
+                            <div 
+                              className="h-8 w-8 rounded-full border border-[var(--border)] shadow-sm" 
+                              style={{ backgroundColor: color }}
+                            />
+                            <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white px-1 rounded">{color}</span>
+                          </div>
+                        )) : <p className="text-sm">{logoInsight.colors}</p>}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-[10px] uppercase tracking-widest font-bold text-[var(--muted-foreground)] mb-1">Racional do Design</h4>
+                      <p className="text-sm italic text-[var(--muted-foreground)]">"{logoInsight.rationale}"</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+
+        <>
           <div className="mt-8 grid gap-4 md:grid-cols-4">
             <Stat icon={TrendingUp} label="Vendas Líquidas" value={formatBRL(realOrders.reduce((acc, o) => acc + (Number(o.net_amount) || (o.price * o.quantity)), 0))} />
             <Stat icon={ShoppingBag} label="Pedidos" value={realOrders.length.toString()} />
