@@ -4,8 +4,11 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { supabase } from '@/lib/supabase';
 
 describe('VendorDashboard', () => {
+  const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
   beforeEach(() => {
     vi.clearAllMocks();
+    consoleSpy.mockClear();
   });
 
   it('renders the seller registration form when profile is missing', async () => {
