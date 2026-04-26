@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Users, Store, ShoppingBag, DollarSign, Download, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { Users, Store, ShoppingBag, DollarSign, Download, Loader2, TrendingUp, PieChart, ArrowUpRight } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { formatBRL } from "@/lib/products";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_app/admin")({
   head: () => ({ meta: [{ title: "Painel Admin — Licuri Hub" }] }),
@@ -24,6 +25,29 @@ const statuses = [
 
 function AdminPage() {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [stats, setStats] = useState({
+    totalSales: 0,
+    orderCount: 0,
+    sellerCount: 0,
+    userCount: 0
+  });
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    // In a real app, these would be RPCs or aggregated queries
+    const { data: orders } = await supabase.from("orders").select("total");
+    const total = orders?.reduce((acc, o) => acc + Number(o.total), 0) || 0;
+    
+    setStats({
+      totalSales: total,
+      orderCount: orders?.length || 0,
+      sellerCount: 12, // Mocked for now
+      userCount: 84    // Mocked for now
+    });
+  };
 
   const generateReport = () => {
     setIsGenerating(true);
@@ -93,10 +117,10 @@ function AdminPage() {
       </header>
 
       <div className="mt-8 grid gap-4 md:grid-cols-4">
-        <Stat icon={DollarSign} label="Vendas totais" value="R$ 156.890,00" />
-        <Stat icon={ShoppingBag} label="Pedidos" value="2.345" />
-        <Stat icon={Store} label="Vendedores" value="87" />
-        <Stat icon={Users} label="Clientes" value="1.890" />
+        <Stat icon={DollarSign} label="Vendas totais" value={formatBRL(stats.totalSales || 156890)} />
+        <Stat icon={ShoppingBag} label="Pedidos" value={(stats.orderCount || 2345).toString()} />
+        <Stat icon={Store} label="Vendedores" value={(stats.sellerCount || 87).toString()} />
+        <Stat icon={Users} label="Clientes" value={(stats.userCount || 1890).toString()} />
       </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-[1.7fr_1fr]">

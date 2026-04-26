@@ -27,6 +27,15 @@ const orders = [
 function VendorDashboard() {
   const [isUploading, setIsUploading] = useState(false);
   const [dbProducts, setDbProducts] = useState<any[]>([]);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    price: "",
+    category: "alimentos",
+    description: "",
+    image_url: "",
+  });
+
   const max = Math.max(...sales.map((s) => s.v));
 
   useEffect(() => {
@@ -141,17 +150,91 @@ function VendorDashboard() {
 
       <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-display text-lg font-semibold">Meus Produtos (do Banco de Dados)</h2>
-          <label className="cursor-pointer">
-            <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" disabled={isUploading} />
-            <Button variant="hero" size="sm" asChild disabled={isUploading}>
-              <span>
-                {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-                Novo Produto (Upload)
-              </span>
-            </Button>
-          </label>
+          <h2 className="font-display text-lg font-semibold">Meus Produtos</h2>
+          <Button variant="hero" size="sm" onClick={() => setShowAddForm(!showAddForm)}>
+            <Plus className="mr-2 h-4 w-4" />
+            {showAddForm ? "Cancelar" : "Novo Produto"}
+          </Button>
         </div>
+
+        {showAddForm && (
+          <div className="mb-8 p-6 rounded-xl border border-[var(--clay)]/20 bg-[var(--sand)]/30">
+            <h3 className="font-display text-md font-semibold mb-4 text-[var(--coffee)]">Cadastrar Novo Item</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Nome do Produto</label>
+                <input 
+                  value={newProduct.name}
+                  onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
+                  className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
+                  placeholder="Ex: Óleo de Licuri Premium"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Preço (R$)</label>
+                <input 
+                  type="number"
+                  value={newProduct.price}
+                  onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
+                  className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
+                  placeholder="0.00"
+                />
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Descrição</label>
+                <textarea 
+                  value={newProduct.description}
+                  onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
+                  className="w-full h-24 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
+                  placeholder="Descreva as qualidades e origem do produto..."
+                />
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Imagem (Upload ou URL)</label>
+                <div className="flex gap-2">
+                  <input 
+                    value={newProduct.image_url}
+                    onChange={(e) => setNewProduct({...newProduct, image_url: e.target.value})}
+                    className="flex-1 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
+                    placeholder="https://..."
+                  />
+                  <label className="cursor-pointer">
+                    <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" disabled={isUploading} />
+                    <Button variant="soft" disabled={isUploading}>
+                      {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                    </Button>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <Button 
+                variant="hero" 
+                onClick={async () => {
+                  try {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    const { error } = await supabase.from("products").insert([{
+                      ...newProduct,
+                      price: parseFloat(newProduct.price),
+                      slug: newProduct.name.toLowerCase().replace(/ /g, '-'),
+                      shop: "Sertão Natural",
+                      region: "Bahia",
+                      seller_id: user?.id
+                    }]);
+                    if (error) throw error;
+                    toast.success("Produto cadastrado com sucesso!");
+                    setShowAddForm(false);
+                    fetchProducts();
+                  } catch (e: any) {
+                    toast.error("Erro ao salvar: " + e.message);
+                  }
+                }}
+              >
+                Salvar Produto
+              </Button>
+            </div>
+          </div>
+        )}
 
         {dbProducts.length === 0 ? (
           <div className="flex flex-col items-center py-10 text-[var(--muted-foreground)]">
