@@ -238,8 +238,9 @@ export function VendorDashboard() {
           user_id: user.id,
           store_name: name,
           description: desc,
+          seller_type: type,
           approved: false,
-          commission_rate: 10.0,
+          commission_rate: 0.15,
         },
       ]);
 
