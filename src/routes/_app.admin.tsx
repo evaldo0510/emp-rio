@@ -38,6 +38,7 @@ const statuses = [
 function AdminPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRecalculating, setIsRecalculating] = useState(false);
+  const [updatingType, setUpdatingType] = useState<string | null>(null);
   const [sellers, setSellers] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -130,27 +131,32 @@ function AdminPage() {
     if (data) setCommissionSettings(data);
   };
 
-  const updateTypeCommissionRate = async (type: string, rateInput: number) => {
+  const updateTypeCommissionRate = async (type: string, rateInput: any) => {
+    const rate = typeof rateInput === "string" && rateInput.trim() === "" ? NaN : Number(rateInput);
+    
     // Round to 2 decimal places before processing
-    const rate = Math.round(rateInput * 100) / 100;
+    const roundedRate = !isNaN(rate) ? Math.round(rate * 100) / 100 : NaN;
 
-    if (isNaN(rate) || rate < 0 || rate > 100) {
+    if (isNaN(roundedRate) || roundedRate < 0 || roundedRate > 100) {
       toast.error("A taxa de comissão deve estar entre 0% e 100%.");
       fetchCommissionSettings(); // Reset to current value from DB
       return;
     }
 
+    setUpdatingType(type);
     try {
       const { error } = await supabase
         .from("seller_type_settings")
-        .update({ commission_rate: rate / 100 })
+        .update({ commission_rate: roundedRate / 100 })
         .eq("seller_type", type);
       if (error) throw error;
       toast.success("Comissão atualizada!");
-      fetchCommissionSettings();
-      fetchCommissionHistory();
+      await Promise.all([fetchCommissionSettings(), fetchCommissionHistory()]);
     } catch (e: any) {
       toast.error(e.message);
+      fetchCommissionSettings();
+    } finally {
+      setUpdatingType(null);
     }
   };
 
@@ -446,17 +452,22 @@ function AdminPage() {
                 <label className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)] font-bold mb-2 block">
                   {s.seller_type}
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 relative">
                   <input
                     type="number"
                     min="0"
                     max="100"
                     step="0.01"
+                    disabled={updatingType === s.seller_type}
                     defaultValue={s.commission_rate * 100}
-                    className="w-full bg-transparent border-b border-[var(--border)] py-1 text-lg font-bold text-[var(--coffee)] focus:border-[var(--clay)] outline-none"
-                    onBlur={(e) => updateTypeCommissionRate(s.seller_type, Number(e.target.value))}
+                    className="w-full bg-transparent border-b border-[var(--border)] py-1 text-lg font-bold text-[var(--coffee)] focus:border-[var(--clay)] outline-none disabled:opacity-50"
+                    onBlur={(e) => updateTypeCommissionRate(s.seller_type, e.target.value)}
                   />
-                  <span className="text-lg font-bold text-[var(--coffee)]">%</span>
+                  {updatingType === s.seller_type ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-[var(--clay)] absolute right-6" />
+                  ) : (
+                    <span className="text-lg font-bold text-[var(--coffee)]">%</span>
+                  )}
                 </div>
                 <p className="text-[10px] text-[var(--muted-foreground)] mt-2">
                   Padrão para novos vendedores do tipo {s.seller_type}.
