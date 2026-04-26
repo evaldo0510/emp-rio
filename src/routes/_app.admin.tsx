@@ -131,6 +131,12 @@ function AdminPage() {
   };
 
   const updateTypeCommissionRate = async (type: string, rate: number) => {
+    if (isNaN(rate) || rate < 0 || rate > 100) {
+      toast.error("A taxa de comissão deve estar entre 0% e 100%.");
+      fetchCommissionSettings(); // Reset to current value from DB
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from("seller_type_settings")
@@ -139,6 +145,7 @@ function AdminPage() {
       if (error) throw error;
       toast.success("Comissão atualizada!");
       fetchCommissionSettings();
+      fetchCommissionHistory();
     } catch (e: any) {
       toast.error(e.message);
     }
@@ -439,6 +446,9 @@ function AdminPage() {
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
                     defaultValue={s.commission_rate * 100}
                     className="w-full bg-transparent border-b border-[var(--border)] py-1 text-lg font-bold text-[var(--coffee)] focus:border-[var(--clay)] outline-none"
                     onBlur={(e) => updateTypeCommissionRate(s.seller_type, Number(e.target.value))}
