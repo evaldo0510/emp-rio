@@ -34,6 +34,7 @@ function VendorDashboard() {
     category: "alimentos",
     description: "",
     image_url: "",
+    shop: "Sertão Natural", // Default shop
   });
 
   const max = Math.max(...sales.map((s) => s.v));
@@ -180,6 +181,15 @@ function VendorDashboard() {
                   placeholder="0.00"
                 />
               </div>
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Loja / Associação</label>
+                <input 
+                  value={newProduct.shop}
+                  onChange={(e) => setNewProduct({...newProduct, shop: e.target.value})}
+                  className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
+                  placeholder="Nome da sua loja ou associação"
+                />
+              </div>
               <div className="space-y-1 md:col-span-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Descrição</label>
                 <textarea 
@@ -216,8 +226,7 @@ function VendorDashboard() {
                     const { error } = await supabase.from("products").insert([{
                       ...newProduct,
                       price: parseFloat(newProduct.price),
-                      slug: newProduct.name.toLowerCase().replace(/ /g, '-'),
-                      shop: "Sertão Natural",
+                      slug: newProduct.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
                       region: "Bahia",
                       seller_id: user?.id
                     }]);
