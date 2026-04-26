@@ -216,13 +216,7 @@ function AdminPage() {
   const fetchStats = async () => {
     try {
       let ordersQuery = supabase.from("orders").select("total, created_at");
-      let transactionsQuery = supabase.from("wallet_transactions").select(`
-        amount, 
-        commission, 
-        type, 
-        created_at, 
-        seller_wallet(seller_id)
-      `);
+      let transactionsQuery = supabase.from("wallet_transactions").select("amount, commission, type, created_at, seller_wallet(seller_id)");
 
       if (statsPeriod !== "all") {
         const now = new Date();
