@@ -204,6 +204,21 @@ function VendorDashboard() {
         .eq('id', itemId);
       
       if (error) throw error;
+      
+      // If status is "shipped", ensure a shipment record exists or update it
+      if (status === 'shipped') {
+        const item = realOrders.find(o => o.id === itemId);
+        if (item) {
+          const existingShipment = shipments.find(s => s.order_id === item.order_id);
+          if (!existingShipment) {
+            await supabase.from("shipments").insert([{
+              order_id: item.order_id,
+              status: 'shipped'
+            }]);
+          }
+        }
+      }
+
       toast.success("Status do item atualizado!");
       fetchDashboardData();
     } catch (e: any) {
