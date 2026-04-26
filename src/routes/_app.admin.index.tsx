@@ -445,7 +445,7 @@ function AdminPage() {
             <h2 className="font-display text-lg font-semibold">Evolução de Vendas</h2>
             <div className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
               <span className="flex h-2 w-2 rounded-full bg-[var(--clay)]" />
-              Últimos 7 dias
+              {statsPeriod === 'today' ? 'Últimas 24h' : statsPeriod === '7d' ? 'Últimos 7 dias' : statsPeriod === '30d' ? 'Últimos 30 dias' : 'Últimos 30 dias'}
             </div>
           </div>
           <div className="h-[240px] w-full">
