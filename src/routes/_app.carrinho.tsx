@@ -1,8 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/products";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/carrinho")({
   head: () => ({ meta: [{ title: "Carrinho — Licuri Hub" }] }),
@@ -10,9 +13,41 @@ export const Route = createFileRoute("/_app/carrinho")({
 });
 
 function CartPage() {
+  const [loading, setLoading] = useState(true);
   const items = useCart((s) => s.items);
   const setQty = useCart((s) => s.setQty);
   const remove = useCart((s) => s.remove);
+  const clear = useCart((s) => s.clear);
+  const add = useCart((s) => s.add);
+
+  useEffect(() => {
+    fetchDBCart();
+  }, []);
+
+  const fetchDBCart = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("cart_items")
+        .select("quantity, products(*)")
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      // If DB has items, we could sync them to local state
+      // For this MVP, we'll stick to Zustand but sync to DB on changes
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const subtotal = items.reduce((a, i) => a + i.price * i.quantity, 0);
 
   return (
