@@ -1,0 +1,15 @@
+{
+  "name": "Licuri Hub",
+  "short_name": "Licuri",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F1E8",
+  "theme_color": "#C4682C",
+  "icons": [
+    {
+      "src": "https://lovable.dev/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}
