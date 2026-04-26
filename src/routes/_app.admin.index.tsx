@@ -401,7 +401,29 @@ function AdminPage() {
         </div>
       </header>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-4">
+      <div className="mt-8 flex items-center justify-between">
+        <div className="flex p-1 bg-[var(--sand)]/20 rounded-xl border border-[var(--border)]">
+          {(["today", "7d", "30d", "all"] as const).map((p) => (
+            <button
+              key={p}
+              onClick={() => setStatsPeriod(p)}
+              className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                statsPeriod === p
+                  ? "bg-[var(--coffee)] text-white shadow-sm"
+                  : "text-[var(--muted-foreground)] hover:text-[var(--coffee)]"
+              }`}
+            >
+              {p === "today" ? "Hoje" : p === "7d" ? "7 Dias" : p === "30d" ? "30 Dias" : "Tudo"}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 text-[10px] text-[var(--muted-foreground)] uppercase tracking-widest font-bold">
+          <Calendar className="h-3 w-3" />
+          Dados: {statsPeriod === 'all' ? 'Histórico completo' : `Últimos ${statsPeriod === 'today' ? '24h' : statsPeriod}`}
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-4">
         <Stat
           icon={DollarSign}
           label="Faturamento Total"
