@@ -16,6 +16,7 @@ import {
   Target,
   BarChart3,
   Calendar,
+  Share2,
 } from "lucide-react";
 import {
   BarChart,
@@ -365,6 +366,12 @@ function AdminPage() {
       setIsGenerating(false);
     }
   };
+  const handleShare = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    toast.success("Link do dashboard copiado!");
+  };
+
   const total = statuses.reduce((a, s) => a + s.value, 0);
   let acc = 0;
   const arcs = statuses.map((s) => {
@@ -395,6 +402,10 @@ function AdminPage() {
               Extrato Financeiro
             </Button>
           </Link>
+          <Button variant="outline" size="sm" onClick={handleShare}>
+            <Share2 className="mr-2 h-4 w-4" />
+            Compartilhar
+          </Button>
           <Button variant="hero" size="sm" onClick={generateReport} disabled={isGenerating}>
             {isGenerating ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
