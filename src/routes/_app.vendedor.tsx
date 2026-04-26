@@ -43,7 +43,12 @@ function VendorDashboard() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [realOrders, setRealOrders] = useState<any[]>([]);
   const [shipments, setShipments] = useState<any[]>([]);
+  const [withdrawalRequests, setWithdrawalRequests] = useState<any[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [pixKey, setPixKey] = useState("");
+  const [isSubmittingWithdraw, setIsSubmittingWithdraw] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
