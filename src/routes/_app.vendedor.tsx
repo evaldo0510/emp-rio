@@ -1,10 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Package, ShoppingBag, Star, TrendingUp, Upload, Loader2, Plus } from "lucide-react";
+import { Package, ShoppingBag, Star, TrendingUp, Upload, Loader2, Plus, Wallet, ArrowUpRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase, uploadProductImage } from "@/lib/supabase";
 import { toast } from "sonner";
 import { formatBRL } from "@/lib/products";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/_app/vendedor")({
   head: () => ({ meta: [{ title: "Painel do Vendedor — Licuri Hub" }] }),
@@ -32,7 +43,12 @@ function VendorDashboard() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [realOrders, setRealOrders] = useState<any[]>([]);
   const [shipments, setShipments] = useState<any[]>([]);
+  const [withdrawalRequests, setWithdrawalRequests] = useState<any[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [pixKey, setPixKey] = useState("");
+  const [isSubmittingWithdraw, setIsSubmittingWithdraw] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
@@ -92,6 +108,59 @@ function VendorDashboard() {
         const { data: shipData } = await supabase.from("shipments").select("*").in('order_id', orderIds);
         if (shipData) setShipments(shipData);
       }
+    }
+
+    // Fetch Withdrawal Requests
+    const { data: withdrawals } = await supabase
+      .from("withdrawal_requests")
+      .select("*")
+      .eq('seller_id', user.id)
+      .order("created_at", { ascending: false });
+    if (withdrawals) setWithdrawalRequests(withdrawals);
+  };
+
+  const handleWithdraw = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const amount = parseFloat(withdrawAmount);
+    
+    if (!amount || amount <= 0) {
+      toast.error("Insira um valor válido para o saque.");
+      return;
+    }
+
+    if (amount > (wallet?.balance || 0)) {
+      toast.error("Saldo insuficiente para este valor.");
+      return;
+    }
+
+    if (!pixKey) {
+      toast.error("Informe sua chave PIX para o recebimento.");
+      return;
+    }
+
+    try {
+      setIsSubmittingWithdraw(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase.from("withdrawal_requests").insert([{
+        seller_id: user.id,
+        amount,
+        pix_key: pixKey,
+        status: 'pending'
+      }]);
+
+      if (error) throw error;
+
+      toast.success("Solicitação de saque enviada com sucesso!");
+      setIsWithdrawOpen(false);
+      setWithdrawAmount("");
+      setPixKey("");
+      fetchDashboardData();
+    } catch (e: any) {
+      toast.error("Erro ao solicitar saque: " + e.message);
+    } finally {
+      setIsSubmittingWithdraw(false);
     }
   };
 
@@ -213,7 +282,68 @@ function VendorDashboard() {
             <Stat icon={TrendingUp} label="Vendas Brutas" value={formatBRL(realOrders.reduce((acc, o) => acc + (o.price * o.quantity), 0))} />
             <Stat icon={ShoppingBag} label="Pedidos" value={realOrders.length.toString()} />
             <Stat icon={Package} label="Produtos" value={dbProducts.length.toString()} />
-            <Stat icon={Star} label="Saldo Disponível" value={formatBRL(wallet?.balance || 0)} />
+            <Stat icon={Star} label="Saldo Disponível" value={formatBRL(wallet?.balance || 0)}>
+              <Dialog open={isWithdrawOpen} onOpenChange={setIsWithdrawOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 px-2 text-[10px] uppercase tracking-widest text-[var(--clay)] hover:bg-[var(--clay)]/10">
+                    <ArrowUpRight className="mr-1 h-3 w-3" />
+                    Sacar
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle className="font-display text-xl text-[var(--coffee)]">Solicitar Saque</DialogTitle>
+                    <DialogDescription>
+                      O valor será transferido para sua chave PIX após aprovação.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleWithdraw} className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="balance" className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Saldo Atual</Label>
+                      <div className="text-xl font-bold text-[var(--leaf)]">{formatBRL(wallet?.balance || 0)}</div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="amount" className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Valor do Saque (R$)</Label>
+                      <Input
+                        id="amount"
+                        type="number"
+                        step="0.01"
+                        placeholder="0,00"
+                        value={withdrawAmount}
+                        onChange={(e) => setWithdrawAmount(e.target.value)}
+                        className="rounded-xl border-[var(--border)] focus:border-[var(--clay)]"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="pix" className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Chave PIX para Recebimento</Label>
+                      <Input
+                        id="pix"
+                        placeholder="CPF, E-mail, Celular ou Chave Aleatória"
+                        value={pixKey}
+                        onChange={(e) => setPixKey(e.target.value)}
+                        className="rounded-xl border-[var(--border)] focus:border-[var(--clay)]"
+                        required
+                      />
+                    </div>
+                    <DialogFooter>
+                      <Button 
+                        type="submit" 
+                        variant="hero" 
+                        className="w-full" 
+                        disabled={isSubmittingWithdraw}
+                      >
+                        {isSubmittingWithdraw ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          "Confirmar Solicitação"
+                        )}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </Stat>
           </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-[1.6fr_1fr]">
@@ -280,6 +410,44 @@ function VendorDashboard() {
           </div>
         )}
       </div>
+      
+      {withdrawalRequests.length > 0 && (
+        <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+          <h2 className="font-display text-lg font-semibold mb-4">Solicitações de Saque</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
+                <tr>
+                  <th className="pb-3 font-bold">Data</th>
+                  <th className="pb-3 font-bold">Valor</th>
+                  <th className="pb-3 font-bold">Chave PIX</th>
+                  <th className="pb-3 font-bold text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {withdrawalRequests.map(req => (
+                  <tr key={req.id}>
+                    <td className="py-3">{new Date(req.created_at).toLocaleDateString()}</td>
+                    <td className="py-3 font-bold">{formatBRL(req.amount)}</td>
+                    <td className="py-3 text-[var(--muted-foreground)]">{req.pix_key}</td>
+                    <td className="py-3 text-right">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        req.status === 'approved' ? 'bg-green-100 text-green-700' : 
+                        req.status === 'rejected' ? 'bg-red-100 text-red-700' : 
+                        'bg-amber-100 text-amber-700'
+                      }`}>
+                        {req.status === 'approved' ? 'APROVADO' : 
+                         req.status === 'rejected' ? 'RECUSADO' : 
+                         'PENDENTE'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
                   <div className="text-right">
                     <div className="font-medium">{formatBRL(o.price * o.quantity)}</div>
                     <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--leaf)]">
@@ -482,10 +650,12 @@ function Stat({
   icon: Icon,
   label,
   value,
+  children,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
+  children?: React.ReactNode;
 }) {
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
@@ -495,7 +665,10 @@ function Stat({
         </span>
         <Icon className="h-4 w-4 text-[var(--clay)]" />
       </div>
-      <div className="mt-3 font-display text-2xl font-bold text-[var(--coffee)]">{value}</div>
+      <div className="mt-3 flex items-baseline justify-between gap-2">
+        <div className="font-display text-2xl font-bold text-[var(--coffee)]">{value}</div>
+        {children}
+      </div>
     </div>
   );
 }
