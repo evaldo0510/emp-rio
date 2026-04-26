@@ -174,6 +174,7 @@ export type Database = {
       }
       products: {
         Row: {
+          active: boolean | null
           badges: string[] | null
           category: string
           created_at: string | null
@@ -196,6 +197,7 @@ export type Database = {
           vendor_id: string | null
         }
         Insert: {
+          active?: boolean | null
           badges?: string[] | null
           category: string
           created_at?: string | null
@@ -218,6 +220,7 @@ export type Database = {
           vendor_id?: string | null
         }
         Update: {
+          active?: boolean | null
           badges?: string[] | null
           category?: string
           created_at?: string | null
@@ -238,6 +241,30 @@ export type Database = {
           stock_quantity?: number | null
           updated_at?: string | null
           vendor_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id: string
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          role?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -273,6 +300,7 @@ export type Database = {
           description: string | null
           id: string
           logo_url: string | null
+          rating: number | null
           store_name: string
           user_id: string | null
           verified_at: string | null
@@ -284,6 +312,7 @@ export type Database = {
           description?: string | null
           id?: string
           logo_url?: string | null
+          rating?: number | null
           store_name: string
           user_id?: string | null
           verified_at?: string | null
@@ -295,6 +324,7 @@ export type Database = {
           description?: string | null
           id?: string
           logo_url?: string | null
+          rating?: number | null
           store_name?: string
           user_id?: string | null
           verified_at?: string | null
@@ -342,6 +372,7 @@ export type Database = {
           created_at: string | null
           id: string
           order_id: string | null
+          seller_id: string | null
           status: string | null
           tracking_code: string | null
           updated_at: string | null
@@ -351,6 +382,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           order_id?: string | null
+          seller_id?: string | null
           status?: string | null
           tracking_code?: string | null
           updated_at?: string | null
@@ -360,6 +392,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           order_id?: string | null
+          seller_id?: string | null
           status?: string | null
           tracking_code?: string | null
           updated_at?: string | null
@@ -377,6 +410,7 @@ export type Database = {
       wallet_transactions: {
         Row: {
           amount: number
+          commission: number | null
           created_at: string | null
           description: string | null
           id: string
@@ -387,6 +421,7 @@ export type Database = {
         }
         Insert: {
           amount: number
+          commission?: number | null
           created_at?: string | null
           description?: string | null
           id?: string
@@ -397,6 +432,7 @@ export type Database = {
         }
         Update: {
           amount?: number
+          commission?: number | null
           created_at?: string | null
           description?: string | null
           id?: string
