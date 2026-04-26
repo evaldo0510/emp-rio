@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -21,32 +21,58 @@ import { toast } from "sonner";
 
 const extratoSearchSchema = z.object({
   period: z.enum(["today", "7d", "30d", "all"]).optional(),
+  type: z.enum(["all", "sale", "withdrawal", "refund"]).optional(),
+  status: z.enum(["all", "pending", "paid", "shipped", "delivered", "cancelled"]).optional(),
+  q: z.string().optional(),
+  start: z.string().optional(),
+  end: z.string().optional(),
 });
 
 export const Route = createFileRoute("/_app/admin/extrato")({
   validateSearch: (search: Record<string, unknown>) => {
     const result = extratoSearchSchema.safeParse(search);
     if (result.success) return result.data;
-    if (typeof window !== "undefined" && search.period) {
-      console.warn(`[extrato] period inválido "${search.period}" — usando padrão.`);
+    if (typeof window !== "undefined") {
+      console.warn(`[extrato] filtros inválidos no URL — usando padrões.`, result.error.issues);
     }
-    return { period: undefined };
+    // Mantém apenas as chaves válidas individualmente como fallback
+    const safe: Record<string, unknown> = {};
+    for (const key of ["period", "type", "status", "q", "start", "end"] as const) {
+      const partial = extratoSearchSchema.pick({ [key]: true } as any).safeParse({ [key]: search[key] });
+      if (partial.success) Object.assign(safe, partial.data);
+    }
+    return extratoSearchSchema.parse(safe);
   },
   head: () => ({ meta: [{ title: "Extrato Financeiro — Licuri Hub" }] }),
   component: AdminExtratoPage,
 });
 
 function AdminExtratoPage() {
+  const navigate = useNavigate({ from: Route.fullPath });
+  const search = Route.useSearch();
+  const filterType = search.type ?? "all";
+  const filterStatus = search.status ?? "all";
+  const searchTerm = search.q ?? "";
+  const dateRange = { start: search.start ?? "", end: search.end ?? "" };
+
+  // Helper para atualizar parcialmente search params (preservando os demais)
+  const updateSearch = (patch: Record<string, string | undefined>) => {
+    navigate({
+      search: (prev: any) => {
+        const next = { ...prev, ...patch };
+        // Limpa chaves vazias/padrão para manter URL enxuta
+        Object.keys(next).forEach((k) => {
+          if (next[k] === "" || next[k] === "all" || next[k] === undefined) delete next[k];
+        });
+        return next;
+      },
+      replace: true,
+    });
+  };
+
   const [transactions, setTransactions] = useState<any[]>([]);
   const [sellers, setSellers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterType, setFilterType] = useState<string>("all");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
-    start: "",
-    end: "",
-  });
 
   useEffect(() => {
     const init = async () => {
@@ -54,7 +80,7 @@ function AdminExtratoPage() {
       await fetchTransactions();
     };
     init();
-  }, [filterType, filterStatus, dateRange]);
+  }, [filterType, filterStatus, dateRange.start, dateRange.end]);
 
   const fetchSellers = async () => {
     const { data } = await supabase.from("sellers").select("user_id, store_name");
@@ -208,7 +234,7 @@ function AdminExtratoPage() {
               placeholder="Vendedor, ID, descrição..."
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--cream)] py-2 pl-9 pr-3 text-sm outline-none focus:border-[var(--clay)]"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => updateSearch({ q: e.target.value })}
               onKeyDown={(e) => e.key === "Enter" && fetchTransactions()}
             />
           </div>
@@ -221,7 +247,7 @@ function AdminExtratoPage() {
           <select
             className="w-full rounded-lg border border-[var(--border)] bg-[var(--cream)] p-2 text-sm outline-none focus:border-[var(--clay)]"
             value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
+            onChange={(e) => updateSearch({ type: e.target.value })}
           >
             <option value="all">Todos os tipos</option>
             <option value="sale">Vendas</option>
@@ -237,7 +263,7 @@ function AdminExtratoPage() {
           <select
             className="w-full rounded-lg border border-[var(--border)] bg-[var(--cream)] p-2 text-sm outline-none focus:border-[var(--clay)]"
             value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
+            onChange={(e) => updateSearch({ status: e.target.value })}
           >
             <option value="all">Todos os status</option>
             <option value="pending">Pendente</option>
@@ -257,14 +283,14 @@ function AdminExtratoPage() {
               type="date"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--cream)] p-2 text-sm outline-none focus:border-[var(--clay)]"
               value={dateRange.start}
-              onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+              onChange={(e) => updateSearch({ start: e.target.value })}
             />
             <span className="text-[var(--muted-foreground)]">—</span>
             <input
               type="date"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--cream)] p-2 text-sm outline-none focus:border-[var(--clay)]"
               value={dateRange.end}
-              onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+              onChange={(e) => updateSearch({ end: e.target.value })}
             />
           </div>
         </div>
