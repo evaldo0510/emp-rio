@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { z } from "zod";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatBRL } from "@/lib/products";
@@ -18,7 +19,12 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+const extratoSearchSchema = z.object({
+  period: z.enum(["today", "7d", "30d", "all"]).optional(),
+});
+
 export const Route = createFileRoute("/_app/admin/extrato")({
+  validateSearch: (search) => extratoSearchSchema.parse(search),
   head: () => ({ meta: [{ title: "Extrato Financeiro — Licuri Hub" }] }),
   component: AdminExtratoPage,
 });
@@ -164,6 +170,7 @@ function AdminExtratoPage() {
         <div>
           <Link
             to="/admin"
+            search={(prev: any) => ({ ...prev })}
             className="mb-2 flex items-center gap-1 text-xs text-[var(--muted-foreground)] hover:text-[var(--clay)]"
           >
             <ArrowLeft className="h-3 w-3" />
