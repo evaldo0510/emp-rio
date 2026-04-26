@@ -18,4 +18,3 @@ function AppLayout() {
     </div>
   );
 }
-

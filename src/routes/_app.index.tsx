@@ -182,7 +182,8 @@ function HomePage() {
           </div>
           <div className="flex flex-col items-start justify-center gap-4">
             <p className="opacity-80">
-              Cooperativas e famílias produtoras: cadastre sua loja, gerencie pedidos e acompanhe vendas pelo painel.
+              Cooperativas e famílias produtoras: cadastre sua loja, gerencie pedidos e acompanhe
+              vendas pelo painel.
             </p>
             <Button asChild variant="hero" size="lg">
               <Link to="/vendedor">Acessar painel do vendedor</Link>

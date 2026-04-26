@@ -32,22 +32,20 @@ export const useCart = create<CartState>()(
           const existing = s.items.find((i) => i.id === p.id);
           if (existing) {
             return {
-              items: s.items.map((i) =>
-                i.id === p.id ? { ...i, quantity: i.quantity + qty } : i,
-              ),
+              items: s.items.map((i) => (i.id === p.id ? { ...i, quantity: i.quantity + qty } : i)),
             };
           }
           return {
             items: [
               ...s.items,
-              { 
-                id: p.id, 
-                slug: p.slug, 
-                name: p.name, 
-                price: p.price, 
-                image: p.image, 
+              {
+                id: p.id,
+                slug: p.slug,
+                name: p.name,
+                price: p.price,
+                image: p.image,
                 quantity: qty,
-                vendor_id: (p as any).vendor_id || (p as any).seller_id
+                vendor_id: (p as any).vendor_id || (p as any).seller_id,
               },
             ],
           };

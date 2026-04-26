@@ -1,11 +1,11 @@
-import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import "@testing-library/jest-dom";
+import { vi } from "vitest";
 
 // Mock Supabase
-vi.mock('@/lib/supabase', () => ({
+vi.mock("@/lib/supabase", () => ({
   supabase: {
     auth: {
-      getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'test-user' } }, error: null })),
+      getUser: vi.fn(() => Promise.resolve({ data: { user: { id: "test-user" } }, error: null })),
     },
     from: vi.fn(() => ({
       select: vi.fn().mockReturnThis(),
@@ -22,14 +22,14 @@ vi.mock('@/lib/supabase', () => ({
 }));
 
 // Mock TanStack Router
-vi.mock('@tanstack/react-router', () => ({
+vi.mock("@tanstack/react-router", () => ({
   createFileRoute: vi.fn(() => () => ({
     head: vi.fn(),
   })),
 }));
 
 // Mock sonner
-vi.mock('sonner', () => ({
+vi.mock("sonner", () => ({
   toast: {
     success: vi.fn(),
     error: vi.fn(),

@@ -94,12 +94,34 @@ export function SiteFooter() {
         <div>
           <LicuriBrand />
           <p className="mt-4 max-w-xs text-sm text-[var(--muted-foreground)]">
-            Marketplace de produtos do licuri, feitos por famílias e cooperativas do Nordeste brasileiro.
+            Marketplace de produtos do licuri, feitos por famílias e cooperativas do Nordeste
+            brasileiro.
           </p>
         </div>
-        <FooterCol title="Loja" links={[["/categorias", "Todos os produtos"], ["/lojas", "Lojas parceiras"], ["/categorias", "Categorias"]]} />
-        <FooterCol title="Sobre" links={[["/sobre", "Nossa história"], ["/blog", "Blog"], ["/sobre", "Sustentabilidade"]]} />
-        <FooterCol title="Vendedores" links={[["/vendedor", "Painel do vendedor"], ["/admin", "Painel admin"], ["/conta", "Minha conta"]]} />
+        <FooterCol
+          title="Loja"
+          links={[
+            ["/categorias", "Todos os produtos"],
+            ["/lojas", "Lojas parceiras"],
+            ["/categorias", "Categorias"],
+          ]}
+        />
+        <FooterCol
+          title="Sobre"
+          links={[
+            ["/sobre", "Nossa história"],
+            ["/blog", "Blog"],
+            ["/sobre", "Sustentabilidade"],
+          ]}
+        />
+        <FooterCol
+          title="Vendedores"
+          links={[
+            ["/vendedor", "Painel do vendedor"],
+            ["/admin", "Painel admin"],
+            ["/conta", "Minha conta"],
+          ]}
+        />
       </div>
       <div className="border-t border-[var(--border)]">
         <div className="container-narrow flex flex-col items-center justify-between gap-2 py-5 text-xs text-[var(--muted-foreground)] md:flex-row">

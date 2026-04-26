@@ -52,7 +52,10 @@ function AboutPage() {
           { icon: Leaf, title: "Tradição", text: "Receitas e saberes que atravessam gerações." },
           { icon: Sun, title: "Renda justa", text: "Comércio direto com famílias produtoras." },
         ].map((c) => (
-          <div key={c.title} className="rounded-2xl border border-[var(--border)] bg-[var(--cream)] p-6">
+          <div
+            key={c.title}
+            className="rounded-2xl border border-[var(--border)] bg-[var(--cream)] p-6"
+          >
             <c.icon className="h-6 w-6 text-[var(--clay)]" />
             <h3 className="mt-3 font-display text-xl font-semibold">{c.title}</h3>
             <p className="mt-2 text-sm text-[var(--muted-foreground)]">{c.text}</p>

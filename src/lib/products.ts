@@ -174,7 +174,8 @@ export const products: Product[] = [
     region: "Bahia",
     image: kit,
     short: "Óleo, doce e paçoca em embalagem especial.",
-    description: "Kit com óleo de licuri 100ml, doce tradicional e paçoca artesanal. Ideal para presentear.",
+    description:
+      "Kit com óleo de licuri 100ml, doce tradicional e paçoca artesanal. Ideal para presentear.",
     badges: ["Edição especial", "Embalagem sustentável"],
   },
 ];
@@ -191,11 +192,7 @@ export async function getProductBySlug(slug: string) {
   if (mock) return mock;
 
   // Then check DB
-  const { data } = await supabase
-    .from("products")
-    .select("*")
-    .eq("slug", slug)
-    .single();
+  const { data } = await supabase.from("products").select("*").eq("slug", slug).single();
 
   if (data) {
     return {

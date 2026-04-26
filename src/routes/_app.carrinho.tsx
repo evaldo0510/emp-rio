@@ -25,7 +25,9 @@ function CartPage() {
   }, [items]);
 
   const handleCartSync = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (user && items.length > 0) {
       try {
         await syncCartToDB(user.id, items);
@@ -38,7 +40,9 @@ function CartPage() {
   const fetchDBCart = async () => {
     try {
       setIsSyncing(true);
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         setLoading(false);
         return;
@@ -128,7 +132,9 @@ function CartPage() {
           <aside className="h-max rounded-2xl border border-[var(--border)] bg-[var(--cream)] p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-display text-lg font-semibold">Resumo</h2>
-              {isSyncing && <RefreshCw className="h-3 w-3 animate-spin text-[var(--muted-foreground)]" />}
+              {isSyncing && (
+                <RefreshCw className="h-3 w-3 animate-spin text-[var(--muted-foreground)]" />
+              )}
             </div>
             <dl className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">

@@ -12,7 +12,7 @@ export async function createOrder(orderData: any, items: any[]) {
   if (orderError) throw orderError;
 
   // Fetch unique sellers and their commission rates
-  const sellerIds = [...new Set(items.map(i => i.vendor_id || i.seller_id))].filter(Boolean);
+  const sellerIds = [...new Set(items.map((i) => i.vendor_id || i.seller_id))].filter(Boolean);
   const { data: sellersData } = await supabase
     .from("sellers")
     .select("user_id, commission_rate")
@@ -41,7 +41,7 @@ export async function createOrder(orderData: any, items: any[]) {
       image_url: item.image,
       commission_amount: commissionAmount,
       net_amount: netAmount,
-      status: 'pending'
+      status: "pending",
     };
   });
 
