@@ -37,7 +37,14 @@ import { formatBRL } from "@/lib/products";
 import { supabase } from "@/lib/supabase";
 import { validateCommissionRate } from "@/lib/commissions";
 
+const statsPeriodSchema = z.object({
+  period: z.enum(["today", "7d", "30d", "all"]).optional(),
+});
+
+type StatsPeriod = z.infer<typeof statsPeriodSchema>["period"];
+
 export const Route = createFileRoute("/_app/admin/")({
+  validateSearch: (search) => statsPeriodSchema.parse(search),
   head: () => ({ meta: [{ title: "Painel Admin — Licuri Hub" }] }),
   component: AdminPage,
 });
