@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -21,16 +21,27 @@ import { toast } from "sonner";
 
 const extratoSearchSchema = z.object({
   period: z.enum(["today", "7d", "30d", "all"]).optional(),
+  type: z.enum(["all", "sale", "withdrawal", "refund"]).optional(),
+  status: z.enum(["all", "pending", "paid", "shipped", "delivered", "cancelled"]).optional(),
+  q: z.string().optional(),
+  start: z.string().optional(),
+  end: z.string().optional(),
 });
 
 export const Route = createFileRoute("/_app/admin/extrato")({
   validateSearch: (search: Record<string, unknown>) => {
     const result = extratoSearchSchema.safeParse(search);
     if (result.success) return result.data;
-    if (typeof window !== "undefined" && search.period) {
-      console.warn(`[extrato] period inválido "${search.period}" — usando padrão.`);
+    if (typeof window !== "undefined") {
+      console.warn(`[extrato] filtros inválidos no URL — usando padrões.`, result.error.issues);
     }
-    return { period: undefined };
+    // Mantém apenas as chaves válidas individualmente como fallback
+    const safe: Record<string, unknown> = {};
+    for (const key of ["period", "type", "status", "q", "start", "end"] as const) {
+      const partial = extratoSearchSchema.pick({ [key]: true } as any).safeParse({ [key]: search[key] });
+      if (partial.success) Object.assign(safe, partial.data);
+    }
+    return extratoSearchSchema.parse(safe);
   },
   head: () => ({ meta: [{ title: "Extrato Financeiro — Licuri Hub" }] }),
   component: AdminExtratoPage,
