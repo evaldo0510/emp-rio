@@ -410,6 +410,44 @@ function VendorDashboard() {
           </div>
         )}
       </div>
+      
+      {withdrawalRequests.length > 0 && (
+        <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+          <h2 className="font-display text-lg font-semibold mb-4">Solicitações de Saque</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
+                <tr>
+                  <th className="pb-3 font-bold">Data</th>
+                  <th className="pb-3 font-bold">Valor</th>
+                  <th className="pb-3 font-bold">Chave PIX</th>
+                  <th className="pb-3 font-bold text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {withdrawalRequests.map(req => (
+                  <tr key={req.id}>
+                    <td className="py-3">{new Date(req.created_at).toLocaleDateString()}</td>
+                    <td className="py-3 font-bold">{formatBRL(req.amount)}</td>
+                    <td className="py-3 text-[var(--muted-foreground)]">{req.pix_key}</td>
+                    <td className="py-3 text-right">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        req.status === 'approved' ? 'bg-green-100 text-green-700' : 
+                        req.status === 'rejected' ? 'bg-red-100 text-red-700' : 
+                        'bg-amber-100 text-amber-700'
+                      }`}>
+                        {req.status === 'approved' ? 'APROVADO' : 
+                         req.status === 'rejected' ? 'RECUSADO' : 
+                         'PENDENTE'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
                   <div className="text-right">
                     <div className="font-medium">{formatBRL(o.price * o.quantity)}</div>
                     <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--leaf)]">
