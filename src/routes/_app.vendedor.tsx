@@ -111,7 +111,7 @@ function VendorDashboard() {
       setDailySales(dailyTotals);
 
       // Fetch Shipments for these orders
-      const orderIds = [...new Set(salesData.map(o => o.order_id))];
+      const orderIds = [...new Set(salesData.map(o => o.order_id))].filter(Boolean) as string[];
       if (orderIds.length > 0) {
         const { data: shipData } = await supabase.from("shipments").select("*").in('order_id', orderIds);
         if (shipData) setShipments(shipData);
