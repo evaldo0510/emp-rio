@@ -402,6 +402,10 @@ function AdminPage() {
               Extrato Financeiro
             </Button>
           </Link>
+          <Button variant="outline" size="sm" onClick={handleShare}>
+            <Share2 className="mr-2 h-4 w-4" />
+            Compartilhar
+          </Button>
           <Button variant="hero" size="sm" onClick={generateReport} disabled={isGenerating}>
             {isGenerating ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
