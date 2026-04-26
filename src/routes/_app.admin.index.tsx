@@ -62,6 +62,7 @@ function AdminPage() {
   const [commissionHistory, setCommissionHistory] = useState<any[]>([]);
   const [topSellers, setTopSellers] = useState<any[]>([]);
   const [salesByDay, setSalesByDay] = useState<any[]>([]);
+  const [statsPeriod, setStatsPeriod] = useState<"today" | "7d" | "30d" | "all">("7d");
   const [stats, setStats] = useState({
     totalSales: 0,
     platformRevenue: 0,
