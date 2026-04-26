@@ -24,7 +24,14 @@ const extratoSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_app/admin/extrato")({
-  validateSearch: (search) => extratoSearchSchema.parse(search),
+  validateSearch: (search: Record<string, unknown>) => {
+    const result = extratoSearchSchema.safeParse(search);
+    if (result.success) return result.data;
+    if (typeof window !== "undefined" && search.period) {
+      console.warn(`[extrato] period inválido "${search.period}" — usando padrão.`);
+    }
+    return { period: undefined };
+  },
   head: () => ({ meta: [{ title: "Extrato Financeiro — Licuri Hub" }] }),
   component: AdminExtratoPage,
 });
