@@ -290,7 +290,7 @@ function AdminExtratoPage() {
               type="date"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--cream)] p-2 text-sm outline-none focus:border-[var(--clay)]"
               value={dateRange.end}
-              onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+              onChange={(e) => updateSearch({ end: e.target.value })}
             />
           </div>
         </div>
