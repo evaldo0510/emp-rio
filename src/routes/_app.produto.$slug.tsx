@@ -102,7 +102,7 @@ function ProductPage() {
           <p className="mt-5 text-[var(--sertao)]">{product.description}</p>
 
           <ul className="mt-6 space-y-2 text-sm">
-            {product.badges.map((b) => (
+            {product.badges.map((b: string) => (
               <li key={b} className="flex items-center gap-2 text-[var(--sertao)]">
                 <Leaf className="h-4 w-4 text-[var(--leaf)]" /> {b}
               </li>
