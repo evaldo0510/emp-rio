@@ -28,8 +28,10 @@ function VendorDashboard() {
   const [isUploading, setIsUploading] = useState(false);
   const [dbProducts, setDbProducts] = useState<any[]>([]);
   const [wallet, setWallet] = useState<{ balance: number; total_withdrawn: number } | null>(null);
+  const [sellerProfile, setSellerProfile] = useState<{ approved: boolean; store_name: string } | null>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [realOrders, setRealOrders] = useState<any[]>([]);
+  const [shipments, setShipments] = useState<any[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -50,6 +52,10 @@ function VendorDashboard() {
   const fetchDashboardData = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
+
+    // Fetch Seller Profile
+    const { data: profile } = await supabase.from("sellers").select("*").eq('user_id', user.id).maybeSingle();
+    setSellerProfile(profile);
 
     // Fetch products
     const { data: prods } = await supabase.from("products").select("*").eq('vendor_id', user.id).order("created_at", { ascending: false });
@@ -77,7 +83,55 @@ function VendorDashboard() {
       .eq('seller_id', user.id)
       .order("created_at", { ascending: false });
     
-    if (salesData) setRealOrders(salesData);
+    if (salesData) {
+      setRealOrders(salesData);
+      
+      // Fetch Shipments for these orders
+      const orderIds = [...new Set(salesData.map(o => o.order_id))];
+      if (orderIds.length > 0) {
+        const { data: shipData } = await supabase.from("shipments").select("*").in('order_id', orderIds);
+        if (shipData) setShipments(shipData);
+      }
+    }
+  };
+
+  const handleRegisterSeller = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("store_name") as string;
+    const desc = formData.get("description") as string;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase.from("sellers").insert([{
+        user_id: user.id,
+        store_name: name,
+        description: desc
+      }]);
+
+      if (error) throw error;
+      toast.success("Perfil enviado para aprovação!");
+      fetchDashboardData();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
+  const updateTracking = async (shipmentId: string, code: string) => {
+    try {
+      const { error } = await supabase
+        .from("shipments")
+        .update({ tracking_code: code, status: 'shipped' })
+        .eq('id', shipmentId);
+      
+      if (error) throw error;
+      toast.success("Rastreio atualizado!");
+      fetchDashboardData();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,17 +177,44 @@ function VendorDashboard() {
             Resumo do mês
           </h1>
         </div>
-        <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
-          Sertão Natural
-        </span>
+        <div className="flex flex-col items-end gap-1">
+          <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
+            {sellerProfile?.store_name || "Vendedor não cadastrado"}
+          </span>
+          {sellerProfile && !sellerProfile.approved && (
+            <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+              Aguardando Aprovação
+            </span>
+          )}
+        </div>
       </header>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-4">
-        <Stat icon={TrendingUp} label="Vendas Brutas" value={formatBRL(realOrders.reduce((acc, o) => acc + (o.price * o.quantity), 0))} />
-        <Stat icon={ShoppingBag} label="Pedidos" value={realOrders.length.toString()} />
-        <Stat icon={Package} label="Produtos" value={dbProducts.length.toString()} />
-        <Stat icon={Star} label="Saldo Disponível" value={formatBRL(wallet?.balance || 0)} />
-      </div>
+      {!sellerProfile && (
+        <div className="mt-8 rounded-2xl border border-[var(--clay)]/20 bg-[var(--sand)]/10 p-10 text-center">
+          <h2 className="font-display text-2xl font-semibold text-[var(--coffee)] mb-2">Torne-se um Vendedor</h2>
+          <p className="text-[var(--muted-foreground)] mb-8">Cadastre sua loja ou associação para começar a vender no Licuri Hub.</p>
+          <form onSubmit={handleRegisterSeller} className="max-w-md mx-auto space-y-4 text-left">
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Nome da Loja</label>
+              <input name="store_name" required className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)]" placeholder="Ex: Cooperativa Sertão Vivo" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Descrição / História</label>
+              <textarea name="description" required className="w-full h-24 rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)]" placeholder="Conte um pouco sobre sua produção..." />
+            </div>
+            <Button type="submit" variant="hero" className="w-full">Enviar para Avaliação</Button>
+          </form>
+        </div>
+      )}
+
+      {sellerProfile && (
+        <>
+          <div className="mt-8 grid gap-4 md:grid-cols-4">
+            <Stat icon={TrendingUp} label="Vendas Brutas" value={formatBRL(realOrders.reduce((acc, o) => acc + (o.price * o.quantity), 0))} />
+            <Stat icon={ShoppingBag} label="Pedidos" value={realOrders.length.toString()} />
+            <Stat icon={Package} label="Produtos" value={dbProducts.length.toString()} />
+            <Stat icon={Star} label="Saldo Disponível" value={formatBRL(wallet?.balance || 0)} />
+          </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-[1.6fr_1fr]">
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
@@ -321,6 +402,11 @@ function VendorDashboard() {
               <div key={p.id} className="group relative overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--background)]">
                 <div className="aspect-square overflow-hidden bg-[var(--sand)]">
                   <img src={p.image_url} alt={p.name} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                  {!p.is_published && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-4 text-center">
+                      <span className="text-[10px] font-bold text-white uppercase tracking-widest bg-amber-600 px-2 py-1 rounded">Aguardando Aprovação do Vendedor</span>
+                    </div>
+                  )}
                 </div>
                 <div className="p-3">
                   <h3 className="font-medium text-sm text-[var(--coffee)] truncate">{p.name}</h3>
@@ -334,8 +420,60 @@ function VendorDashboard() {
 
       <p className="mt-10 text-xs text-[var(--muted-foreground)]">
         Dados de demonstração. Cadastro de produtos, gestão de pedidos e métricas em tempo real
-        serão ativados quando o backend (Lovable Cloud) estiver conectado.
+         seriam ativados quando o backend (Lovable Cloud) estiver conectado.
       </p>
+
+      {realOrders.length > 0 && (
+        <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+          <h2 className="font-display text-lg font-semibold mb-6">Gestão de Envios</h2>
+          <div className="space-y-4">
+            {realOrders.filter(o => o.orders.status === 'paid').map(order => {
+              const shipment = shipments.find(s => s.order_id === order.order_id);
+              return (
+                <div key={order.id} className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-[var(--border)] bg-[var(--sand)]/20">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-lg overflow-hidden border border-[var(--border)]">
+                      <img src={order.image_url} alt="" className="h-full w-full object-cover" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-[var(--coffee)]">{order.name}</p>
+                      <p className="text-xs text-[var(--muted-foreground)]">Pedido #{order.order_id.slice(0, 8)}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1 min-w-[200px]">
+                    {shipment?.tracking_code ? (
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase">Enviado</span>
+                        <span className="font-mono text-[var(--muted-foreground)]">{shipment.tracking_code}</span>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <input 
+                          id={`track-${order.id}`}
+                          placeholder="Código de rastreio" 
+                          className="flex-1 rounded-md border border-[var(--border)] bg-white px-3 py-1.5 text-xs outline-none focus:border-[var(--clay)]" 
+                        />
+                        <Button 
+                          size="sm" 
+                          variant="soft"
+                          onClick={() => {
+                            const input = document.getElementById(`track-${order.id}`) as HTMLInputElement;
+                            if (input?.value && shipment) updateTracking(shipment.id, input.value);
+                          }}
+                        >
+                          Salvar
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </>)}
     </div>
   );
 }
