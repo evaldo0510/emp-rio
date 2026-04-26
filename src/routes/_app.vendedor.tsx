@@ -613,12 +613,7 @@ function VendorDashboard() {
                   </div>
                   
                   <div className="flex-1 min-w-[200px]">
-                    {shipment?.tracking_code ? (
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase">Enviado</span>
-                        <span className="font-mono text-[var(--muted-foreground)]">{shipment.tracking_code}</span>
-                      </div>
-                    ) : (
+                    {!shipment?.tracking_code ? (
                       <div className="flex gap-2">
                         <input 
                           id={`track-${order.id}`}
@@ -630,11 +625,32 @@ function VendorDashboard() {
                           variant="soft"
                           onClick={() => {
                             const input = document.getElementById(`track-${order.id}`) as HTMLInputElement;
-                            if (input?.value && shipment) updateTracking(shipment.id, input.value);
+                            if (input?.value && shipment) updateShipmentStatus(shipment.id, 'shipped', input.value);
                           }}
                         >
-                          Salvar
+                          Enviar
                         </Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                            shipment.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                          }`}>
+                            {shipment.status === 'shipped' ? 'Enviado' : 'Entregue'}
+                          </span>
+                          <span className="font-mono text-[var(--muted-foreground)] text-xs">{shipment.tracking_code}</span>
+                        </div>
+                        {shipment.status === 'shipped' && (
+                          <Button 
+                            size="sm" 
+                            variant="soft"
+                            className="h-7 px-2 text-[10px]"
+                            onClick={() => updateShipmentStatus(shipment.id, 'delivered')}
+                          >
+                            Marcar Entregue
+                          </Button>
+                        )}
                       </div>
                     )}
                   </div>
