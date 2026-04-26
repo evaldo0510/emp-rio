@@ -49,6 +49,10 @@ function VendorDashboard() {
     stock_quantity: 10
   });
 
+  const [isGeneratingLogo, setIsGeneratingLogo] = useState(false);
+  const [logoInsight, setLogoInsight] = useState<any>(null);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+
   const [dailySales, setDailySales] = useState<any[]>([]);
   const maxSales = Math.max(...dailySales.map((s) => s.v), 1);
 
