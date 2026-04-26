@@ -38,6 +38,7 @@ function VendorDashboard() {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [pixKey, setPixKey] = useState("");
   const [isSubmittingWithdraw, setIsSubmittingWithdraw] = useState(false);
+  const [period, setPeriod] = useState("7");
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
@@ -53,7 +54,7 @@ function VendorDashboard() {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [period]);
 
   const fetchDashboardData = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -95,14 +96,15 @@ function VendorDashboard() {
     if (salesData) {
       setRealOrders(salesData);
       
-      // Calculate daily sales for chart (last 7 days)
-      const last7Days = [...Array(7)].map((_, i) => {
+      // Calculate daily sales for chart (based on period)
+      const numDays = parseInt(period);
+      const days = [...Array(numDays)].map((_, i) => {
         const d = new Date();
         d.setDate(d.getDate() - i);
         return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
       }).reverse();
 
-      const dailyTotals = last7Days.map(day => {
+      const dailyTotals = days.map(day => {
         const total = salesData
           .filter(o => o.created_at && new Date(o.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) === day)
           .reduce((acc, o) => acc + (Number(o.net_amount) || (Number(o.price) * o.quantity)), 0);
@@ -389,34 +391,64 @@ function VendorDashboard() {
             </Stat>
           </div>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-[1.6fr_1fr]">
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-          <h2 className="font-display text-lg font-semibold">Vendas nos últimos 7 dias</h2>
-          <div className="mt-6 flex h-52 items-end gap-3">
-            {dailySales.map((s) => (
-              <div key={s.day} className="flex flex-1 flex-col items-center gap-2">
-                <div
-                  className="w-full rounded-md bg-gradient-to-t from-[var(--clay)] to-[color-mix(in_oklab,var(--clay)_60%,white)]"
-                  style={{ height: `${(s.v / maxSales) * 100}%` }}
-                />
-                <span className="text-[10px] text-[var(--muted-foreground)]">{s.day}</span>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-3">Status dos Pedidos</h3>
+              <div className="space-y-2">
+                {[
+                  { label: 'Pendentes', count: realOrders.filter(o => o.status === 'pending').length, color: 'text-amber-600' },
+                  { label: 'Preparando', count: realOrders.filter(o => o.status === 'processing').length, color: 'text-blue-600' },
+                  { label: 'Enviados', count: realOrders.filter(o => o.status === 'shipped').length, color: 'text-indigo-600' },
+                  { label: 'Entregues', count: realOrders.filter(o => o.status === 'delivered').length, color: 'text-green-600' },
+                ].map(s => (
+                  <div key={s.label} className="flex justify-between items-center text-sm">
+                    <span className="text-[var(--muted-foreground)]">{s.label}</span>
+                    <span className={`font-bold ${s.color}`}>{s.count}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            
+            <div className="md:col-span-2 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Vendas por Período</h3>
+                <select 
+                  value={period}
+                  onChange={(e) => setPeriod(e.target.value)}
+                  className="text-[10px] uppercase border border-[var(--border)] rounded px-2 py-1 bg-transparent"
+                >
+                  <option value="7">Últimos 7 dias</option>
+                  <option value="30">Últimos 30 dias</option>
+                </select>
+              </div>
+              <div className="flex h-32 items-end gap-2">
+                {dailySales.map((s) => (
+                  <div key={s.day} className="flex flex-1 flex-col items-center gap-1">
+                    <div
+                      className="w-full rounded-sm bg-[var(--clay)]/60 transition-all hover:bg-[var(--clay)]"
+                      style={{ height: `${(s.v / (maxSales || 1)) * 100}%` }}
+                    />
+                    <span className="text-[8px] text-[var(--muted-foreground)]">{s.day}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-          <h2 className="font-display text-lg font-semibold">Vendas Recentes</h2>
-          <ul className="mt-4 divide-y divide-[var(--border)]">
-            {realOrders.length === 0 ? (
-              <p className="py-4 text-sm text-[var(--muted-foreground)]">Nenhuma venda realizada ainda.</p>
-            ) : (
-              realOrders.slice(0, 5).map((o) => (
-                <li key={o.id} className="flex items-center justify-between py-3 text-sm">
-                  <div>
-                    <div className="font-semibold line-clamp-1">{o.name}</div>
-                    <div className="text-xs text-[var(--muted-foreground)]">{new Date(o.created_at).toLocaleDateString()}</div>
-      </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-[1.6fr_1fr]">
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+              <h2 className="font-display text-lg font-semibold">Vendas Recentes</h2>
+              <ul className="mt-4 divide-y divide-[var(--border)]">
+                {realOrders.length === 0 ? (
+                  <p className="py-4 text-sm text-[var(--muted-foreground)]">Nenhuma venda realizada ainda.</p>
+                ) : (
+                  realOrders.slice(0, 5).map((o) => (
+                    <li key={o.id} className="flex items-center justify-between py-3 text-sm">
+                      <div>
+                        <div className="font-semibold line-clamp-1">{o.name}</div>
+                        <div className="text-xs text-[var(--muted-foreground)]">{new Date(o.created_at).toLocaleDateString()}</div>
+                      </div>
+
 
       <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
         <h2 className="font-display text-lg font-semibold mb-4">Histórico da Carteira</h2>

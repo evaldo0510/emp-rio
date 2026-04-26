@@ -381,6 +381,7 @@ export type Database = {
           description: string | null
           id: string
           order_id: string | null
+          order_item_id: string | null
           type: string
           wallet_id: string | null
         }
@@ -390,6 +391,7 @@ export type Database = {
           description?: string | null
           id?: string
           order_id?: string | null
+          order_item_id?: string | null
           type: string
           wallet_id?: string | null
         }
@@ -399,6 +401,7 @@ export type Database = {
           description?: string | null
           id?: string
           order_id?: string | null
+          order_item_id?: string | null
           type?: string
           wallet_id?: string | null
         }
@@ -408,6 +411,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallet_transactions_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "order_items"
             referencedColumns: ["id"]
           },
           {
