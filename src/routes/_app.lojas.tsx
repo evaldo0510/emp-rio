@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, Star, Loader2, Store } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_app/lojas")({
