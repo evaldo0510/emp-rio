@@ -23,9 +23,8 @@ vi.mock('@/lib/supabase', () => ({
 
 // Mock TanStack Router
 vi.mock('@tanstack/react-router', () => ({
-  createFileRoute: vi.fn(() => ({
+  createFileRoute: vi.fn(() => () => ({
     head: vi.fn(),
-    component: vi.fn(),
   })),
 }));
 
