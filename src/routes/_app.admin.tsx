@@ -10,6 +10,8 @@ import {
   PieChart,
   ArrowUpRight,
   Settings,
+  RefreshCcw,
+  History,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
@@ -35,11 +37,13 @@ const statuses = [
 
 function AdminPage() {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isRecalculating, setIsRecalculating] = useState(false);
   const [sellers, setSellers] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [commissionSettings, setCommissionSettings] = useState<any[]>([]);
+  const [commissionHistory, setCommissionHistory] = useState<any[]>([]);
   const [stats, setStats] = useState({
     totalSales: 0,
     orderCount: 0,
@@ -58,6 +62,7 @@ function AdminPage() {
     fetchTransactions();
     fetchWithdrawals();
     fetchCommissionSettings();
+    fetchCommissionHistory();
   };
 
   const fetchSellers = async () => {
@@ -92,6 +97,29 @@ function AdminPage() {
       .select("*, sellers(store_name)")
       .order("created_at", { ascending: false });
     if (data) setWithdrawals(data);
+  };
+
+  const fetchCommissionHistory = async () => {
+    const { data } = await supabase
+      .from("commission_rate_history")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(10);
+    if (data) setCommissionHistory(data);
+  };
+
+  const recalculateCommissions = async () => {
+    setIsRecalculating(true);
+    try {
+      const { error } = await supabase.rpc("recalculate_all_commissions");
+      if (error) throw error;
+      toast.success("Comissões recalculadas com sucesso!");
+      fetchDashboardData();
+    } catch (e: any) {
+      toast.error("Erro ao recalcular: " + e.message);
+    } finally {
+      setIsRecalculating(false);
+    }
   };
 
   const fetchCommissionSettings = async () => {
@@ -383,9 +411,24 @@ function AdminPage() {
         </section>
 
         <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <Settings className="h-5 w-5 text-[var(--clay)]" />
-            <h2 className="font-display text-lg font-semibold">Configurações de Comissão por Tipo</h2>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-[var(--clay)]" />
+              <h2 className="font-display text-lg font-semibold">Configurações de Comissão por Tipo</h2>
+            </div>
+            <Button 
+              size="sm" 
+              variant="soft" 
+              onClick={recalculateCommissions}
+              disabled={isRecalculating}
+            >
+              {isRecalculating ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <RefreshCcw className="h-4 w-4 mr-2" />
+              )}
+              Recalcular Transações Pagas
+            </Button>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             {commissionSettings.map((s) => (
@@ -407,6 +450,45 @@ function AdminPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+          <div className="flex items-center gap-2 mb-6">
+            <History className="h-5 w-5 text-[var(--clay)]" />
+            <h2 className="font-display text-lg font-semibold">Histórico de Alterações</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
+                <tr>
+                  <th className="pb-3 font-bold">Tipo</th>
+                  <th className="pb-3 font-bold">Antes</th>
+                  <th className="pb-3 font-bold">Depois</th>
+                  <th className="pb-3 font-bold">Data</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {commissionHistory.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-4 text-center text-[var(--muted-foreground)]">
+                      Nenhum histórico disponível.
+                    </td>
+                  </tr>
+                ) : (
+                  commissionHistory.map((h) => (
+                    <tr key={h.id}>
+                      <td className="py-3 font-medium text-[var(--coffee)]">{h.seller_type}</td>
+                      <td className="py-3 text-[var(--muted-foreground)]">{(h.old_rate * 100).toFixed(1)}%</td>
+                      <td className="py-3 font-bold text-[var(--leaf)]">{(h.new_rate * 100).toFixed(1)}%</td>
+                      <td className="py-3 text-xs text-[var(--muted-foreground)]">
+                        {new Date(h.created_at).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </section>
 

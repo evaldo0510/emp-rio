@@ -61,6 +61,33 @@ export type Database = {
           },
         ]
       }
+      commission_rate_history: {
+        Row: {
+          admin_id: string | null
+          created_at: string | null
+          id: string
+          new_rate: number | null
+          old_rate: number | null
+          seller_type: string
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          new_rate?: number | null
+          old_rate?: number | null
+          seller_type: string
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          new_rate?: number | null
+          old_rate?: number | null
+          seller_type?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           commission_amount: number | null
@@ -534,6 +561,7 @@ export type Database = {
         }[]
       }
       is_admin: { Args: never; Returns: boolean }
+      recalculate_all_commissions: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
