@@ -91,7 +91,7 @@ function VendorDashboard() {
       if (error) throw error;
       
       toast.success("Imagem enviada e produto criado!");
-      fetchProducts();
+      fetchDashboardData();
     } catch (error) {
       console.error(error);
       toast.error("Erro ao enviar imagem.");
