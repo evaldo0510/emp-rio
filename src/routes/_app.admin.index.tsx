@@ -396,7 +396,7 @@ function AdminPage() {
           Licuri Hub · Admin
         </span>
         <div className="flex gap-2">
-          <Link to="/admin/extrato">
+          <Link to="/admin/extrato" search={{ period }}>
             <Button variant="soft" size="sm">
               <BarChart3 className="mr-2 h-4 w-4" />
               Extrato Financeiro
