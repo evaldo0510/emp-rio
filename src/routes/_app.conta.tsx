@@ -165,22 +165,22 @@ function AccountPage() {
                           <StatusStep 
                             icon={CheckCircle2} 
                             label="Pago" 
-                            active={['pago', 'em preparo', 'enviado', 'entregue'].includes(order.status)} 
+                            active={['paid', 'processing', 'shipped', 'delivered'].includes(order.status)} 
                           />
                           <StatusStep 
                             icon={Clock} 
                             label="Em preparo" 
-                            active={['em preparo', 'enviado', 'entregue'].includes(order.status)} 
+                            active={['processing', 'shipped', 'delivered'].includes(order.status)} 
                           />
                           <StatusStep 
                             icon={Truck} 
                             label="Enviado" 
-                            active={['enviado', 'entregue'].includes(order.status)} 
+                            active={['shipped', 'delivered'].includes(order.status)} 
                           />
                           <StatusStep 
                             icon={Package} 
                             label="Entregue" 
-                            active={['entregue'].includes(order.status)} 
+                            active={['delivered'].includes(order.status)} 
                           />
                         </div>
                       </div>
