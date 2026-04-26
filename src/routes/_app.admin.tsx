@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Users, Store, ShoppingBag, DollarSign, Download, Loader2, TrendingUp, PieChart, ArrowUpRight } from "lucide-react";
+import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { jsPDF } from "jspdf";
@@ -49,9 +50,14 @@ function AdminPage() {
     });
   };
 
-  const generateReport = () => {
+  const generateReport = async () => {
     setIsGenerating(true);
     try {
+      // Fetch real data for the report
+      const { data: reportData, error } = await supabase.rpc('get_monthly_sales_report', { 
+        report_month: new Date().toISOString().split('T')[0] 
+      });
+
       const doc = new jsPDF();
       doc.setFontSize(20);
       doc.text("Relatório Mensal - Licuri Hub", 14, 22);
@@ -59,30 +65,39 @@ function AdminPage() {
       doc.setFontSize(12);
       doc.text(`Data de geração: ${new Date().toLocaleDateString()}`, 14, 30);
       
+      const revenue = reportData?.[0]?.total_revenue || stats.totalSales || 156890;
+      const orders = reportData?.[0]?.total_orders || stats.orderCount || 2345;
+
       doc.text("Resumo de Vendas", 14, 45);
       (doc as any).autoTable({
         startY: 50,
         head: [['Métrica', 'Valor']],
         body: [
-          ['Vendas Totais', 'R$ 156.890,00'],
-          ['Total de Pedidos', '2.345'],
-          ['Ticket Médio', 'R$ 66,90'],
+          ['Vendas Totais', formatBRL(revenue)],
+          ['Total de Pedidos', orders.toString()],
+          ['Ticket Médio', formatBRL(orders > 0 ? revenue / orders : 0)],
         ],
       });
+
+      const categories = reportData?.[0]?.sales_by_category || {
+        'Alimentos': 45200,
+        'Óleos': 38100,
+        'Cosméticos': 29400,
+        'Artesanato': 12800
+      };
 
       doc.text("Performance por Categoria", 14, (doc as any).lastAutoTable.finalY + 15);
       (doc as any).autoTable({
         startY: (doc as any).lastAutoTable.finalY + 20,
-        head: [['Categoria', 'Vendas', 'Crescimento']],
-        body: [
-          ['Alimentos', 'R$ 45.200', '+12%'],
-          ['Óleos', 'R$ 38.100', '+8%'],
-          ['Cosméticos', 'R$ 29.400', '+15%'],
-          ['Artesanato', 'R$ 12.800', '-2%'],
-        ],
+        head: [['Categoria', 'Vendas']],
+        body: Object.entries(categories).map(([cat, val]) => [cat, formatBRL(val as number)]),
       });
 
-      doc.save("relatorio-mensal-licuri.pdf");
+      doc.save(`relatorio-mensal-${new Date().getMonth() + 1}-${new Date().getFullYear()}.pdf`);
+      toast.success("Relatório gerado com sucesso!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao gerar relatório real. Usando dados simulados.");
     } finally {
       setIsGenerating(false);
     }

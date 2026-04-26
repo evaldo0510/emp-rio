@@ -34,7 +34,8 @@ function VendorDashboard() {
     category: "alimentos",
     description: "",
     image_url: "",
-    shop: "Sertão Natural", // Default shop
+    shop_name: "Sertão Natural", // Default shop
+    stock_quantity: 10
   });
 
   const max = Math.max(...sales.map((s) => s.v));
@@ -184,8 +185,8 @@ function VendorDashboard() {
               <div className="space-y-1">
                 <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Loja / Associação</label>
                 <input 
-                  value={newProduct.shop}
-                  onChange={(e) => setNewProduct({...newProduct, shop: e.target.value})}
+                  value={newProduct.shop_name}
+                  onChange={(e) => setNewProduct({...newProduct, shop_name: e.target.value})}
                   className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
                   placeholder="Nome da sua loja ou associação"
                 />
@@ -223,12 +224,14 @@ function VendorDashboard() {
                 onClick={async () => {
                   try {
                     const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) throw new Error("Você precisa estar logado para cadastrar produtos.");
+                    
                     const { error } = await supabase.from("products").insert([{
                       ...newProduct,
                       price: parseFloat(newProduct.price),
                       slug: newProduct.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
                       region: "Bahia",
-                      seller_id: user?.id
+                      vendor_id: user.id
                     }]);
                     if (error) throw error;
                     toast.success("Produto cadastrado com sucesso!");
