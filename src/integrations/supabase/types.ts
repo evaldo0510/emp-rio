@@ -301,6 +301,7 @@ export type Database = {
           id: string
           logo_url: string | null
           rating: number | null
+          seller_type: string | null
           store_name: string
           user_id: string | null
           verified_at: string | null
@@ -313,6 +314,7 @@ export type Database = {
           id?: string
           logo_url?: string | null
           rating?: number | null
+          seller_type?: string | null
           store_name: string
           user_id?: string | null
           verified_at?: string | null
@@ -325,6 +327,7 @@ export type Database = {
           id?: string
           logo_url?: string | null
           rating?: number | null
+          seller_type?: string | null
           store_name?: string
           user_id?: string | null
           verified_at?: string | null
