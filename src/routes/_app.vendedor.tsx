@@ -40,12 +40,21 @@ import {
   Area,
 } from "recharts";
 
+const VALID_VENDOR_PERIODS = ["7", "30"] as const;
+
 const vendorSearchSchema = z.object({
-  period: z.enum(["7", "30"]).optional(),
+  period: z.enum(VALID_VENDOR_PERIODS).optional(),
 });
 
 export const Route = createFileRoute("/_app/vendedor")({
-  validateSearch: (search) => vendorSearchSchema.parse(search),
+  validateSearch: (search: Record<string, unknown>) => {
+    const result = vendorSearchSchema.safeParse(search);
+    if (result.success) return result.data;
+    if (typeof window !== "undefined" && search.period) {
+      console.warn(`[vendedor] period inválido "${search.period}" — usando padrão.`);
+    }
+    return { period: undefined };
+  },
   head: () => ({ meta: [{ title: "Painel do Vendedor — Licuri Hub" }] }),
   component: VendorDashboard,
 });
