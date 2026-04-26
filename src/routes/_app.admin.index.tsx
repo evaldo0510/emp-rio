@@ -366,6 +366,12 @@ function AdminPage() {
       setIsGenerating(false);
     }
   };
+  const handleShare = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    toast.success("Link do dashboard copiado!");
+  };
+
   const total = statuses.reduce((a, s) => a + s.value, 0);
   let acc = 0;
   const arcs = statuses.map((s) => {
