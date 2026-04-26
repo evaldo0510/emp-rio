@@ -376,11 +376,11 @@ function VendorDashboard() {
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
           <h2 className="font-display text-lg font-semibold">Vendas nos últimos 7 dias</h2>
           <div className="mt-6 flex h-52 items-end gap-3">
-            {sales.map((s) => (
+            {dailySales.map((s) => (
               <div key={s.day} className="flex flex-1 flex-col items-center gap-2">
                 <div
                   className="w-full rounded-md bg-gradient-to-t from-[var(--clay)] to-[color-mix(in_oklab,var(--clay)_60%,white)]"
-                  style={{ height: `${(s.v / max) * 100}%` }}
+                  style={{ height: `${(s.v / maxSales) * 100}%` }}
                 />
                 <span className="text-[10px] text-[var(--muted-foreground)]">{s.day}</span>
               </div>
