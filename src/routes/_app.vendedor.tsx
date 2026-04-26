@@ -177,12 +177,38 @@ function VendorDashboard() {
             Resumo do mês
           </h1>
         </div>
-        <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
-          Sertão Natural
-        </span>
+        <div className="flex flex-col items-end gap-1">
+          <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
+            {sellerProfile?.store_name || "Vendedor não cadastrado"}
+          </span>
+          {sellerProfile && !sellerProfile.approved && (
+            <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+              Aguardando Aprovação
+            </span>
+          )}
+        </div>
       </header>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-4">
+      {!sellerProfile && (
+        <div className="mt-8 rounded-2xl border border-[var(--clay)]/20 bg-[var(--sand)]/10 p-10 text-center">
+          <h2 className="font-display text-2xl font-semibold text-[var(--coffee)] mb-2">Torne-se um Vendedor</h2>
+          <p className="text-[var(--muted-foreground)] mb-8">Cadastre sua loja ou associação para começar a vender no Licuri Hub.</p>
+          <form onSubmit={handleRegisterSeller} className="max-w-md mx-auto space-y-4 text-left">
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Nome da Loja</label>
+              <input name="store_name" required className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)]" placeholder="Ex: Cooperativa Sertão Vivo" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Descrição / História</label>
+              <textarea name="description" required className="w-full h-24 rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)]" placeholder="Conte um pouco sobre sua produção..." />
+            </div>
+            <Button type="submit" variant="hero" className="w-full">Enviar para Avaliação</Button>
+          </form>
+        </div>
+      )}
+
+      {sellerProfile && (
+        <>
         <Stat icon={TrendingUp} label="Vendas Brutas" value={formatBRL(realOrders.reduce((acc, o) => acc + (o.price * o.quantity), 0))} />
         <Stat icon={ShoppingBag} label="Pedidos" value={realOrders.length.toString()} />
         <Stat icon={Package} label="Produtos" value={dbProducts.length.toString()} />
