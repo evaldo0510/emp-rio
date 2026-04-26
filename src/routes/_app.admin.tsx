@@ -272,50 +272,154 @@ function AdminPage() {
           </div>
         </div>
       </div>
-      <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-        <h2 className="font-display text-lg font-semibold mb-6">Aprovação de Vendedores</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
-              <tr>
-                <th className="pb-3 font-bold">Loja</th>
-                <th className="pb-3 font-bold">Data</th>
-                <th className="pb-3 font-bold">Status</th>
-                <th className="pb-3 font-bold text-right">Ação</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--border)]">
-              {sellers.length === 0 ? (
-                <tr><td colSpan={4} className="py-4 text-center text-[var(--muted-foreground)]">Nenhum vendedor cadastrado.</td></tr>
+      <div className="mt-8 grid gap-8">
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+          <h2 className="font-display text-lg font-semibold mb-6">Aprovação de Vendedores</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
+                <tr>
+                  <th className="pb-3 font-bold">Loja</th>
+                  <th className="pb-3 font-bold">Data</th>
+                  <th className="pb-3 font-bold">Status</th>
+                  <th className="pb-3 font-bold text-right">Ação</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {sellers.length === 0 ? (
+                  <tr><td colSpan={4} className="py-4 text-center text-[var(--muted-foreground)]">Nenhum vendedor cadastrado.</td></tr>
+                ) : (
+                  sellers.map(s => (
+                    <tr key={s.id}>
+                      <td className="py-4">
+                        <div className="font-bold text-[var(--coffee)]">{s.store_name}</div>
+                        <div className="text-xs text-[var(--muted-foreground)] line-clamp-1">{s.description}</div>
+                      </td>
+                      <td className="py-4">{new Date(s.created_at).toLocaleDateString()}</td>
+                      <td className="py-4">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${s.approved ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                          {s.approved ? 'APROVADO' : 'PENDENTE'}
+                        </span>
+                      </td>
+                      <td className="py-4 text-right">
+                        {!s.approved && (
+                          <Button size="sm" variant="hero" onClick={() => approveSeller(s.id)}>Aprovar</Button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+          <h2 className="font-display text-lg font-semibold mb-6">Pedidos Recentes</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
+                <tr>
+                  <th className="pb-3 font-bold">Pedido</th>
+                  <th className="pb-3 font-bold">Cliente</th>
+                  <th className="pb-3 font-bold">Total</th>
+                  <th className="pb-3 font-bold">Status</th>
+                  <th className="pb-3 font-bold text-right">Ação</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {orders.length === 0 ? (
+                  <tr><td colSpan={5} className="py-4 text-center text-[var(--muted-foreground)]">Nenhum pedido encontrado.</td></tr>
+                ) : (
+                  orders.map(o => (
+                    <tr key={o.id}>
+                      <td className="py-4">
+                        <div className="font-bold">#{o.id.slice(0, 8)}</div>
+                        <div className="text-[10px] text-[var(--muted-foreground)]">{new Date(o.created_at).toLocaleString()}</div>
+                      </td>
+                      <td className="py-4">{o.customer_name}</td>
+                      <td className="py-4 font-bold">{formatBRL(o.total)}</td>
+                      <td className="py-4">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          o.status === 'paid' ? 'bg-green-100 text-green-700' : 
+                          o.status === 'cancelled' ? 'bg-red-100 text-red-700' : 
+                          'bg-amber-100 text-amber-700'
+                        }`}>
+                          {o.status?.toUpperCase() || 'PENDENTE'}
+                        </span>
+                      </td>
+                      <td className="py-4 text-right">
+                        <select 
+                          className="text-xs border border-[var(--border)] rounded px-2 py-1 bg-transparent"
+                          value={o.status || 'pending'}
+                          onChange={(e) => updateOrderStatus(o.id, e.target.value)}
+                        >
+                          <option value="pending">Pendente</option>
+                          <option value="paid">Pago</option>
+                          <option value="shipped">Enviado</option>
+                          <option value="delivered">Entregue</option>
+                          <option value="cancelled">Cancelado</option>
+                        </select>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div className="grid gap-8 md:grid-cols-2">
+          <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+            <h2 className="font-display text-lg font-semibold mb-6">Solicitações de Saque</h2>
+            <div className="space-y-4">
+              {withdrawals.length === 0 ? (
+                <p className="text-sm text-[var(--muted-foreground)]">Nenhuma solicitação pendente.</p>
               ) : (
-                sellers.map(s => (
-                  <tr key={s.id}>
-                    <td className="py-4">
-                      <div className="font-bold text-[var(--coffee)]">{s.store_name}</div>
-                      <div className="text-xs text-[var(--muted-foreground)] line-clamp-1">{s.description}</div>
-                    </td>
-                    <td className="py-4">{new Date(s.created_at).toLocaleDateString()}</td>
-                    <td className="py-4">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${s.approved ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
-                        {s.approved ? 'APROVADO' : 'PENDENTE'}
+                withdrawals.map(w => (
+                  <div key={w.id} className="flex items-center justify-between p-4 rounded-xl border border-[var(--border)] bg-[var(--sand)]/10">
+                    <div>
+                      <p className="text-sm font-bold text-[var(--coffee)]">{w.sellers?.store_name}</p>
+                      <p className="text-xs text-[var(--muted-foreground)]">{formatBRL(w.amount)} · {w.pix_key}</p>
+                    </div>
+                    {w.status === 'pending' ? (
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="hero" className="h-8" onClick={() => handleWithdrawal(w.id, 'approved')}>Aprovar</Button>
+                        <Button size="sm" variant="soft" className="h-8 text-red-600" onClick={() => handleWithdrawal(w.id, 'rejected')}>Recusar</Button>
+                      </div>
+                    ) : (
+                      <span className={`text-[10px] font-bold px-2 py-1 rounded ${w.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {w.status?.toUpperCase()}
                       </span>
-                    </td>
-                    <td className="py-4 text-right">
-                      {!s.approved && (
-                        <Button size="sm" variant="hero" onClick={() => approveSeller(s.id)}>Aprovar</Button>
-                      )}
-                    </td>
-                  </tr>
+                    )}
+                  </div>
                 ))
               )}
-            </tbody>
-          </table>
+            </div>
+          </section>
+
+          <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+            <h2 className="font-display text-lg font-semibold mb-6">Últimas Transações</h2>
+            <div className="space-y-3">
+              {transactions.length === 0 ? (
+                <p className="text-sm text-[var(--muted-foreground)]">Nenhuma transação registrada.</p>
+              ) : (
+                transactions.map(t => (
+                  <div key={t.id} className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0">
+                    <div>
+                      <p className="text-xs font-medium">{t.description}</p>
+                      <p className="text-[10px] text-[var(--muted-foreground)]">{new Date(t.created_at).toLocaleString()}</p>
+                    </div>
+                    <span className={`text-sm font-bold ${t.amount >= 0 ? 'text-[var(--leaf)]' : 'text-red-600'}`}>
+                      {formatBRL(t.amount)}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
         </div>
       </div>
-      <p className="mt-10 text-xs text-[var(--muted-foreground)]">
-        Dados de demonstração. Listagem real de vendedores, produtos e financeiro será ativada
-        com a integração do banco de dados (Lovable Cloud).
-      </p>
     </div>
   );
 }
