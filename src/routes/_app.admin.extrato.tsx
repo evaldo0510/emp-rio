@@ -247,7 +247,7 @@ function AdminExtratoPage() {
           <select
             className="w-full rounded-lg border border-[var(--border)] bg-[var(--cream)] p-2 text-sm outline-none focus:border-[var(--clay)]"
             value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
+            onChange={(e) => updateSearch({ type: e.target.value })}
           >
             <option value="all">Todos os tipos</option>
             <option value="sale">Vendas</option>
