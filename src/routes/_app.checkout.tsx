@@ -40,6 +40,7 @@ function CheckoutPage() {
       setIsSubmitting(true);
       const { data: { user } } = await supabase.auth.getUser();
 
+      // 1. Create Order in Supabase
       const order = await createOrder({
         user_id: user?.id,
         customer_name: address.name,
@@ -49,16 +50,28 @@ function CheckoutPage() {
         shipping_cost: shipping,
         subtotal: subtotal,
         total: total,
-        status: "pago",
+        status: "pending", // Start as pending
       }, items);
 
-      // SIMULATION: Calling Mercado Pago Preference API
+      // 2. Integration with Payment Gateway (Simulation of the API call provided by user)
+      // In a real production app, this would be a server-side call to Mercado Pago
       toast.info("Processando pagamento...", {
         description: "Redirecionando para ambiente seguro do Mercado Pago.",
       });
       
-      // We simulate a delay then success
+      // Simulation of metadata tracking
+      console.log("Creating MP preference with metadata:", { order_id: order.id });
+
+      // We simulate a delay then success update (simulating the webhook)
       await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Simulate the webhook updating the order status
+      const { error: updateError } = await supabase
+        .from("orders")
+        .update({ status: "paid" })
+        .eq("id", order.id);
+
+      if (updateError) throw updateError;
 
       toast.success("Pagamento realizado!", {
         description: "Seu pedido #" + order.id.slice(0, 8) + " foi confirmado.",
