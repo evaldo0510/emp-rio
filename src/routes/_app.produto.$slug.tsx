@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useLoaderData } from "@tanstack/react-router";
 import { ChevronRight, Heart, Leaf, Minus, Plus, Sparkles, Star } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,8 @@ import { formatBRL, getProductBySlug, products } from "@/lib/products";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/produto/$slug")({
-  loader: ({ params }) => {
-    const product = getProductBySlug(params.slug);
+  loader: async ({ params }) => {
+    const product = await getProductBySlug(params.slug);
     if (!product) throw notFound();
     return product;
   },
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/_app/produto/$slug")({
 });
 
 function ProductPage() {
-  const product = Route.useLoaderData();
+  const product = useLoaderData({ from: "/_app/produto/$slug" });
   const [qty, setQty] = useState(1);
   const add = useCart((s) => s.add);
   const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);

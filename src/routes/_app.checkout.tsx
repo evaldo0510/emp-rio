@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/products";
 import { toast } from "sonner";
+import { createOrder, supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_app/checkout")({
   head: () => ({ meta: [{ title: "Checkout — Licuri Hub" }] }),
@@ -15,11 +16,54 @@ const steps = ["Endereço", "Pagamento", "Confirmação"] as const;
 
 function CheckoutPage() {
   const [step, setStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [address, setAddress] = useState({
+    name: "",
+    zip: "",
+    street: "",
+    neighborhood: "",
+    city: "",
+    state: "",
+  });
   const items = useCart((s) => s.items);
   const subtotal = items.reduce((a, i) => a + i.price * i.quantity, 0);
   const [shipping, setShipping] = useState(12.9);
   const clear = useCart((s) => s.clear);
   const navigate = useNavigate();
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+    setAddress(prev => ({ ...prev, [key]: e.target.value }));
+  };
+
+  const handleFinish = async () => {
+    try {
+      setIsSubmitting(true);
+      const { data: { user } } = await supabase.auth.getUser();
+
+      await createOrder({
+        user_id: user?.id,
+        customer_name: address.name,
+        customer_email: user?.email || "anon@licurihub.com",
+        address: address,
+        shipping_method: shipping === 12.9 ? "PAC" : "SEDEX",
+        shipping_cost: shipping,
+        subtotal: subtotal,
+        total: total,
+        status: "pago",
+      }, items);
+
+      toast.success("Pedido confirmado!", {
+        description: "Seu pedido foi registrado com sucesso.",
+      });
+      clear();
+      navigate({ to: "/" });
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao finalizar pedido. Tente novamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const total = subtotal + shipping;
 
@@ -54,12 +98,12 @@ function CheckoutPage() {
             <div className="space-y-4">
               <h2 className="font-display text-xl font-semibold">Endereço de entrega</h2>
               <div className="grid gap-3 md:grid-cols-2">
-                <Field label="Nome completo" placeholder="Maria Silva" />
-                <Field label="CEP" placeholder="40000-000" />
-                <Field label="Endereço" placeholder="Rua das Palmeiras, 123" full />
-                <Field label="Bairro" placeholder="Centro" />
-                <Field label="Cidade" placeholder="Salvador" />
-                <Field label="Estado" placeholder="BA" />
+                <Field label="Nome completo" placeholder="Maria Silva" value={address.name} onChange={(e) => handleAddressChange(e, 'name')} />
+                <Field label="CEP" placeholder="40000-000" value={address.zip} onChange={(e) => handleAddressChange(e, 'zip')} />
+                <Field label="Endereço" placeholder="Rua das Palmeiras, 123" full value={address.street} onChange={(e) => handleAddressChange(e, 'street')} />
+                <Field label="Bairro" placeholder="Centro" value={address.neighborhood} onChange={(e) => handleAddressChange(e, 'neighborhood')} />
+                <Field label="Cidade" placeholder="Salvador" value={address.city} onChange={(e) => handleAddressChange(e, 'city')} />
+                <Field label="Estado" placeholder="BA" value={address.state} onChange={(e) => handleAddressChange(e, 'state')} />
               </div>
               <div className="pt-2">
                 <h3 className="mb-2 mt-4 font-display text-base font-semibold">Forma de envio</h3>
@@ -131,15 +175,17 @@ function CheckoutPage() {
                 <Button
                   variant="hero"
                   size="lg"
-                  onClick={() => {
-                    toast.success("Pedido confirmado!", {
-                      description: "Você receberá um e-mail com os detalhes.",
-                    });
-                    clear();
-                    navigate({ to: "/" });
-                  }}
+                  disabled={isSubmitting}
+                  onClick={handleFinish}
                 >
-                  Finalizar pedido
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processando...
+                    </>
+                  ) : (
+                    "Finalizar pedido"
+                  )}
                 </Button>
               </div>
             </div>
@@ -174,16 +220,22 @@ function Field({
   label,
   placeholder,
   full,
+  value,
+  onChange,
 }: {
   label: string;
   placeholder: string;
   full?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <label className={"block text-sm " + (full ? "md:col-span-2" : "")}>
       <span className="mb-1 block text-[var(--muted-foreground)]">{label}</span>
       <input
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
         className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 outline-none focus:border-[var(--clay)]"
       />
     </label>

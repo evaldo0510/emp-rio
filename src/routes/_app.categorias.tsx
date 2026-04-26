@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { ChevronRight, Star } from "lucide-react";
-import { products, categories, regions, formatBRL, type Category } from "@/lib/products";
+import { products as mockProducts, categories, regions, formatBRL, type Category, type Product } from "@/lib/products";
+import { supabase } from "@/lib/supabase";
 
 type Search = { cat?: Category | "todos"; q?: string };
 
@@ -24,13 +25,39 @@ export const Route = createFileRoute("/_app/categorias")({
 
 function CatalogPage() {
   const { cat, q } = Route.useSearch();
+  const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const [region, setRegion] = useState("Todos");
   const [minRating, setMinRating] = useState(0);
   const [maxPrice, setMaxPrice] = useState(200);
   const [sort, setSort] = useState("destaques");
 
+  useEffect(() => {
+    const fetchDbProducts = async () => {
+      const { data } = await supabase.from("products").select("*");
+      if (data) {
+        const mapped: Product[] = data.map((d: any) => ({
+          id: d.id,
+          slug: d.slug,
+          name: d.name,
+          category: d.category as Category,
+          price: Number(d.price),
+          rating: Number(d.rating),
+          reviews: d.reviews,
+          shop: d.shop,
+          region: d.region,
+          image: d.image_url,
+          short: d.short_description,
+          description: d.description,
+          badges: d.badges || [],
+        }));
+        setDbProducts(mapped);
+      }
+    };
+    fetchDbProducts();
+  }, []);
+
   const list = useMemo(() => {
-    let l = products.slice();
+    let l = [...mockProducts, ...dbProducts];
     if (cat && cat !== "todos") l = l.filter((p) => p.category === cat);
     if (q) l = l.filter((p) => p.name.toLowerCase().includes(q.toLowerCase()));
     if (region !== "Todos") l = l.filter((p) => p.region === region);
