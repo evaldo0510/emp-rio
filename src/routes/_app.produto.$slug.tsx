@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useLoaderData } from "@tanstack/react-router";
-import { ChevronRight, Heart, Leaf, Minus, Plus, Sparkles, Star } from "lucide-react";
-import { useState } from "react";
+import { ChevronRight, Heart, Leaf, Minus, Plus, Sparkles, Star, ShieldCheck, Truck, Zap, ShoppingCart } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
 import { useCart } from "@/lib/cart";
@@ -39,7 +39,17 @@ function ProductPage() {
   const product = useLoaderData({ from: "/_app/produto/$slug" });
   const [selectedImage, setSelectedImage] = useState(product.image);
   const [qty, setQty] = useState(1);
+  const [showSticky, setShowSticky] = useState(false);
   const add = useCart((s) => s.add);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowSticky(window.scrollY > 600);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);
 
   // Mocked data for sections not yet in DB
@@ -95,9 +105,15 @@ function ProductPage() {
           {/* INFORMAÇÕES */}
           <div className="flex flex-col">
             <div className="flex-1">
-              <h1 className="font-display text-4xl font-semibold leading-tight text-[var(--coffee)]">
-                {product.name}
-              </h1>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--clay)]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--clay)]">
+                <Sparkles className="h-3 w-3" /> Essencial para sua rotina
+              </div>
+          <h1 className="font-display text-4xl font-semibold leading-tight text-[var(--coffee)] md:text-5xl">
+            {product.name}
+          </h1>
+          <p className="mt-2 text-lg italic text-[var(--sertao)]">
+            “Mais do que um produto natural… uma experiência que vem da terra.”
+          </p>
               
               <div className="mt-4 flex items-center gap-4 text-sm">
                 <div className="flex items-center gap-1 text-[var(--clay)]">
@@ -121,9 +137,14 @@ function ProductPage() {
                 </span>
               </div>
 
-              <p className="mt-6 text-lg leading-relaxed text-[var(--sertao)]">
+              <p className="mt-5 text-xl font-medium leading-relaxed text-[var(--sertao)]">
                 {product.description || product.short}
               </p>
+              
+              <div className="mt-4 flex items-center gap-2">
+                <span className="flex h-2 w-2 animate-pulse rounded-full bg-red-500" />
+                <span className="text-sm font-bold text-red-600">Alta procura: 12 unidades restantes hoje!</span>
+              </div>
 
               <div className="mt-8 flex flex-wrap gap-2">
                 {product.badges.map((b: string) => (
@@ -276,6 +297,26 @@ function ProductPage() {
             </div>
           </section>
         )}
+      </div>
+
+      {/* STICKY BUY BUTTON MOBILE */}
+      <div className={`fixed bottom-0 left-0 right-0 z-50 transform bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 md:hidden ${showSticky ? 'translate-y-0' : 'translate-y-full'}`}>
+        <div className="flex items-center gap-4">
+          <div className="flex-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Total</p>
+            <p className="font-display text-lg font-bold text-[var(--coffee)]">{formatBRL(product.price)}</p>
+          </div>
+          <Button
+            variant="hero"
+            className="flex-[2] bg-[#C4682C] text-white"
+            onClick={() => {
+              add(product, qty);
+              toast.success("Adicionado ao carrinho");
+            }}
+          >
+            COMPRAR AGORA
+          </Button>
+        </div>
       </div>
     </div>
   );
