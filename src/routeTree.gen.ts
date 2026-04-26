@@ -24,6 +24,7 @@ import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppAdminIndexRouteImport } from './routes/_app.admin.index'
 import { Route as AppRastreioOrderIdRouteImport } from './routes/_app.rastreio.$orderId'
 import { Route as AppProdutoSlugRouteImport } from './routes/_app.produto.$slug'
+import { Route as AppAdminExtratoRouteImport } from './routes/_app.admin.extrato'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -99,6 +100,11 @@ const AppProdutoSlugRoute = AppProdutoSlugRouteImport.update({
   path: '/produto/$slug',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminExtratoRoute = AppAdminExtratoRouteImport.update({
+  id: '/extrato',
+  path: '/extrato',
+  getParentRoute: () => AppAdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/lojas': typeof AppLojasRoute
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRoute
+  '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
   '/admin/': typeof AppAdminIndexRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRoute
   '/': typeof AppIndexRoute
+  '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
   '/admin': typeof AppAdminIndexRoute
@@ -145,6 +153,7 @@ export interface FileRoutesById {
   '/_app/sobre': typeof AppSobreRoute
   '/_app/vendedor': typeof AppVendedorRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/admin/extrato': typeof AppAdminExtratoRoute
   '/_app/produto/$slug': typeof AppProdutoSlugRoute
   '/_app/rastreio/$orderId': typeof AppRastreioOrderIdRoute
   '/_app/admin/': typeof AppAdminIndexRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/lojas'
     | '/sobre'
     | '/vendedor'
+    | '/admin/extrato'
     | '/produto/$slug'
     | '/rastreio/$orderId'
     | '/admin/'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/vendedor'
     | '/'
+    | '/admin/extrato'
     | '/produto/$slug'
     | '/rastreio/$orderId'
     | '/admin'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/_app/sobre'
     | '/_app/vendedor'
     | '/_app/'
+    | '/_app/admin/extrato'
     | '/_app/produto/$slug'
     | '/_app/rastreio/$orderId'
     | '/_app/admin/'
@@ -311,14 +323,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProdutoSlugRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/admin/extrato': {
+      id: '/_app/admin/extrato'
+      path: '/extrato'
+      fullPath: '/admin/extrato'
+      preLoaderRoute: typeof AppAdminExtratoRouteImport
+      parentRoute: typeof AppAdminRoute
+    }
   }
 }
 
 interface AppAdminRouteChildren {
+  AppAdminExtratoRoute: typeof AppAdminExtratoRoute
   AppAdminIndexRoute: typeof AppAdminIndexRoute
 }
 
 const AppAdminRouteChildren: AppAdminRouteChildren = {
+  AppAdminExtratoRoute: AppAdminExtratoRoute,
   AppAdminIndexRoute: AppAdminIndexRoute,
 }
 
