@@ -11,15 +11,38 @@ export async function createOrder(orderData: any, items: any[]) {
 
   if (orderError) throw orderError;
 
-  const orderItems = items.map((item) => ({
-    order_id: order.id,
-    product_id: item.id.startsWith("p") ? null : item.id,
-    seller_id: item.vendor_id || item.seller_id,
-    name: item.name,
-    price: item.price,
-    quantity: item.quantity,
-    image_url: item.image,
-  }));
+  // Fetch unique sellers and their commission rates
+  const sellerIds = [...new Set(items.map(i => i.vendor_id || i.seller_id))].filter(Boolean);
+  const { data: sellersData } = await supabase
+    .from("sellers")
+    .select("user_id, commission_rate")
+    .in("user_id", sellerIds);
+
+  const sellerRates = (sellersData || []).reduce((acc: any, s: any) => {
+    acc[s.user_id] = s.commission_rate || 0.15;
+    return acc;
+  }, {});
+
+  const orderItems = items.map((item) => {
+    const sellerId = item.vendor_id || item.seller_id;
+    const rate = sellerRates[sellerId] || 0.15;
+    const totalAmount = item.price * item.quantity;
+    const commissionAmount = totalAmount * rate;
+    const netAmount = totalAmount - commissionAmount;
+
+    return {
+      order_id: order.id,
+      product_id: item.id.startsWith("p") ? null : item.id,
+      seller_id: sellerId,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      image_url: item.image,
+      commission_amount: commissionAmount,
+      net_amount: netAmount,
+      status: 'pending'
+    };
+  });
 
   const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
   if (itemsError) throw itemsError;
