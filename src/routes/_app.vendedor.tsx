@@ -1,5 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Package, ShoppingBag, Star, TrendingUp } from "lucide-react";
+import { Package, ShoppingBag, Star, TrendingUp, Upload, Loader2, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { supabase, uploadProductImage } from "@/lib/supabase";
+import { toast } from "sonner";
+import { formatBRL } from "@/lib/products";
 
 export const Route = createFileRoute("/_app/vendedor")({
   head: () => ({ meta: [{ title: "Painel do Vendedor — Licuri Hub" }] }),
@@ -20,7 +25,51 @@ const orders = [
 ];
 
 function VendorDashboard() {
+  const [isUploading, setIsUploading] = useState(false);
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
   const max = Math.max(...sales.map((s) => s.v));
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+    if (data) setDbProducts(data);
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const url = await uploadProductImage(file);
+      
+      // For demo, create a product with this image
+      const { error } = await supabase.from("products").insert([{
+        name: "Novo Produto",
+        slug: `novo-produto-${Math.random().toString(36).substr(2, 5)}`,
+        category: "alimentos",
+        price: 0,
+        shop: "Sertão Natural",
+        region: "Bahia",
+        image_url: url,
+        short_description: "Descrição curta do novo produto",
+      }]);
+
+      if (error) throw error;
+      
+      toast.success("Imagem enviada e produto criado!");
+      fetchProducts();
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao enviar imagem.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return (
     <div className="container-narrow py-10">
       <header className="flex items-center justify-between">
@@ -88,6 +137,42 @@ function VendorDashboard() {
             ))}
           </ul>
         </div>
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-display text-lg font-semibold">Meus Produtos (do Banco de Dados)</h2>
+          <label className="cursor-pointer">
+            <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" disabled={isUploading} />
+            <Button variant="hero" size="sm" asChild disabled={isUploading}>
+              <span>
+                {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+                Novo Produto (Upload)
+              </span>
+            </Button>
+          </label>
+        </div>
+
+        {dbProducts.length === 0 ? (
+          <div className="flex flex-col items-center py-10 text-[var(--muted-foreground)]">
+            <Package className="h-10 w-10 mb-2 opacity-20" />
+            <p>Nenhum produto cadastrado no banco ainda.</p>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {dbProducts.map((p) => (
+              <div key={p.id} className="group relative overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--background)]">
+                <div className="aspect-square overflow-hidden bg-[var(--sand)]">
+                  <img src={p.image_url} alt={p.name} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                </div>
+                <div className="p-3">
+                  <h3 className="font-medium text-sm text-[var(--coffee)] truncate">{p.name}</h3>
+                  <p className="text-xs text-[var(--muted-foreground)]">{formatBRL(p.price)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <p className="mt-10 text-xs text-[var(--muted-foreground)]">

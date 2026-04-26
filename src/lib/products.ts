@@ -185,6 +185,36 @@ export function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-export function getProductBySlug(slug: string) {
-  return products.find((p) => p.slug === slug);
+export async function getProductBySlug(slug: string) {
+  // Check mock data first
+  const mock = products.find((p) => p.slug === slug);
+  if (mock) return mock;
+
+  // Then check DB
+  const { data } = await supabase
+    .from("products")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+  if (data) {
+    return {
+      id: data.id,
+      slug: data.slug,
+      name: data.name,
+      category: data.category as Category,
+      price: Number(data.price),
+      rating: Number(data.rating),
+      reviews: data.reviews,
+      shop: data.shop,
+      region: data.region,
+      image: data.image_url,
+      short: data.short_description,
+      description: data.description,
+      badges: data.badges || [],
+    } as Product;
+  }
+  return undefined;
 }
+
+import { supabase } from "./supabase";
