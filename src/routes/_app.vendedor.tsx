@@ -412,9 +412,13 @@ function VendorDashboard() {
             <div className="md:col-span-2 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Vendas por Período</h3>
-                <select className="text-[10px] uppercase border border-[var(--border)] rounded px-2 py-1 bg-transparent">
-                  <option>Últimos 7 dias</option>
-                  <option>Últimos 30 dias</option>
+                <select 
+                  value={period}
+                  onChange={(e) => setPeriod(e.target.value)}
+                  className="text-[10px] uppercase border border-[var(--border)] rounded px-2 py-1 bg-transparent"
+                >
+                  <option value="7">Últimos 7 dias</option>
+                  <option value="30">Últimos 30 dias</option>
                 </select>
               </div>
               <div className="flex h-32 items-end gap-2">
