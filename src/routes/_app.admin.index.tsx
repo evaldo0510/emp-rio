@@ -14,6 +14,7 @@ import {
   History,
   Target,
   BarChart3,
+  Calendar,
 } from "lucide-react";
 import {
   BarChart,
@@ -61,6 +62,7 @@ function AdminPage() {
   const [commissionHistory, setCommissionHistory] = useState<any[]>([]);
   const [topSellers, setTopSellers] = useState<any[]>([]);
   const [salesByDay, setSalesByDay] = useState<any[]>([]);
+  const [statsPeriod, setStatsPeriod] = useState<"today" | "7d" | "30d" | "all">("7d");
   const [stats, setStats] = useState({
     totalSales: 0,
     platformRevenue: 0,
@@ -71,7 +73,7 @@ function AdminPage() {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [statsPeriod]);
 
   const fetchDashboardData = async () => {
     fetchStats();
@@ -213,22 +215,40 @@ function AdminPage() {
 
   const fetchStats = async () => {
     try {
+      let ordersQuery = supabase.from("orders").select("total, created_at");
+      let transactionsQuery = supabase.from("wallet_transactions").select(`
+        amount, 
+        commission, 
+        type, 
+        created_at, 
+        seller_wallet(seller_id)
+      `);
+
+      if (statsPeriod !== "all") {
+        const now = new Date();
+        let startDate = new Date();
+        if (statsPeriod === "today") {
+          startDate.setHours(0, 0, 0, 0);
+        } else if (statsPeriod === "7d") {
+          startDate.setDate(now.getDate() - 7);
+        } else if (statsPeriod === "30d") {
+          startDate.setDate(now.getDate() - 30);
+        }
+        const isoDate = startDate.toISOString();
+        ordersQuery = ordersQuery.gte("created_at", isoDate);
+        transactionsQuery = transactionsQuery.gte("created_at", isoDate);
+      }
+
       const [
         { data: ordersData }, 
         { data: sellersData }, 
         { count: usersCount },
         { data: transactionsData }
       ] = await Promise.all([
-        supabase.from("orders").select("total, created_at"),
+        ordersQuery,
         supabase.from("sellers").select("id, store_name"),
         supabase.from("orders").select("user_id", { count: "exact", head: true }),
-        supabase.from("wallet_transactions").select(`
-          amount, 
-          commission, 
-          type, 
-          created_at, 
-          seller_wallet(seller_id)
-        `)
+        transactionsQuery
       ]);
 
       const total = ordersData?.reduce((acc, o) => acc + Number(o.total || 0), 0) || 0;
@@ -253,17 +273,23 @@ function AdminPage() {
         .sort((a, b) => b.total - a.total)
         .slice(0, 5);
 
-      // Sales by day (last 7 days)
-      const last7Days = Array.from({ length: 7 }, (_, i) => {
+      // Sales by day calculation
+      let chartDays = 7;
+      if (statsPeriod === "30d") chartDays = 30;
+      if (statsPeriod === "all") chartDays = 30; // Show last 30 for total view
+
+      const daysArray = Array.from({ length: chartDays }, (_, i) => {
         const d = new Date();
         d.setDate(d.getDate() - i);
         return d.toISOString().split('T')[0];
       }).reverse();
 
-      const dailyData = last7Days.map(date => {
+      const dailyData = daysArray.map(date => {
+        // Since ordersData is already filtered by period, we need to be careful
+        // Actually it's better to fetch slightly more data for the chart or handle "all"
         const dayOrders = ordersData?.filter(o => o.created_at?.startsWith(date)) || [];
         return {
-          date: new Date(date).toLocaleDateString('pt-BR', { weekday: 'short' }),
+          date: new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
           vendas: dayOrders.reduce((acc, o) => acc + Number(o.total || 0), 0)
         };
       });
@@ -375,7 +401,29 @@ function AdminPage() {
         </div>
       </header>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-4">
+      <div className="mt-8 flex items-center justify-between">
+        <div className="flex p-1 bg-[var(--sand)]/20 rounded-xl border border-[var(--border)]">
+          {(["today", "7d", "30d", "all"] as const).map((p) => (
+            <button
+              key={p}
+              onClick={() => setStatsPeriod(p)}
+              className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                statsPeriod === p
+                  ? "bg-[var(--coffee)] text-white shadow-sm"
+                  : "text-[var(--muted-foreground)] hover:text-[var(--coffee)]"
+              }`}
+            >
+              {p === "today" ? "Hoje" : p === "7d" ? "7 Dias" : p === "30d" ? "30 Dias" : "Tudo"}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 text-[10px] text-[var(--muted-foreground)] uppercase tracking-widest font-bold">
+          <Calendar className="h-3 w-3" />
+          Dados: {statsPeriod === 'all' ? 'Histórico completo' : `Últimos ${statsPeriod === 'today' ? '24h' : statsPeriod}`}
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-4">
         <Stat
           icon={DollarSign}
           label="Faturamento Total"
@@ -397,7 +445,7 @@ function AdminPage() {
             <h2 className="font-display text-lg font-semibold">Evolução de Vendas</h2>
             <div className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
               <span className="flex h-2 w-2 rounded-full bg-[var(--clay)]" />
-              Últimos 7 dias
+              {statsPeriod === 'today' ? 'Últimas 24h' : statsPeriod === '7d' ? 'Últimos 7 dias' : statsPeriod === '30d' ? 'Últimos 30 dias' : 'Últimos 30 dias'}
             </div>
           </div>
           <div className="h-[240px] w-full">
