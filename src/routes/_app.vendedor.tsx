@@ -715,7 +715,7 @@ export function VendorDashboard() {
                 </h3>
                 <select
                   value={period}
-                  onChange={(e) => setPeriod(e.target.value)}
+                  onChange={(e) => navigate({ search: (prev: any) => ({ ...prev, period: e.target.value as any }) })}
                   className="text-[10px] uppercase border border-[var(--border)] rounded px-2 py-1 bg-transparent"
                 >
                   <option value="7">Últimos 7 dias</option>
