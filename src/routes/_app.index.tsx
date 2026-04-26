@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Leaf, Sprout, Sun, Truck } from "lucide-react";
+import { ArrowRight, Leaf, Sprout, Sun, Truck, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
-import { categories, products } from "@/lib/products";
+import { categories, products as mockProducts, type Product } from "@/lib/products";
+import { supabase } from "@/lib/supabase";
 import hero from "@/assets/hero-licuri.jpg";
 
 export const Route = createFileRoute("/_app/")({
@@ -33,6 +35,51 @@ const pillars = [
 ];
 
 function HomePage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("active", true)
+          .limit(12);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const mapped = data.map(p => ({
+            id: p.id,
+            slug: p.slug,
+            name: p.name,
+            category: p.category,
+            price: Number(p.price),
+            rating: Number(p.rating || 0),
+            reviews: p.reviews || 0,
+            shop: p.shop_name || p.shop || "Vendedor",
+            region: p.region || "Sertão",
+            image: p.image_url,
+            short: p.short_description || "",
+            description: p.description || "",
+            badges: p.badges || [],
+          })) as Product[];
+          setProducts(mapped);
+        } else {
+          setProducts(mockProducts);
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setProducts(mockProducts);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
   const featured = products.slice(0, 4);
   return (
     <>
@@ -163,9 +210,15 @@ function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
-          {featured.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
+          {isLoading ? (
+            <div className="col-span-full flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-[var(--clay)]" />
+            </div>
+          ) : (
+            featured.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))
+          )}
         </div>
       </section>
 
