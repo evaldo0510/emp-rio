@@ -38,6 +38,7 @@ function VendorDashboard() {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [pixKey, setPixKey] = useState("");
   const [isSubmittingWithdraw, setIsSubmittingWithdraw] = useState(false);
+  const [period, setPeriod] = useState("7");
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
@@ -53,7 +54,7 @@ function VendorDashboard() {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [period]);
 
   const fetchDashboardData = async () => {
     const { data: { user } } = await supabase.auth.getUser();
