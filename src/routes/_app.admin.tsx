@@ -501,8 +501,12 @@ function AdminPage() {
                   commissionHistory.map((h) => (
                     <tr key={h.id}>
                       <td className="py-3 font-medium text-[var(--coffee)]">{h.seller_type}</td>
-                      <td className="py-3 text-[var(--muted-foreground)]">{(h.old_rate * 100).toFixed(1)}%</td>
-                      <td className="py-3 font-bold text-[var(--leaf)]">{(h.new_rate * 100).toFixed(1)}%</td>
+                      <td className="py-3 text-[var(--muted-foreground)]">
+                        {(h.old_rate * 100).toFixed(2)}% <span className="text-[10px]">({h.old_rate})</span>
+                      </td>
+                      <td className="py-3 font-bold text-[var(--leaf)]">
+                        {(h.new_rate * 100).toFixed(2)}% <span className="text-[10px] font-normal text-[var(--muted-foreground)]">({h.new_rate})</span>
+                      </td>
                       <td className="py-3 text-xs text-[var(--muted-foreground)]">
                         {new Date(h.created_at).toLocaleString()}
                       </td>
