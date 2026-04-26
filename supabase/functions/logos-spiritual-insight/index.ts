@@ -12,14 +12,13 @@ const SUPPORTED_MODELS = [
 const DEFAULT_MODEL = "gemini-1.5-flash"
 const FALLBACK_MODEL = "gemini-1.5-pro"
 
-serve(async (req) => {
-  // CORS setup
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-client-info',
-  }
+export const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-client-info',
+}
 
+export async function handler(req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -36,10 +35,7 @@ serve(async (req) => {
 
     // Validation of model
     if (!SUPPORTED_MODELS.includes(model)) {
-      console.warn(`Model ${model} is not in the official supported list. Validating...`)
-      // We could reject here, but the user asked for validation.
-      // If we want to be strict:
-      // return new Response(JSON.stringify({ error: `Model ${model} is not supported.` }), { status: 400, headers: corsHeaders })
+      console.warn(`Model ${model} is not in the official supported list.`)
     }
 
     console.log(`Generating logo insight for prompt: "${prompt}" using model: ${model}`)
@@ -82,12 +78,10 @@ serve(async (req) => {
       result = await callAI(model)
     } catch (err: any) {
       console.error(`Primary model ${model} failed. Attempting fallback to ${FALLBACK_MODEL}...`)
-      // Fallback mechanism
       try {
         result = await callAI(FALLBACK_MODEL)
       } catch (fallbackErr: any) {
         console.error(`Fallback model ${FALLBACK_MODEL} also failed.`)
-        // Return detailed error as requested
         return new Response(JSON.stringify({ 
           error: 'Geração de logo falhou em todos os modelos.',
           details: err.message,
@@ -113,4 +107,8 @@ serve(async (req) => {
       status: 500,
     })
   }
-})
+}
+
+if (import.meta.main) {
+  serve(handler)
+}
