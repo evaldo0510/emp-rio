@@ -411,7 +411,7 @@ function AdminPage() {
           {(["today", "7d", "30d", "all"] as const).map((p) => (
             <button
               key={p}
-              onClick={() => setStatsPeriod(p)}
+              onClick={() => navigate({ search: (prev) => ({ ...prev, period: p }) })}
               className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
                 statsPeriod === p
                   ? "bg-[var(--coffee)] text-white shadow-sm"
