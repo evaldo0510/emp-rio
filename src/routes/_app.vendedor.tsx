@@ -96,14 +96,15 @@ function VendorDashboard() {
     if (salesData) {
       setRealOrders(salesData);
       
-      // Calculate daily sales for chart (last 7 days)
-      const last7Days = [...Array(7)].map((_, i) => {
+      // Calculate daily sales for chart (based on period)
+      const numDays = parseInt(period);
+      const days = [...Array(numDays)].map((_, i) => {
         const d = new Date();
         d.setDate(d.getDate() - i);
         return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
       }).reverse();
 
-      const dailyTotals = last7Days.map(day => {
+      const dailyTotals = days.map(day => {
         const total = salesData
           .filter(o => o.created_at && new Date(o.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) === day)
           .reduce((acc, o) => acc + (Number(o.net_amount) || (Number(o.price) * o.quantity)), 0);
