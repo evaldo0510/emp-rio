@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import {
   Users,
   Store,
@@ -36,7 +37,14 @@ import { formatBRL } from "@/lib/products";
 import { supabase } from "@/lib/supabase";
 import { validateCommissionRate } from "@/lib/commissions";
 
+const statsPeriodSchema = z.object({
+  period: z.enum(["today", "7d", "30d", "all"]).optional(),
+});
+
+type StatsPeriod = z.infer<typeof statsPeriodSchema>["period"];
+
 export const Route = createFileRoute("/_app/admin/")({
+  validateSearch: (search) => statsPeriodSchema.parse(search),
   head: () => ({ meta: [{ title: "Painel Admin — Licuri Hub" }] }),
   component: AdminPage,
 });
@@ -51,6 +59,10 @@ const statuses = [
 ];
 
 function AdminPage() {
+  const navigate = useNavigate({ from: Route.fullPath });
+  const { period } = Route.useSearch();
+  const statsPeriod = period || "7d";
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRecalculating, setIsRecalculating] = useState(false);
   const [updatingType, setUpdatingType] = useState<string | null>(null);
@@ -62,7 +74,6 @@ function AdminPage() {
   const [commissionHistory, setCommissionHistory] = useState<any[]>([]);
   const [topSellers, setTopSellers] = useState<any[]>([]);
   const [salesByDay, setSalesByDay] = useState<any[]>([]);
-  const [statsPeriod, setStatsPeriod] = useState<"today" | "7d" | "30d" | "all">("7d");
   const [stats, setStats] = useState({
     totalSales: 0,
     platformRevenue: 0,
@@ -400,7 +411,7 @@ function AdminPage() {
           {(["today", "7d", "30d", "all"] as const).map((p) => (
             <button
               key={p}
-              onClick={() => setStatsPeriod(p)}
+              onClick={() => navigate({ search: (prev: any) => ({ ...prev, period: p }) })}
               className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
                 statsPeriod === p
                   ? "bg-[var(--coffee)] text-white shadow-sm"

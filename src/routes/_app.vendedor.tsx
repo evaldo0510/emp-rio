@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import {
   Package,
   ShoppingBag,
@@ -38,7 +39,12 @@ import {
   Area,
 } from "recharts";
 
+const vendorSearchSchema = z.object({
+  period: z.enum(["7", "30"]).optional(),
+});
+
 export const Route = createFileRoute("/_app/vendedor")({
+  validateSearch: (search) => vendorSearchSchema.parse(search),
   head: () => ({ meta: [{ title: "Painel do Vendedor — Licuri Hub" }] }),
   component: VendorDashboard,
 });
@@ -46,6 +52,10 @@ export const Route = createFileRoute("/_app/vendedor")({
 // Constants for mock data removed. Using real database data.
 
 export function VendorDashboard() {
+  const navigate = useNavigate({ from: Route.fullPath });
+  const { period: urlPeriod } = Route.useSearch();
+  const period = urlPeriod || "7";
+
   const [isUploading, setIsUploading] = useState(false);
   const [dbProducts, setDbProducts] = useState<any[]>([]);
   const [wallet, setWallet] = useState<any>(null);
@@ -59,7 +69,6 @@ export function VendorDashboard() {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [pixKey, setPixKey] = useState("");
   const [isSubmittingWithdraw, setIsSubmittingWithdraw] = useState(false);
-  const [period, setPeriod] = useState("7");
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
@@ -706,7 +715,7 @@ export function VendorDashboard() {
                 </h3>
                 <select
                   value={period}
-                  onChange={(e) => setPeriod(e.target.value)}
+                  onChange={(e) => navigate({ search: (prev: any) => ({ ...prev, period: e.target.value as any }) })}
                   className="text-[10px] uppercase border border-[var(--border)] rounded px-2 py-1 bg-transparent"
                 >
                   <option value="7">Últimos 7 dias</option>
