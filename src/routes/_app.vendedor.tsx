@@ -561,102 +561,101 @@ function VendorDashboard() {
                         <div className="font-semibold line-clamp-1">{o.name}</div>
                         <div className="text-xs text-[var(--muted-foreground)]">{new Date(o.created_at).toLocaleDateString()}</div>
                       </div>
-
-
-      <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-        <h2 className="font-display text-lg font-semibold mb-4">Histórico da Carteira</h2>
-        {transactions.length === 0 ? (
-          <p className="text-sm text-[var(--muted-foreground)]">Nenhuma transação registrada.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
-                <tr>
-                  <th className="pb-3 font-bold">Data</th>
-                  <th className="pb-3 font-bold">Tipo</th>
-                  <th className="pb-3 font-bold">Descrição</th>
-                  <th className="pb-3 font-bold text-right">Valor Líquido</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--border)]">
-                {transactions.map(tx => (
-                  <tr key={tx.id}>
-                    <td className="py-3">{new Date(tx.created_at).toLocaleDateString()}</td>
-                    <td className="py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${tx.type === 'sale' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                        {tx.type === 'sale' ? 'VENDA' : 'SAQUE'}
-                      </span>
-                    </td>
-                    <td className="py-3 text-[var(--muted-foreground)]">{tx.description}</td>
-                    <td className={`py-3 text-right font-bold ${tx.amount >= 0 ? 'text-[var(--leaf)]' : 'text-red-600'}`}>
-                      {formatBRL(tx.amount)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      <div className="text-right">
+                        <div className="font-medium">{formatBRL(o.price * o.quantity)}</div>
+                        <select 
+                          value={o.status || 'pending'} 
+                          onChange={(e) => updateOrderItemStatus(o.id, e.target.value)}
+                          className="text-[10px] uppercase tracking-[0.18em] text-[var(--leaf)] bg-transparent border-none outline-none cursor-pointer"
+                        >
+                          <option value="pending">Pendente</option>
+                          <option value="processing">Preparando</option>
+                          <option value="shipped">Enviado</option>
+                          <option value="paid">Pago (Liberar Saldo)</option>
+                          <option value="delivered">Entregue</option>
+                          <option value="cancelled">Cancelado</option>
+                        </select>
+                      </div>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
           </div>
-        )}
-      </div>
-      
-      {withdrawalRequests.length > 0 && (
-        <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-          <h2 className="font-display text-lg font-semibold mb-4">Solicitações de Saque</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
-                <tr>
-                  <th className="pb-3 font-bold">Data</th>
-                  <th className="pb-3 font-bold">Valor</th>
-                  <th className="pb-3 font-bold">Chave PIX</th>
-                  <th className="pb-3 font-bold text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--border)]">
-                {withdrawalRequests.map(req => (
-                  <tr key={req.id}>
-                    <td className="py-3">{new Date(req.created_at).toLocaleDateString()}</td>
-                    <td className="py-3 font-bold">{formatBRL(req.amount)}</td>
-                    <td className="py-3 text-[var(--muted-foreground)]">{req.pix_key}</td>
-                    <td className="py-3 text-right">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        req.status === 'approved' ? 'bg-green-100 text-green-700' : 
-                        req.status === 'rejected' ? 'bg-red-100 text-red-700' : 
-                        'bg-amber-100 text-amber-700'
-                      }`}>
-                        {req.status === 'approved' ? 'APROVADO' : 
-                         req.status === 'rejected' ? 'RECUSADO' : 
-                         'PENDENTE'}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-                  <div className="text-right">
-                    <div className="font-medium">{formatBRL(o.price * o.quantity)}</div>
-                    <select 
-                      value={o.status || 'pending'} 
-                      onChange={(e) => updateOrderItemStatus(o.id, e.target.value)}
-                      className="text-[10px] uppercase tracking-[0.18em] text-[var(--leaf)] bg-transparent border-none outline-none cursor-pointer"
-                    >
-                      <option value="pending">Pendente</option>
-                      <option value="processing">Preparando</option>
-                      <option value="shipped">Enviado</option>
-                      <option value="paid">Pago (Liberar Saldo)</option>
-                      <option value="delivered">Entregue</option>
-                      <option value="cancelled">Cancelado</option>
-                    </select>
-                  </div>
-                </li>
-              ))
+
+          <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+            <h2 className="font-display text-lg font-semibold mb-4">Histórico da Carteira</h2>
+            {transactions.length === 0 ? (
+              <p className="text-sm text-[var(--muted-foreground)]">Nenhuma transação registrada.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
+                    <tr>
+                      <th className="pb-3 font-bold">Data</th>
+                      <th className="pb-3 font-bold">Tipo</th>
+                      <th className="pb-3 font-bold">Descrição</th>
+                      <th className="pb-3 font-bold text-right">Valor Líquido</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border)]">
+                    {transactions.map(tx => (
+                      <tr key={tx.id}>
+                        <td className="py-3">{new Date(tx.created_at).toLocaleDateString()}</td>
+                        <td className="py-3">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${tx.type === 'sale' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                            {tx.type === 'sale' ? 'VENDA' : 'SAQUE'}
+                          </span>
+                        </td>
+                        <td className="py-3 text-[var(--muted-foreground)]">{tx.description}</td>
+                        <td className={`py-3 text-right font-bold ${tx.amount >= 0 ? 'text-[var(--leaf)]' : 'text-red-600'}`}>
+                          {formatBRL(tx.amount)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
-          </ul>
-        </div>
-      </div>
+          </div>
+
+          {withdrawalRequests.length > 0 && (
+            <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+              <h2 className="font-display text-lg font-semibold mb-4">Solicitações de Saque</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
+                    <tr>
+                      <th className="pb-3 font-bold">Data</th>
+                      <th className="pb-3 font-bold">Valor</th>
+                      <th className="pb-3 font-bold">Chave PIX</th>
+                      <th className="pb-3 font-bold text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border)]">
+                    {withdrawalRequests.map(req => (
+                      <tr key={req.id}>
+                        <td className="py-3">{new Date(req.created_at).toLocaleDateString()}</td>
+                        <td className="py-3 font-bold">{formatBRL(req.amount)}</td>
+                        <td className="py-3 text-[var(--muted-foreground)]">{req.pix_key}</td>
+                        <td className="py-3 text-right">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            req.status === 'approved' ? 'bg-green-100 text-green-700' : 
+                            req.status === 'rejected' ? 'bg-red-100 text-red-700' : 
+                            'bg-amber-100 text-amber-700'
+                          }`}>
+                            {req.status === 'approved' ? 'APROVADO' : 
+                             req.status === 'rejected' ? 'RECUSADO' : 
+                             'PENDENTE'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
       <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
         <div className="flex items-center justify-between mb-6">
