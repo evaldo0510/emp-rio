@@ -37,140 +37,246 @@ export const Route = createFileRoute("/_app/produto/$slug")({
 
 function ProductPage() {
   const product = useLoaderData({ from: "/_app/produto/$slug" });
+  const [selectedImage, setSelectedImage] = useState(product.image);
   const [qty, setQty] = useState(1);
   const add = useCart((s) => s.add);
   const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);
 
+  // Mocked data for sections not yet in DB
+  const story = "Este produto nasce do coração do sertão. Cada fruto é colhido manualmente, respeitando o tempo da terra e mantendo a tradição viva.";
+  const benefits = [
+    "Rico em nutrientes naturais",
+    "Produção artesanal e sustentável",
+    "Livre de conservantes artificiais",
+    "Apoia comunidades locais",
+  ];
+  const specs = {
+    origem: product.region || "Bahia",
+    tipo: "Artesanal",
+    validade: "12 meses",
+  };
+
   return (
-    <div className="container-narrow py-10">
-      <nav className="mb-6 flex items-center gap-1 text-xs text-[var(--muted-foreground)]">
-        <Link to="/" className="hover:text-[var(--clay)]">Início</Link>
-        <ChevronRight className="h-3 w-3" />
-        <Link to="/categorias" className="hover:text-[var(--clay)]">Catálogo</Link>
-        <ChevronRight className="h-3 w-3" />
-        <span className="line-clamp-1">{product.name}</span>
-      </nav>
+    <div className="bg-[#F5F1E8]/50 min-h-screen">
+      <div className="container-narrow py-10">
+        <nav className="mb-8 flex items-center gap-1 text-xs text-[var(--muted-foreground)]">
+          <Link to="/" className="hover:text-[var(--clay)] transition-colors">Início</Link>
+          <ChevronRight className="h-3 w-3" />
+          <Link to="/categorias" className="hover:text-[var(--clay)] transition-colors">Catálogo</Link>
+          <ChevronRight className="h-3 w-3" />
+          <span className="line-clamp-1 font-medium text-[var(--coffee)]">{product.name}</span>
+        </nav>
 
-      <div className="grid gap-10 md:grid-cols-[1fr_1fr]">
-        {/* Galeria */}
-        <div className="grid grid-cols-[80px_1fr] gap-3">
-          <div className="space-y-3">
-            {[product.image, product.image, product.image].map((img, i) => (
-              <div
-                key={i}
-                className="aspect-square overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--sand)]"
-              >
-                <img src={img} alt="" className="h-full w-full object-cover" />
-              </div>
-            ))}
-          </div>
-          <div className="aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--sand)]">
-            <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
-          </div>
-        </div>
-
-        {/* Info */}
-        <div>
-          <h1 className="font-display text-3xl font-semibold leading-tight text-[var(--coffee)] md:text-4xl">
-            {product.name}
-          </h1>
-          <div className="mt-3 flex items-center gap-3 text-sm">
-            <span className="flex items-center gap-1 text-[var(--clay)]">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  className={
-                    "h-4 w-4 " +
-                    (i < Math.round(product.rating)
-                      ? "fill-[var(--clay)] text-[var(--clay)]"
-                      : "text-[var(--muted-foreground)]/40")
-                  }
-                />
-              ))}
-              <span className="font-semibold text-[var(--coffee)]">{product.rating}</span>
-            </span>
-            <span className="text-[var(--muted-foreground)]">({product.reviews} avaliações)</span>
-          </div>
-          <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-            Vendido por <span className="font-medium text-[var(--sertao)]">{product.shop}</span>
-          </p>
-
-          <p className="mt-6 font-display text-4xl font-bold text-[var(--clay)]">
-            {formatBRL(product.price)}
-          </p>
-
-          <p className="mt-5 text-[var(--sertao)]">{product.description}</p>
-
-          <ul className="mt-6 space-y-2 text-sm">
-            {product.badges.map((b: string) => (
-              <li key={b} className="flex items-center gap-2 text-[var(--sertao)]">
-                <Leaf className="h-4 w-4 text-[var(--leaf)]" /> {b}
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-8 flex items-center gap-3">
-            <div className="flex items-center rounded-md border border-[var(--border)]">
-              <button
-                onClick={() => setQty(Math.max(1, qty - 1))}
-                className="grid h-11 w-11 place-items-center text-[var(--sertao)] hover:bg-[var(--sand)]"
-                aria-label="Diminuir"
-              >
-                <Minus className="h-4 w-4" />
-              </button>
-              <span className="w-10 text-center text-base font-semibold">{qty}</span>
-              <button
-                onClick={() => setQty(qty + 1)}
-                className="grid h-11 w-11 place-items-center text-[var(--sertao)] hover:bg-[var(--sand)]"
-                aria-label="Aumentar"
-              >
-                <Plus className="h-4 w-4" />
-              </button>
+        <div className="grid gap-12 md:grid-cols-2">
+          {/* GALERIA */}
+          <div className="space-y-4">
+            <div className="aspect-square overflow-hidden rounded-2xl border border-[var(--border)] bg-white shadow-sm">
+              <img
+                src={selectedImage}
+                alt={product.name}
+                className="h-full w-full object-cover transition-all duration-500"
+              />
             </div>
-            <Button
-              variant="hero"
-              size="xl"
-              className="flex-1"
-              onClick={() => {
-                add(product, qty);
-                toast.success("Adicionado ao carrinho", { description: product.name });
-              }}
-            >
-              Adicionar ao carrinho
-            </Button>
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+              {[product.image, product.image, product.image].map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSelectedImage(img)}
+                  className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-all ${
+                    selectedImage === img ? "border-[var(--clay)] shadow-md" : "border-transparent hover:border-[var(--border)]"
+                  }`}
+                >
+                  <img src={img} alt="" className="h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
           </div>
 
-          <button className="mt-4 inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--clay)]">
-            <Heart className="h-4 w-4" /> Adicionar aos favoritos
-          </button>
+          {/* INFORMAÇÕES */}
+          <div className="flex flex-col">
+            <div className="flex-1">
+              <h1 className="font-display text-4xl font-semibold leading-tight text-[var(--coffee)]">
+                {product.name}
+              </h1>
+              
+              <div className="mt-4 flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-1 text-[var(--clay)]">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${i < Math.round(product.rating) ? "fill-[var(--clay)] text-[var(--clay)]" : "text-[var(--border)]"}`}
+                    />
+                  ))}
+                  <span className="ml-1 font-bold text-[var(--coffee)]">{product.rating}</span>
+                </div>
+                <span className="text-[var(--muted-foreground)]">({product.reviews} avaliações)</span>
+              </div>
+
+              <div className="mt-6 flex items-baseline gap-3">
+                <span className="font-display text-4xl font-bold text-[var(--clay)]">
+                  {formatBRL(product.price)}
+                </span>
+                <span className="text-sm text-[var(--muted-foreground)]">
+                  ou 3x de {formatBRL(product.price / 3)}
+                </span>
+              </div>
+
+              <p className="mt-6 text-lg leading-relaxed text-[var(--sertao)]">
+                {product.description || product.short}
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-2">
+                {product.badges.map((b: string) => (
+                  <span key={b} className="inline-flex items-center gap-1.5 rounded-full bg-[var(--leaf)]/10 px-3 py-1 text-xs font-medium text-[var(--leaf)]">
+                    <Leaf className="h-3 w-3" /> {b}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-10 flex items-center gap-4">
+                <div className="flex h-12 items-center rounded-xl border border-[var(--border)] bg-white">
+                  <button
+                    onClick={() => setQty(Math.max(1, qty - 1))}
+                    className="flex h-12 w-12 items-center justify-center text-[var(--sertao)] transition-colors hover:bg-[var(--sand)] hover:text-[var(--clay)]"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="w-10 text-center font-display text-lg font-bold">{qty}</span>
+                  <button
+                    onClick={() => setQty(qty + 1)}
+                    className="flex h-12 w-12 items-center justify-center text-[var(--sertao)] transition-colors hover:bg-[var(--sand)] hover:text-[var(--clay)]"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+                <Button
+                  variant="hero"
+                  size="xl"
+                  className="flex-1 shadow-lg shadow-[var(--clay)]/20"
+                  onClick={() => {
+                    add(product, qty);
+                    toast.success("Adicionado ao carrinho", { description: product.name });
+                  }}
+                >
+                  Adicionar ao carrinho
+                </Button>
+              </div>
+
+              <div className="mt-6 flex items-center justify-between border-t border-[var(--border)] pt-6">
+                <button className="flex items-center gap-2 text-sm font-medium text-[var(--muted-foreground)] transition-colors hover:text-[var(--clay)]">
+                  <Heart className="h-4 w-4" /> Adicionar aos favoritos
+                </button>
+                <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+                  <span>✔ Compra Segura</span>
+                  <span>✔ Envio Nacional</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* DETALHES ADICIONAIS */}
+        <div className="mt-20 grid gap-12 md:grid-cols-3">
+          <section className="md:col-span-2 space-y-12">
+            {/* HISTÓRIA */}
+            <div className="rounded-3xl bg-white p-8 shadow-sm border border-[var(--border)]">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-4">
+                <Sparkles className="h-4 w-4 text-[var(--clay)]" /> História do produto
+              </div>
+              <h2 className="font-display text-2xl font-semibold text-[var(--coffee)] mb-4">
+                Tradição que atravessa gerações
+              </h2>
+              <p className="text-lg leading-relaxed text-[var(--sertao)]">
+                {story}
+              </p>
+            </div>
+
+            {/* BENEFÍCIOS E ESPECIFICAÇÕES */}
+            <div className="grid gap-8 sm:grid-cols-2">
+              <div className="space-y-4">
+                <h3 className="font-display text-xl font-semibold text-[var(--coffee)]">Benefícios</h3>
+                <ul className="space-y-3">
+                  {benefits.map((b, i) => (
+                    <li key={i} className="flex items-start gap-3 text-[var(--sertao)]">
+                      <div className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--clay)] shrink-0" />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="space-y-4">
+                <h3 className="font-display text-xl font-semibold text-[var(--coffee)]">Especificações</h3>
+                <dl className="space-y-3 text-sm">
+                  <div className="flex justify-between border-b border-[var(--border)] pb-2">
+                    <dt className="text-[var(--muted-foreground)]">Origem</dt>
+                    <dd className="font-medium text-[var(--coffee)]">{specs.origem}</dd>
+                  </div>
+                  <div className="flex justify-between border-b border-[var(--border)] pb-2">
+                    <dt className="text-[var(--muted-foreground)]">Tipo</dt>
+                    <dd className="font-medium text-[var(--coffee)]">{specs.tipo}</dd>
+                  </div>
+                  <div className="flex justify-between border-b border-[var(--border)] pb-2">
+                    <dt className="text-[var(--muted-foreground)]">Validade</dt>
+                    <dd className="font-medium text-[var(--coffee)]">{specs.validade}</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </section>
+
+          {/* SIDEBAR: PRODUTOR E AVALIAÇÕES */}
+          <aside className="space-y-8">
+            <div className="rounded-3xl bg-[var(--coffee)] p-6 text-white shadow-xl">
+              <h3 className="font-display text-lg font-semibold mb-3">Quem produziu</h3>
+              <p className="text-sm opacity-90 leading-relaxed mb-4">
+                Produzido pela cooperativa <strong>{product.shop}</strong>, unindo famílias do sertão baiano para fortalecer o comércio justo e a preservação do Licurizal.
+              </p>
+              <Link to="/sobre" className="text-xs font-bold uppercase tracking-widest text-[var(--clay)] hover:underline">
+                Conheça nossa história →
+              </Link>
+            </div>
+
+            <div className="rounded-3xl border border-[var(--border)] bg-white p-6 shadow-sm">
+              <h3 className="font-display text-lg font-semibold text-[var(--coffee)] mb-4">Avaliações</h3>
+              <div className="space-y-4">
+                <div className="border-b border-[var(--border)] pb-4">
+                  <div className="flex text-[var(--clay)] mb-1">
+                    {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-3 w-3 fill-current" />)}
+                  </div>
+                  <p className="text-sm font-medium text-[var(--coffee)] mb-1">"Qualidade excepcional!"</p>
+                  <p className="text-xs text-[var(--muted-foreground)]">Maria S. — Salvador, BA</p>
+                </div>
+                <div className="pb-2">
+                  <div className="flex text-[var(--clay)] mb-1">
+                    {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-3 w-3 fill-current" />)}
+                  </div>
+                  <p className="text-sm font-medium text-[var(--coffee)] mb-1">"O sabor é incomparável."</p>
+                  <p className="text-xs text-[var(--muted-foreground)]">João P. — Feira de Santana, BA</p>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        {/* PRODUTOS RELACIONADOS */}
+        {related.length > 0 && (
+          <section className="mt-24">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="font-display text-3xl font-semibold text-[var(--coffee)]">
+                Você também pode gostar
+              </h2>
+              <Link to="/categorias" className="text-sm font-bold text-[var(--clay)] hover:underline">
+                Ver todos
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+              {related.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
-
-      {/* História */}
-      <section className="mt-16 rounded-2xl border border-[var(--border)] bg-[var(--cream)] p-8">
-        <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
-          <Sparkles className="h-3.5 w-3.5" /> História do produto
-        </div>
-        <h2 className="mt-2 font-display text-2xl font-semibold text-[var(--coffee)]">
-          Tradição que atravessa gerações
-        </h2>
-        <p className="mt-3 max-w-3xl text-[var(--sertao)]">
-          Este produto é elaborado por famílias da região da Caatinga baiana, que mantêm viva a tradição de extração artesanal do licuri — respeitando o tempo da natureza e promovendo o desenvolvimento sustentável.
-        </p>
-      </section>
-
-      {related.length > 0 && (
-        <section className="mt-16">
-          <h2 className="mb-6 font-display text-2xl font-semibold text-[var(--coffee)]">
-            Você também pode gostar
-          </h2>
-          <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
-            {related.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }
