@@ -35,7 +35,7 @@ function AccountPage() {
     if (user) {
       const { data } = await supabase
         .from("orders")
-        .select("*, order_items(*)")
+        .select("*, order_items(*), shipments(*)")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       setOrders(data || []);
