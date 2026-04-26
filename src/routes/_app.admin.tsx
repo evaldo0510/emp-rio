@@ -456,7 +456,7 @@ function AdminPage() {
                     min="0"
                     max="100"
                     step="0.01"
-                    disabled={updatingType === s.seller_type}
+                    disabled={!!updatingType || isRecalculating}
                     defaultValue={s.commission_rate * 100}
                     className="w-full bg-transparent border-b border-[var(--border)] py-1 text-lg font-bold text-[var(--coffee)] focus:border-[var(--clay)] outline-none disabled:opacity-50"
                     onBlur={(e) => updateTypeCommissionRate(s.seller_type, e.target.value)}
