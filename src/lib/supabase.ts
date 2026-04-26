@@ -17,6 +17,7 @@ export async function createOrder(orderData: any, items: any[]) {
   const orderItems = items.map((item) => ({
     order_id: order.id,
     product_id: item.id.startsWith("p") ? null : item.id,
+    seller_id: item.vendor_id || item.seller_id, // Ensure we have the seller
     name: item.name,
     price: item.price,
     quantity: item.quantity,
