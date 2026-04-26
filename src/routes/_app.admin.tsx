@@ -434,7 +434,7 @@ function AdminPage() {
               size="sm" 
               variant="soft" 
               onClick={recalculateCommissions}
-              disabled={isRecalculating}
+              disabled={isRecalculating || !!updatingType}
             >
               {isRecalculating ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
