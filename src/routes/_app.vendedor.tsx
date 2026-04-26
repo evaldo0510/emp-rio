@@ -225,6 +225,7 @@ export function VendorDashboard() {
     const formData = new FormData(e.currentTarget);
     const name = formData.get("store_name") as string;
     const desc = formData.get("description") as string;
+    const type = formData.get("seller_type") as string;
 
     try {
       const {
