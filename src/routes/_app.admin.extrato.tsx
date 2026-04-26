@@ -25,6 +25,7 @@ export const Route = createFileRoute("/_app/admin/extrato")({
 
 function AdminExtratoPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [sellers, setSellers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -35,8 +36,17 @@ function AdminExtratoPage() {
   });
 
   useEffect(() => {
-    fetchTransactions();
+    const init = async () => {
+      await fetchSellers();
+      await fetchTransactions();
+    };
+    init();
   }, [filterType, filterStatus, dateRange]);
+
+  const fetchSellers = async () => {
+    const { data } = await supabase.from("sellers").select("user_id, store_name");
+    if (data) setSellers(data);
+  };
 
   const fetchTransactions = async () => {
     setLoading(true);
@@ -46,60 +56,20 @@ function AdminExtratoPage() {
         .select(`
           *,
           orders(status, customer_name, id),
-          seller_wallet(
-            sellers(store_name)
-          )
+          seller_wallet(seller_id)
         `)
         .order("created_at", { ascending: false });
-
-      if (filterType !== "all") {
-        query = query.eq("type", filterType);
-      }
-
-      if (dateRange.start) {
-        query = query.gte("created_at", `${dateRange.start}T00:00:00`);
-      }
-      if (dateRange.end) {
-        query = query.lte("created_at", `${dateRange.end}T23:59:59`);
-      }
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-
-      let filteredData = data || [];
-
-      // Apply search term filter (client-side for simplicity on joined fields)
-      if (searchTerm) {
-        const lowerSearch = searchTerm.toLowerCase();
-        filteredData = filteredData.filter((t: any) => 
-          t.description?.toLowerCase().includes(lowerSearch) ||
-          t.seller_wallet?.sellers?.store_name?.toLowerCase().includes(lowerSearch) ||
-          t.orders?.customer_name?.toLowerCase().includes(lowerSearch) ||
-          t.id.toLowerCase().includes(lowerSearch) ||
-          t.order_id?.toLowerCase().includes(lowerSearch)
-        );
-      }
-
-      // Apply status filter (based on order status or transaction logic)
-      if (filterStatus !== "all") {
-        filteredData = filteredData.filter((t: any) => {
-          if (t.type === "sale") {
-            return t.orders?.status === filterStatus;
-          }
-          // For withdrawals, maybe we should join withdrawal_requests? 
-          // But wallet_transactions only has approved ones usually.
-          return true; 
-        });
-      }
-
+...
       setTransactions(filteredData);
     } catch (err: any) {
-      console.error("Error fetching transactions:", err);
-      toast.error("Erro ao carregar transações");
+...
     } finally {
       setLoading(false);
     }
+  };
+
+  const getSellerName = (sellerUserId: string) => {
+    return sellers.find((s) => s.user_id === sellerUserId)?.store_name || "Plataforma";
   };
 
   const exportToCSV = () => {
