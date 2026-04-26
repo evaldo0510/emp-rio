@@ -485,8 +485,8 @@ function AdminPage() {
               <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
                 <tr>
                   <th className="pb-3 font-bold">Tipo</th>
-                  <th className="pb-3 font-bold">Antes</th>
-                  <th className="pb-3 font-bold">Depois</th>
+                   <th className="pb-3 font-bold">Antes (% / Fração)</th>
+                   <th className="pb-3 font-bold">Depois (% / Fração)</th>
                   <th className="pb-3 font-bold">Data</th>
                 </tr>
               </thead>
