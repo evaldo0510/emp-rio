@@ -14,6 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_admins: {
+        Row: {
+          created_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           created_at: string | null
@@ -427,12 +442,13 @@ export type Database = {
       get_monthly_sales_report: {
         Args: { report_month: string }
         Returns: {
-          orders_by_status: Json
           sales_by_category: Json
+          sales_by_status: Json
           total_orders: number
           total_revenue: number
         }[]
       }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
