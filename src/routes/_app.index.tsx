@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Leaf, Sprout, Sun, Truck } from "lucide-react";
+import { ArrowRight, Leaf, Sprout, Sun, Truck, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
-import { categories, products } from "@/lib/products";
+import { categories, products as mockProducts, type Product } from "@/lib/products";
+import { supabase } from "@/lib/supabase";
 import hero from "@/assets/hero-licuri.jpg";
 
 export const Route = createFileRoute("/_app/")({
