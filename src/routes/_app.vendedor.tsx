@@ -109,6 +109,59 @@ function VendorDashboard() {
         if (shipData) setShipments(shipData);
       }
     }
+
+    // Fetch Withdrawal Requests
+    const { data: withdrawals } = await supabase
+      .from("withdrawal_requests")
+      .select("*")
+      .eq('seller_id', user.id)
+      .order("created_at", { ascending: false });
+    if (withdrawals) setWithdrawalRequests(withdrawals);
+  };
+
+  const handleWithdraw = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const amount = parseFloat(withdrawAmount);
+    
+    if (!amount || amount <= 0) {
+      toast.error("Insira um valor válido para o saque.");
+      return;
+    }
+
+    if (amount > (wallet?.balance || 0)) {
+      toast.error("Saldo insuficiente para este valor.");
+      return;
+    }
+
+    if (!pixKey) {
+      toast.error("Informe sua chave PIX para o recebimento.");
+      return;
+    }
+
+    try {
+      setIsSubmittingWithdraw(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase.from("withdrawal_requests").insert([{
+        seller_id: user.id,
+        amount,
+        pix_key: pixKey,
+        status: 'pending'
+      }]);
+
+      if (error) throw error;
+
+      toast.success("Solicitação de saque enviada com sucesso!");
+      setIsWithdrawOpen(false);
+      setWithdrawAmount("");
+      setPixKey("");
+      fetchDashboardData();
+    } catch (e: any) {
+      toast.error("Erro ao solicitar saque: " + e.message);
+    } finally {
+      setIsSubmittingWithdraw(false);
+    }
   };
 
   const handleRegisterSeller = async (e: React.FormEvent<HTMLFormElement>) => {
