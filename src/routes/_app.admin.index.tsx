@@ -14,6 +14,7 @@ import {
   History,
   Target,
   BarChart3,
+  Calendar,
 } from "lucide-react";
 import {
   BarChart,
