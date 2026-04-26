@@ -224,7 +224,46 @@ function AdminPage() {
           </div>
         </div>
       </div>
-
+      <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+        <h2 className="font-display text-lg font-semibold mb-6">Aprovação de Vendedores</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)] border-b border-[var(--border)]">
+              <tr>
+                <th className="pb-3 font-bold">Loja</th>
+                <th className="pb-3 font-bold">Data</th>
+                <th className="pb-3 font-bold">Status</th>
+                <th className="pb-3 font-bold text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--border)]">
+              {sellers.length === 0 ? (
+                <tr><td colSpan={4} className="py-4 text-center text-[var(--muted-foreground)]">Nenhum vendedor cadastrado.</td></tr>
+              ) : (
+                sellers.map(s => (
+                  <tr key={s.id}>
+                    <td className="py-4">
+                      <div className="font-bold text-[var(--coffee)]">{s.store_name}</div>
+                      <div className="text-xs text-[var(--muted-foreground)] line-clamp-1">{s.description}</div>
+                    </td>
+                    <td className="py-4">{new Date(s.created_at).toLocaleDateString()}</td>
+                    <td className="py-4">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${s.approved ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                        {s.approved ? 'APROVADO' : 'PENDENTE'}
+                      </span>
+                    </td>
+                    <td className="py-4 text-right">
+                      {!s.approved && (
+                        <Button size="sm" variant="hero" onClick={() => approveSeller(s.id)}>Aprovar</Button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
       <p className="mt-10 text-xs text-[var(--muted-foreground)]">
         Dados de demonstração. Listagem real de vendedores, produtos e financeiro será ativada
         com a integração do banco de dados (Lovable Cloud).
