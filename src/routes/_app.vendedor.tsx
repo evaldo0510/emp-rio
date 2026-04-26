@@ -854,8 +854,7 @@ function VendorDashboard() {
           </div>
         </div>
       )}
-    </>)}
-    </div>
+    </>
   );
 }
 
