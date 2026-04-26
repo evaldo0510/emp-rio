@@ -12,7 +12,20 @@ import {
   Settings,
   RefreshCcw,
   History,
+  Target,
+  BarChart3,
 } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from "recharts";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
