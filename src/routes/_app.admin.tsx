@@ -9,6 +9,7 @@ import {
   TrendingUp,
   PieChart,
   ArrowUpRight,
+  Settings,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
@@ -38,6 +39,7 @@ function AdminPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
+  const [commissionSettings, setCommissionSettings] = useState<any[]>([]);
   const [stats, setStats] = useState({
     totalSales: 0,
     orderCount: 0,
@@ -55,6 +57,7 @@ function AdminPage() {
     fetchOrders();
     fetchTransactions();
     fetchWithdrawals();
+    fetchCommissionSettings();
   };
 
   const fetchSellers = async () => {
@@ -89,6 +92,28 @@ function AdminPage() {
       .select("*, sellers(store_name)")
       .order("created_at", { ascending: false });
     if (data) setWithdrawals(data);
+  };
+
+  const fetchCommissionSettings = async () => {
+    const { data } = await supabase
+      .from("seller_type_settings")
+      .select("*")
+      .order("seller_type");
+    if (data) setCommissionSettings(data);
+  };
+
+  const updateTypeCommissionRate = async (type: string, rate: number) => {
+    try {
+      const { error } = await supabase
+        .from("seller_type_settings")
+        .update({ commission_rate: rate / 100 })
+        .eq("seller_type", type);
+      if (error) throw error;
+      toast.success("Comissão atualizada!");
+      fetchCommissionSettings();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
   };
 
   const approveSeller = async (id: string) => {
@@ -354,6 +379,34 @@ function AdminPage() {
                 )}
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+          <div className="flex items-center gap-2 mb-6">
+            <Settings className="h-5 w-5 text-[var(--clay)]" />
+            <h2 className="font-display text-lg font-semibold">Configurações de Comissão por Tipo</h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {commissionSettings.map((s) => (
+              <div key={s.seller_type} className="p-4 rounded-xl border border-[var(--border)] bg-[var(--sand)]/5">
+                <label className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)] font-bold mb-2 block">
+                  {s.seller_type}
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    defaultValue={s.commission_rate * 100}
+                    className="w-full bg-transparent border-b border-[var(--border)] py-1 text-lg font-bold text-[var(--coffee)] focus:border-[var(--clay)] outline-none"
+                    onBlur={(e) => updateTypeCommissionRate(s.seller_type, Number(e.target.value))}
+                  />
+                  <span className="text-lg font-bold text-[var(--coffee)]">%</span>
+                </div>
+                <p className="text-[10px] text-[var(--muted-foreground)] mt-2">
+                  Padrão para novos vendedores do tipo {s.seller_type}.
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
