@@ -21,6 +21,7 @@ import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppCarrinhoRouteImport } from './routes/_app.carrinho'
 import { Route as AppBlogRouteImport } from './routes/_app.blog'
 import { Route as AppAdminRouteImport } from './routes/_app.admin'
+import { Route as AppAdminIndexRouteImport } from './routes/_app.admin.index'
 import { Route as AppRastreioOrderIdRouteImport } from './routes/_app.rastreio.$orderId'
 import { Route as AppProdutoSlugRouteImport } from './routes/_app.produto.$slug'
 
@@ -83,6 +84,11 @@ const AppAdminRoute = AppAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppAdminRoute,
+} as any)
 const AppRastreioOrderIdRoute = AppRastreioOrderIdRouteImport.update({
   id: '/rastreio/$orderId',
   path: '/rastreio/$orderId',
@@ -96,7 +102,7 @@ const AppProdutoSlugRoute = AppProdutoSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/admin': typeof AppAdminRoute
+  '/admin': typeof AppAdminRouteWithChildren
   '/blog': typeof AppBlogRoute
   '/carrinho': typeof AppCarrinhoRoute
   '/categorias': typeof AppCategoriasRoute
@@ -108,9 +114,9 @@ export interface FileRoutesByFullPath {
   '/vendedor': typeof AppVendedorRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
+  '/admin/': typeof AppAdminIndexRoute
 }
 export interface FileRoutesByTo {
-  '/admin': typeof AppAdminRoute
   '/blog': typeof AppBlogRoute
   '/carrinho': typeof AppCarrinhoRoute
   '/categorias': typeof AppCategoriasRoute
@@ -123,11 +129,12 @@ export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
+  '/admin': typeof AppAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
-  '/_app/admin': typeof AppAdminRoute
+  '/_app/admin': typeof AppAdminRouteWithChildren
   '/_app/blog': typeof AppBlogRoute
   '/_app/carrinho': typeof AppCarrinhoRoute
   '/_app/categorias': typeof AppCategoriasRoute
@@ -140,6 +147,7 @@ export interface FileRoutesById {
   '/_app/': typeof AppIndexRoute
   '/_app/produto/$slug': typeof AppProdutoSlugRoute
   '/_app/rastreio/$orderId': typeof AppRastreioOrderIdRoute
+  '/_app/admin/': typeof AppAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -157,9 +165,9 @@ export interface FileRouteTypes {
     | '/vendedor'
     | '/produto/$slug'
     | '/rastreio/$orderId'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/admin'
     | '/blog'
     | '/carrinho'
     | '/categorias'
@@ -172,6 +180,7 @@ export interface FileRouteTypes {
     | '/'
     | '/produto/$slug'
     | '/rastreio/$orderId'
+    | '/admin'
   id:
     | '__root__'
     | '/_app'
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/_app/'
     | '/_app/produto/$slug'
     | '/_app/rastreio/$orderId'
+    | '/_app/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -280,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/admin/': {
+      id: '/_app/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AppAdminIndexRouteImport
+      parentRoute: typeof AppAdminRoute
+    }
     '/_app/rastreio/$orderId': {
       id: '/_app/rastreio/$orderId'
       path: '/rastreio/$orderId'
@@ -297,8 +314,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppAdminRouteChildren {
+  AppAdminIndexRoute: typeof AppAdminIndexRoute
+}
+
+const AppAdminRouteChildren: AppAdminRouteChildren = {
+  AppAdminIndexRoute: AppAdminIndexRoute,
+}
+
+const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
+  AppAdminRouteChildren,
+)
+
 interface AppRouteChildren {
-  AppAdminRoute: typeof AppAdminRoute
+  AppAdminRoute: typeof AppAdminRouteWithChildren
   AppBlogRoute: typeof AppBlogRoute
   AppCarrinhoRoute: typeof AppCarrinhoRoute
   AppCategoriasRoute: typeof AppCategoriasRoute
@@ -314,7 +343,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAdminRoute: AppAdminRoute,
+  AppAdminRoute: AppAdminRouteWithChildren,
   AppBlogRoute: AppBlogRoute,
   AppCarrinhoRoute: AppCarrinhoRoute,
   AppCategoriasRoute: AppCategoriasRoute,
@@ -337,3 +366,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

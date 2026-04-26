@@ -35,7 +35,7 @@ import { formatBRL } from "@/lib/products";
 import { supabase } from "@/lib/supabase";
 import { validateCommissionRate } from "@/lib/commissions";
 
-export const Route = createFileRoute("/_app/admin")({
+export const Route = createFileRoute("/_app/admin/")({
   head: () => ({ meta: [{ title: "Painel Admin — Licuri Hub" }] }),
   component: AdminPage,
 });
