@@ -355,6 +355,12 @@ export function VendorDashboard() {
     }
   };
 
+  const handleShare = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    toast.success("Link do seu painel copiado!");
+  };
+
   return (
     <div className="container-narrow py-10">
       <header className="flex items-center justify-between">
