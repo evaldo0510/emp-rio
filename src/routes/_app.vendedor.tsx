@@ -188,15 +188,18 @@ function VendorDashboard() {
     }
   };
 
-  const updateTracking = async (shipmentId: string, code: string) => {
+  const updateShipmentStatus = async (shipmentId: string, status: string, trackingCode?: string) => {
     try {
+      const updateData: any = { status };
+      if (trackingCode) updateData.tracking_code = trackingCode;
+      
       const { error } = await supabase
         .from("shipments")
-        .update({ tracking_code: code, status: 'shipped' })
+        .update(updateData)
         .eq('id', shipmentId);
       
       if (error) throw error;
-      toast.success("Rastreio atualizado!");
+      toast.success("Status de envio atualizado!");
       fetchDashboardData();
     } catch (e: any) {
       toast.error(e.message);
