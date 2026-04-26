@@ -19,13 +19,14 @@ export async function createOrder(orderData: any, items: any[]) {
     .in("user_id", sellerIds);
 
   const sellerRates = (sellersData || []).reduce((acc: any, s: any) => {
-    acc[s.user_id] = s.commission_rate || 0.15;
+    // commission_rate is a percentage (e.g. 10.0), so we divide by 100
+    acc[s.user_id] = (s.commission_rate || 10.0) / 100;
     return acc;
   }, {});
 
   const orderItems = items.map((item) => {
     const sellerId = item.vendor_id || item.seller_id;
-    const rate = sellerRates[sellerId] || 0.15;
+    const rate = sellerRates[sellerId] || 0.1; // Default 10%
     const totalAmount = item.price * item.quantity;
     const commissionAmount = totalAmount * rate;
     const netAmount = totalAmount - commissionAmount;
