@@ -27,6 +27,9 @@ const statuses = [
 function AdminPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [sellers, setSellers] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [stats, setStats] = useState({
     totalSales: 0,
     orderCount: 0,
@@ -35,13 +38,35 @@ function AdminPage() {
   });
 
   useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
     fetchStats();
     fetchSellers();
-  }, []);
+    fetchOrders();
+    fetchTransactions();
+    fetchWithdrawals();
+  };
 
   const fetchSellers = async () => {
     const { data } = await supabase.from("sellers").select("*").order("created_at", { ascending: false });
     if (data) setSellers(data);
+  };
+
+  const fetchOrders = async () => {
+    const { data } = await supabase.from("orders").select("*, order_items(*)").order("created_at", { ascending: false }).limit(20);
+    if (data) setOrders(data);
+  };
+
+  const fetchTransactions = async () => {
+    const { data } = await supabase.from("wallet_transactions").select("*").order("created_at", { ascending: false }).limit(20);
+    if (data) setTransactions(data);
+  };
+
+  const fetchWithdrawals = async () => {
+    const { data } = await supabase.from("withdrawal_requests").select("*, sellers(store_name)").order("created_at", { ascending: false });
+    if (data) setWithdrawals(data);
   };
 
   const approveSeller = async (id: string) => {
@@ -55,20 +80,43 @@ function AdminPage() {
     }
   };
 
+  const updateOrderStatus = async (id: string, status: string) => {
+    try {
+      const { error } = await supabase.from("orders").update({ status }).eq('id', id);
+      if (error) throw error;
+      toast.success("Status do pedido atualizado!");
+      fetchOrders();
+      fetchStats();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
+  const handleWithdrawal = async (id: string, status: 'approved' | 'rejected') => {
+    try {
+      const { error } = await supabase.from("withdrawal_requests").update({ status }).eq('id', id);
+      if (error) throw error;
+      toast.success(`Saque ${status === 'approved' ? 'aprovado' : 'recusado'}!`);
+      fetchWithdrawals();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
   const fetchStats = async () => {
-    const [{ data: orders }, { count: sellers }, { count: users }] = await Promise.all([
+    const [{ data: ordersData }, { count: sellersCount }, { count: usersCount }] = await Promise.all([
       supabase.from("orders").select("total"),
-      supabase.from("products").select("vendor_id", { count: 'exact', head: true }),
+      supabase.from("sellers").select("*", { count: 'exact', head: true }),
       supabase.from("orders").select("user_id", { count: 'exact', head: true })
     ]);
 
-    const total = orders?.reduce((acc, o) => acc + Number(o.total), 0) || 0;
+    const total = ordersData?.reduce((acc, o) => acc + Number(o.total), 0) || 0;
     
     setStats({
       totalSales: total,
-      orderCount: orders?.length || 0,
-      sellerCount: sellers || 0,
-      userCount: users || 0
+      orderCount: ordersData?.length || 0,
+      sellerCount: sellersCount || 0,
+      userCount: usersCount || 0
     });
   };
 
