@@ -133,12 +133,18 @@ function CheckoutPage() {
           {step === 1 && (
             <div className="space-y-4">
               <h2 className="font-display text-xl font-semibold">Pagamento</h2>
-              <div className="space-y-2">
-                <PayOption label="Pix" sub="Aprovação imediata, 5% off" />
-                <PayOption label="Cartão de crédito" sub="Em até 6x sem juros" />
-                <PayOption label="Boleto" sub="Vence em 3 dias úteis" />
+              <div className="space-y-3">
+                <PayOption label="Pix" sub="Aprovação imediata, 5% off" icon="⚡" />
+                <PayOption label="Cartão de Crédito" sub="Em até 6x sem juros" icon="💳" />
+                <div className="rounded-xl border border-[var(--clay)]/30 bg-[var(--clay)]/5 p-4 mt-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <img src="https://www.mercadopago.com/instore/merchant/assets/logo-mp.png" alt="Mercado Pago" className="h-5" />
+                    <span className="text-xs font-bold uppercase tracking-widest text-[var(--clay)]">Checkout Seguro</span>
+                  </div>
+                  <p className="text-xs text-[var(--muted-foreground)]">Ao clicar em continuar, você será redirecionado para o ambiente seguro do Mercado Pago para concluir seu pagamento.</p>
+                </div>
               </div>
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2 pt-4">
                 <Button variant="soft" size="lg" onClick={() => setStep(0)}>
                   Voltar
                 </Button>
@@ -285,12 +291,17 @@ function ShipOption({
   );
 }
 
-function PayOption({ label, sub }: { label: string; sub: string }) {
+function PayOption({ label, sub, icon }: { label: string; sub: string; icon?: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-[var(--border)] p-3 hover:bg-[var(--sand)]">
-      <span className="h-4 w-4 rounded-full border border-[var(--muted-foreground)]/40" />
-      <div>
-        <div className="text-sm font-medium">{label}</div>
+    <div className="flex items-center gap-3 rounded-xl border border-[var(--border)] p-4 hover:border-[var(--clay)] hover:bg-[var(--clay)]/5 transition-all cursor-pointer group">
+      <span className="h-5 w-5 rounded-full border-2 border-[var(--border)] group-hover:border-[var(--clay)] flex items-center justify-center">
+        <span className="h-2.5 w-2.5 rounded-full bg-transparent group-hover:bg-[var(--clay)]" />
+      </span>
+      <div className="flex-1">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-bold text-[var(--coffee)]">{label}</span>
+          {icon && <span className="text-lg">{icon}</span>}
+        </div>
         <div className="text-xs text-[var(--muted-foreground)]">{sub}</div>
       </div>
     </div>
