@@ -451,7 +451,7 @@ function AdminPage() {
                     type="number"
                     min="0"
                     max="100"
-                    step="0.1"
+                    step="0.01"
                     defaultValue={s.commission_rate * 100}
                     className="w-full bg-transparent border-b border-[var(--border)] py-1 text-lg font-bold text-[var(--coffee)] focus:border-[var(--clay)] outline-none"
                     onBlur={(e) => updateTypeCommissionRate(s.seller_type, Number(e.target.value))}
