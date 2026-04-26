@@ -487,6 +487,7 @@ function AdminPage() {
                   <th className="pb-3 font-bold">Tipo</th>
                    <th className="pb-3 font-bold">Antes (% / Fração)</th>
                    <th className="pb-3 font-bold">Depois (% / Fração)</th>
+                  <th className="pb-3 font-bold">Admin</th>
                   <th className="pb-3 font-bold">Data</th>
                 </tr>
               </thead>
