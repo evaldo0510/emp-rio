@@ -40,7 +40,7 @@ function CheckoutPage() {
       setIsSubmitting(true);
       const { data: { user } } = await supabase.auth.getUser();
 
-      await createOrder({
+      const order = await createOrder({
         user_id: user?.id,
         customer_name: address.name,
         customer_email: user?.email || "anon@licurihub.com",
@@ -52,14 +52,23 @@ function CheckoutPage() {
         status: "pago",
       }, items);
 
-      toast.success("Pedido confirmado!", {
-        description: "Seu pedido foi registrado com sucesso.",
+      // SIMULATION: Calling Mercado Pago Preference API
+      toast.info("Processando pagamento...", {
+        description: "Redirecionando para ambiente seguro do Mercado Pago.",
       });
+      
+      // We simulate a delay then success
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      toast.success("Pagamento realizado!", {
+        description: "Seu pedido #" + order.id.slice(0, 8) + " foi confirmado.",
+      });
+      
       clear();
-      navigate({ to: "/" });
+      navigate({ to: "/conta" });
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao finalizar pedido. Tente novamente.");
+      toast.error("Erro ao processar pedido. Verifique os dados e tente novamente.");
     } finally {
       setIsSubmitting(false);
     }
