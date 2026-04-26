@@ -20,6 +20,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { formatBRL } from "@/lib/products";
 import { supabase } from "@/lib/supabase";
+import { validateCommissionRate } from "@/lib/commissions";
 
 export const Route = createFileRoute("/_app/admin")({
   head: () => ({ meta: [{ title: "Painel Admin — Licuri Hub" }] }),
@@ -132,12 +133,9 @@ function AdminPage() {
   };
 
   const updateTypeCommissionRate = async (type: string, rateInput: any) => {
-    const rate = typeof rateInput === "string" && rateInput.trim() === "" ? NaN : Number(rateInput);
-    
-    // Round to 2 decimal places before processing
-    const roundedRate = !isNaN(rate) ? Math.round(rate * 100) / 100 : NaN;
+    const roundedRate = validateCommissionRate(rateInput);
 
-    if (isNaN(roundedRate) || roundedRate < 0 || roundedRate > 100) {
+    if (roundedRate === null) {
       toast.error("A taxa de comissão deve estar entre 0% e 100%.");
       fetchCommissionSettings(); // Reset to current value from DB
       return;
