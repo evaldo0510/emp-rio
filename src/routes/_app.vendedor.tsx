@@ -10,6 +10,7 @@ import {
   Plus,
   Wallet,
   ArrowUpRight,
+  Share2,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
