@@ -170,6 +170,7 @@ function AdminExtratoPage() {
         <div>
           <Link
             to="/admin"
+            search={(prev: any) => ({ ...prev })}
             className="mb-2 flex items-center gap-1 text-xs text-[var(--muted-foreground)] hover:text-[var(--clay)]"
           >
             <ArrowLeft className="h-3 w-3" />
