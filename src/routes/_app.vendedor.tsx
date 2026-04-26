@@ -551,10 +551,12 @@ function Stat({
   icon: Icon,
   label,
   value,
+  children,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
+  children?: React.ReactNode;
 }) {
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
@@ -564,7 +566,10 @@ function Stat({
         </span>
         <Icon className="h-4 w-4 text-[var(--clay)]" />
       </div>
-      <div className="mt-3 font-display text-2xl font-bold text-[var(--coffee)]">{value}</div>
+      <div className="mt-3 flex items-baseline justify-between gap-2">
+        <div className="font-display text-2xl font-bold text-[var(--coffee)]">{value}</div>
+        {children}
+      </div>
     </div>
   );
 }
