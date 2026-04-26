@@ -59,8 +59,11 @@ function AdminPage() {
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [commissionSettings, setCommissionSettings] = useState<any[]>([]);
   const [commissionHistory, setCommissionHistory] = useState<any[]>([]);
+  const [topSellers, setTopSellers] = useState<any[]>([]);
+  const [salesByDay, setSalesByDay] = useState<any[]>([]);
   const [stats, setStats] = useState({
     totalSales: 0,
+    platformRevenue: 0,
     orderCount: 0,
     sellerCount: 0,
     userCount: 0,
