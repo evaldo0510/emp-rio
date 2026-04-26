@@ -414,8 +414,60 @@ function VendorDashboard() {
 
       <p className="mt-10 text-xs text-[var(--muted-foreground)]">
         Dados de demonstração. Cadastro de produtos, gestão de pedidos e métricas em tempo real
-        serão ativados quando o backend (Lovable Cloud) estiver conectado.
+         seriam ativados quando o backend (Lovable Cloud) estiver conectado.
       </p>
+
+      {realOrders.length > 0 && (
+        <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
+          <h2 className="font-display text-lg font-semibold mb-6">Gestão de Envios</h2>
+          <div className="space-y-4">
+            {realOrders.filter(o => o.orders.status === 'paid').map(order => {
+              const shipment = shipments.find(s => s.order_id === order.order_id);
+              return (
+                <div key={order.id} className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-[var(--border)] bg-[var(--sand)]/20">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-lg overflow-hidden border border-[var(--border)]">
+                      <img src={order.image_url} alt="" className="h-full w-full object-cover" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-[var(--coffee)]">{order.name}</p>
+                      <p className="text-xs text-[var(--muted-foreground)]">Pedido #{order.order_id.slice(0, 8)}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1 min-w-[200px]">
+                    {shipment?.tracking_code ? (
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase">Enviado</span>
+                        <span className="font-mono text-[var(--muted-foreground)]">{shipment.tracking_code}</span>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <input 
+                          id={`track-${order.id}`}
+                          placeholder="Código de rastreio" 
+                          className="flex-1 rounded-md border border-[var(--border)] bg-white px-3 py-1.5 text-xs outline-none focus:border-[var(--clay)]" 
+                        />
+                        <Button 
+                          size="sm" 
+                          variant="soft"
+                          onClick={() => {
+                            const input = document.getElementById(`track-${order.id}`) as HTMLInputElement;
+                            if (input?.value && shipment) updateTracking(shipment.id, input.value);
+                          }}
+                        >
+                          Salvar
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      </>)}
     </div>
   );
 }
