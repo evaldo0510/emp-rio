@@ -357,14 +357,22 @@ function AdminPage() {
         <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
           Licuri Hub · Admin
         </span>
-        <Button variant="hero" size="sm" onClick={generateReport} disabled={isGenerating}>
-          {isGenerating ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Download className="mr-2 h-4 w-4" />
-          )}
-          Gerar Relatório PDF
-        </Button>
+        <div className="flex gap-2">
+          <Link to="/admin/extrato">
+            <Button variant="soft" size="sm">
+              <BarChart3 className="mr-2 h-4 w-4" />
+              Extrato Financeiro
+            </Button>
+          </Link>
+          <Button variant="hero" size="sm" onClick={generateReport} disabled={isGenerating}>
+            {isGenerating ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            Gerar Relatório PDF
+          </Button>
+        </div>
       </header>
 
       <div className="mt-8 grid gap-4 md:grid-cols-4">
