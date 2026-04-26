@@ -130,7 +130,10 @@ function AdminPage() {
     if (data) setCommissionSettings(data);
   };
 
-  const updateTypeCommissionRate = async (type: string, rate: number) => {
+  const updateTypeCommissionRate = async (type: string, rateInput: number) => {
+    // Round to 2 decimal places before processing
+    const rate = Math.round(rateInput * 100) / 100;
+
     if (isNaN(rate) || rate < 0 || rate > 100) {
       toast.error("A taxa de comissão deve estar entre 0% e 100%.");
       fetchCommissionSettings(); // Reset to current value from DB
