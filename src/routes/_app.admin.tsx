@@ -104,7 +104,7 @@ function AdminPage() {
   const fetchCommissionHistory = async () => {
     const { data } = await supabase
       .from("commission_rate_history")
-      .select("*")
+      .select("*, profiles:admin_id(email)")
       .order("created_at", { ascending: false })
       .limit(10);
     if (data) setCommissionHistory(data);
@@ -487,6 +487,7 @@ function AdminPage() {
                   <th className="pb-3 font-bold">Tipo</th>
                    <th className="pb-3 font-bold">Antes (% / Fração)</th>
                    <th className="pb-3 font-bold">Depois (% / Fração)</th>
+                  <th className="pb-3 font-bold">Admin</th>
                   <th className="pb-3 font-bold">Data</th>
                 </tr>
               </thead>
@@ -506,6 +507,9 @@ function AdminPage() {
                       </td>
                       <td className="py-3 font-bold text-[var(--leaf)]">
                         {(h.new_rate * 100).toFixed(2)}% <span className="text-[10px] font-normal text-[var(--muted-foreground)]">({h.new_rate})</span>
+                      </td>
+                      <td className="py-3 text-xs text-[var(--muted-foreground)]">
+                        {h.profiles?.email || h.admin_id || "Sistema"}
                       </td>
                       <td className="py-3 text-xs text-[var(--muted-foreground)]">
                         {new Date(h.created_at).toLocaleString()}
