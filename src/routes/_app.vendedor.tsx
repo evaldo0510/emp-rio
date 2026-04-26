@@ -104,8 +104,8 @@ function VendorDashboard() {
 
       const dailyTotals = last7Days.map(day => {
         const total = salesData
-          .filter(o => new Date(o.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) === day)
-          .reduce((acc, o) => acc + (o.net_amount || (o.price * o.quantity)), 0);
+          .filter(o => o.created_at && new Date(o.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) === day)
+          .reduce((acc, o) => acc + (Number(o.net_amount) || (Number(o.price) * o.quantity)), 0);
         return { day, v: total };
       });
       setDailySales(dailyTotals);
