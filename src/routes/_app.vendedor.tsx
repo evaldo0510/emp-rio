@@ -476,9 +476,17 @@ function VendorDashboard() {
       )}
                   <div className="text-right">
                     <div className="font-medium">{formatBRL(o.price * o.quantity)}</div>
-                    <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--leaf)]">
-                      {o.orders.status}
-                    </span>
+                    <select 
+                      value={o.status || 'pending'} 
+                      onChange={(e) => updateOrderItemStatus(o.id, e.target.value)}
+                      className="text-[10px] uppercase tracking-[0.18em] text-[var(--leaf)] bg-transparent border-none outline-none cursor-pointer"
+                    >
+                      <option value="pending">Pendente</option>
+                      <option value="processing">Preparando</option>
+                      <option value="shipped">Enviado</option>
+                      <option value="delivered">Entregue</option>
+                      <option value="cancelled">Cancelado</option>
+                    </select>
                   </div>
                 </li>
               ))
