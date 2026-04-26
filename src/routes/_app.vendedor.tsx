@@ -22,18 +22,7 @@ export const Route = createFileRoute("/_app/vendedor")({
   component: VendorDashboard,
 });
 
-const sales = [
-  { day: "13/05", v: 320 }, { day: "14/05", v: 410 },
-  { day: "15/05", v: 360 }, { day: "16/05", v: 520 },
-  { day: "17/05", v: 480 }, { day: "18/05", v: 610 }, { day: "19/05", v: 730 },
-];
-
-const orders = [
-  { id: "#1245", date: "19/05/2024", value: "R$ 98,80", status: "Entregue" },
-  { id: "#1244", date: "18/05/2024", value: "R$ 49,90", status: "Enviado" },
-  { id: "#1243", date: "18/05/2024", value: "R$ 75,90", status: "Pago" },
-  { id: "#1242", date: "17/05/2024", value: "R$ 159,90", status: "Pago" },
-];
+// Constants for mock data removed. Using real database data.
 
 function VendorDashboard() {
   const [isUploading, setIsUploading] = useState(false);
