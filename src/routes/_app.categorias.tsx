@@ -1,7 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState, useEffect } from "react";
 import { ChevronRight, Star } from "lucide-react";
-import { products as mockProducts, categories, regions, formatBRL, type Category, type Product } from "@/lib/products";
+import {
+  products as mockProducts,
+  categories,
+  regions,
+  formatBRL,
+  type Category,
+  type Product,
+} from "@/lib/products";
 import { supabase } from "@/lib/supabase";
 
 type Search = { cat?: Category | "todos"; q?: string };

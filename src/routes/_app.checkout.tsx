@@ -32,38 +32,43 @@ function CheckoutPage() {
   const navigate = useNavigate();
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
-    setAddress(prev => ({ ...prev, [key]: e.target.value }));
+    setAddress((prev) => ({ ...prev, [key]: e.target.value }));
   };
 
   const handleFinish = async () => {
     try {
       setIsSubmitting(true);
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       // 1. Create Order in Supabase
-      const order = await createOrder({
-        user_id: user?.id,
-        customer_name: address.name,
-        customer_email: user?.email || "anon@licurihub.com",
-        address: address,
-        shipping_method: shipping === 12.9 ? "PAC" : "SEDEX",
-        shipping_cost: shipping,
-        subtotal: subtotal,
-        total: total,
-        status: "pending", // Start as pending
-      }, items);
+      const order = await createOrder(
+        {
+          user_id: user?.id,
+          customer_name: address.name,
+          customer_email: user?.email || "anon@licurihub.com",
+          address: address,
+          shipping_method: shipping === 12.9 ? "PAC" : "SEDEX",
+          shipping_cost: shipping,
+          subtotal: subtotal,
+          total: total,
+          status: "pending", // Start as pending
+        },
+        items,
+      );
 
       // 2. Integration with Payment Gateway (Simulation of the API call provided by user)
       // In a real production app, this would be a server-side call to Mercado Pago
       toast.info("Processando pagamento...", {
         description: "Redirecionando para ambiente seguro do Mercado Pago.",
       });
-      
+
       // Simulation of metadata tracking
       console.log("Creating MP preference with metadata:", { order_id: order.id });
 
       // We simulate a delay then success update (simulating the webhook)
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Simulate the webhook updating the order status
       const { error: updateError } = await supabase
@@ -76,7 +81,7 @@ function CheckoutPage() {
       toast.success("Pagamento realizado!", {
         description: "Seu pedido #" + order.id.slice(0, 8) + " foi confirmado.",
       });
-      
+
       clear();
       navigate({ to: "/conta" });
     } catch (error) {
@@ -106,7 +111,11 @@ function CheckoutPage() {
             >
               {i < step ? <Check className="h-3.5 w-3.5" /> : i + 1}
             </span>
-            <span className={i === step ? "font-medium text-[var(--coffee)]" : "text-[var(--muted-foreground)]"}>
+            <span
+              className={
+                i === step ? "font-medium text-[var(--coffee)]" : "text-[var(--muted-foreground)]"
+              }
+            >
               {s}
             </span>
             {i < steps.length - 1 && <span className="mx-2 h-px w-8 bg-[var(--border)]" />}
@@ -120,12 +129,43 @@ function CheckoutPage() {
             <div className="space-y-4">
               <h2 className="font-display text-xl font-semibold">Endereço de entrega</h2>
               <div className="grid gap-3 md:grid-cols-2">
-                <Field label="Nome completo" placeholder="Maria Silva" value={address.name} onChange={(e) => handleAddressChange(e, 'name')} />
-                <Field label="CEP" placeholder="40000-000" value={address.zip} onChange={(e) => handleAddressChange(e, 'zip')} />
-                <Field label="Endereço" placeholder="Rua das Palmeiras, 123" full value={address.street} onChange={(e) => handleAddressChange(e, 'street')} />
-                <Field label="Bairro" placeholder="Centro" value={address.neighborhood} onChange={(e) => handleAddressChange(e, 'neighborhood')} />
-                <Field label="Cidade" placeholder="Salvador" value={address.city} onChange={(e) => handleAddressChange(e, 'city')} />
-                <Field label="Estado" placeholder="BA" value={address.state} onChange={(e) => handleAddressChange(e, 'state')} />
+                <Field
+                  label="Nome completo"
+                  placeholder="Maria Silva"
+                  value={address.name}
+                  onChange={(e) => handleAddressChange(e, "name")}
+                />
+                <Field
+                  label="CEP"
+                  placeholder="40000-000"
+                  value={address.zip}
+                  onChange={(e) => handleAddressChange(e, "zip")}
+                />
+                <Field
+                  label="Endereço"
+                  placeholder="Rua das Palmeiras, 123"
+                  full
+                  value={address.street}
+                  onChange={(e) => handleAddressChange(e, "street")}
+                />
+                <Field
+                  label="Bairro"
+                  placeholder="Centro"
+                  value={address.neighborhood}
+                  onChange={(e) => handleAddressChange(e, "neighborhood")}
+                />
+                <Field
+                  label="Cidade"
+                  placeholder="Salvador"
+                  value={address.city}
+                  onChange={(e) => handleAddressChange(e, "city")}
+                />
+                <Field
+                  label="Estado"
+                  placeholder="BA"
+                  value={address.state}
+                  onChange={(e) => handleAddressChange(e, "state")}
+                />
               </div>
               <div className="pt-2">
                 <h3 className="mb-2 mt-4 font-display text-base font-semibold">Forma de envio</h3>
@@ -160,10 +200,19 @@ function CheckoutPage() {
                 <PayOption label="Cartão de Crédito" sub="Em até 6x sem juros" icon="💳" />
                 <div className="rounded-xl border border-[var(--clay)]/30 bg-[var(--clay)]/5 p-4 mt-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <img src="https://www.mercadopago.com/instore/merchant/assets/logo-mp.png" alt="Mercado Pago" className="h-5" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-[var(--clay)]">Checkout Seguro</span>
+                    <img
+                      src="https://www.mercadopago.com/instore/merchant/assets/logo-mp.png"
+                      alt="Mercado Pago"
+                      className="h-5"
+                    />
+                    <span className="text-xs font-bold uppercase tracking-widest text-[var(--clay)]">
+                      Checkout Seguro
+                    </span>
                   </div>
-                  <p className="text-xs text-[var(--muted-foreground)]">Ao clicar em continuar, você será redirecionado para o ambiente seguro do Mercado Pago para concluir seu pagamento.</p>
+                  <p className="text-xs text-[var(--muted-foreground)]">
+                    Ao clicar em continuar, você será redirecionado para o ambiente seguro do
+                    Mercado Pago para concluir seu pagamento.
+                  </p>
                 </div>
               </div>
               <div className="flex gap-2 pt-4">
@@ -186,12 +235,10 @@ function CheckoutPage() {
               <ul className="divide-y divide-[var(--border)]">
                 {items.map((i) => (
                   <li key={i.id} className="flex items-center gap-3 py-3">
-                    <img
-                      src={i.image}
-                      alt=""
-                      className="h-12 w-12 rounded-md object-cover"
-                    />
-                    <span className="flex-1 text-sm">{i.name} × {i.quantity}</span>
+                    <img src={i.image} alt="" className="h-12 w-12 rounded-md object-cover" />
+                    <span className="flex-1 text-sm">
+                      {i.name} × {i.quantity}
+                    </span>
                     <span className="font-semibold">{formatBRL(i.price * i.quantity)}</span>
                   </li>
                 ))}
@@ -200,12 +247,7 @@ function CheckoutPage() {
                 <Button variant="soft" size="lg" onClick={() => setStep(1)}>
                   Voltar
                 </Button>
-                <Button
-                  variant="hero"
-                  size="lg"
-                  disabled={isSubmitting}
-                  onClick={handleFinish}
-                >
+                <Button variant="hero" size="lg" disabled={isSubmitting} onClick={handleFinish}>
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

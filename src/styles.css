@@ -56,8 +56,8 @@
   --radius: 0.5rem;
 
   /* Paleta Licuri Hub (clara) */
-  --background: oklch(0.97 0.018 80);            /* areia clarinha */
-  --foreground: oklch(0.22 0.045 50);            /* marrom muito escuro */
+  --background: oklch(0.97 0.018 80); /* areia clarinha */
+  --foreground: oklch(0.22 0.045 50); /* marrom muito escuro */
 
   --card: oklch(0.985 0.012 85);
   --card-foreground: oklch(0.22 0.045 50);
@@ -65,16 +65,16 @@
   --popover: oklch(0.985 0.012 85);
   --popover-foreground: oklch(0.22 0.045 50);
 
-  --primary: oklch(0.62 0.16 47);                /* terracota / clay */
+  --primary: oklch(0.62 0.16 47); /* terracota / clay */
   --primary-foreground: oklch(0.985 0.012 85);
 
-  --secondary: oklch(0.93 0.03 85);              /* cream */
+  --secondary: oklch(0.93 0.03 85); /* cream */
   --secondary-foreground: oklch(0.32 0.06 55);
 
   --muted: oklch(0.94 0.018 80);
   --muted-foreground: oklch(0.48 0.04 55);
 
-  --accent: oklch(0.55 0.09 135);                /* verde folha sutil */
+  --accent: oklch(0.55 0.09 135); /* verde folha sutil */
   --accent-foreground: oklch(0.985 0.012 85);
 
   --destructive: oklch(0.55 0.21 27);
@@ -165,7 +165,12 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  h1, h2, h3, h4, h5, .font-display {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.01em;
   }
@@ -175,9 +180,23 @@
   .bg-paper {
     background-color: var(--color-background);
     background-image:
-      radial-gradient(at 12% 20%, color-mix(in oklab, var(--clay) 8%, transparent) 0, transparent 45%),
-      radial-gradient(at 88% 80%, color-mix(in oklab, var(--leaf) 8%, transparent) 0, transparent 50%);
+      radial-gradient(
+        at 12% 20%,
+        color-mix(in oklab, var(--clay) 8%, transparent) 0,
+        transparent 45%
+      ),
+      radial-gradient(
+        at 88% 80%,
+        color-mix(in oklab, var(--leaf) 8%, transparent) 0,
+        transparent 50%
+      );
   }
-  .text-balance { text-wrap: balance; }
-  .container-narrow { max-width: 72rem; margin-inline: auto; padding-inline: 1.25rem; }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .container-narrow {
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
 }

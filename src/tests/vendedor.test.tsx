@@ -1,17 +1,17 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { VendorDashboard } from '@/routes/_app.vendedor';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { supabase } from '@/lib/supabase';
+import { render, screen, waitFor } from "@testing-library/react";
+import { VendorDashboard } from "@/routes/_app.vendedor";
+import { vi, describe, it, expect, beforeEach } from "vitest";
+import { supabase } from "@/lib/supabase";
 
-describe('VendorDashboard', () => {
-  const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+describe("VendorDashboard", () => {
+  const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
   beforeEach(() => {
     vi.clearAllMocks();
     consoleSpy.mockClear();
   });
 
-  it('renders the seller registration form when profile is missing', async () => {
+  it("renders the seller registration form when profile is missing", async () => {
     // Mock profile as null
     (supabase.from as any).mockImplementation((table: string) => ({
       select: vi.fn().mockReturnThis(),
@@ -30,27 +30,27 @@ describe('VendorDashboard', () => {
     });
   });
 
-  it('renders dashboard blocks when seller profile exists', async () => {
+  it("renders dashboard blocks when seller profile exists", async () => {
     // Mock profile
-    const mockProfile = { id: 'seller-1', store_name: 'Minha Loja', approved: true };
+    const mockProfile = { id: "seller-1", store_name: "Minha Loja", approved: true };
     const mockWallet = { balance: 100 };
-    
+
     (supabase.from as any).mockImplementation((table: string) => {
-      if (table === 'sellers') {
+      if (table === "sellers") {
         return {
           select: vi.fn().mockReturnThis(),
           eq: vi.fn().mockReturnThis(),
           maybeSingle: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
         };
       }
-      if (table === 'products') {
+      if (table === "products") {
         return {
           select: vi.fn().mockReturnThis(),
           eq: vi.fn().mockReturnThis(),
           order: vi.fn().mockResolvedValue({ data: [], error: null }),
         };
       }
-      if (table === 'seller_wallet') {
+      if (table === "seller_wallet") {
         return {
           select: vi.fn().mockReturnThis(),
           eq: vi.fn().mockReturnThis(),

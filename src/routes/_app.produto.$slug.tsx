@@ -1,5 +1,17 @@
 import { createFileRoute, Link, notFound, useLoaderData } from "@tanstack/react-router";
-import { ChevronRight, Heart, Leaf, Minus, Plus, Sparkles, Star, ShieldCheck, Truck, Zap, ShoppingCart } from "lucide-react";
+import {
+  ChevronRight,
+  Heart,
+  Leaf,
+  Minus,
+  Plus,
+  Sparkles,
+  Star,
+  ShieldCheck,
+  Truck,
+  Zap,
+  ShoppingCart,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
@@ -50,10 +62,13 @@ function ProductPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);
+  const related = products
+    .filter((p) => p.id !== product.id && p.category === product.category)
+    .slice(0, 4);
 
   // Mocked data for sections not yet in DB
-  const story = "Este produto nasce do coração do sertão. Cada fruto é colhido manualmente, respeitando o tempo da terra e mantendo a tradição viva.";
+  const story =
+    "Este produto nasce do coração do sertão. Cada fruto é colhido manualmente, respeitando o tempo da terra e mantendo a tradição viva.";
   const benefits = [
     "Rico em nutrientes naturais",
     "Produção artesanal e sustentável",
@@ -70,9 +85,13 @@ function ProductPage() {
     <div className="bg-[#F5F1E8]/50 min-h-screen">
       <div className="container-narrow py-10">
         <nav className="mb-8 flex items-center gap-1 text-xs text-[var(--muted-foreground)]">
-          <Link to="/" className="hover:text-[var(--clay)] transition-colors">Início</Link>
+          <Link to="/" className="hover:text-[var(--clay)] transition-colors">
+            Início
+          </Link>
           <ChevronRight className="h-3 w-3" />
-          <Link to="/categorias" className="hover:text-[var(--clay)] transition-colors">Catálogo</Link>
+          <Link to="/categorias" className="hover:text-[var(--clay)] transition-colors">
+            Catálogo
+          </Link>
           <ChevronRight className="h-3 w-3" />
           <span className="line-clamp-1 font-medium text-[var(--coffee)]">{product.name}</span>
         </nav>
@@ -93,7 +112,9 @@ function ProductPage() {
                   key={i}
                   onClick={() => setSelectedImage(img)}
                   className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-all ${
-                    selectedImage === img ? "border-[var(--clay)] shadow-md" : "border-transparent hover:border-[var(--border)]"
+                    selectedImage === img
+                      ? "border-[var(--clay)] shadow-md"
+                      : "border-transparent hover:border-[var(--border)]"
                   }`}
                 >
                   <img src={img} alt="" className="h-full w-full object-cover" />
@@ -108,13 +129,13 @@ function ProductPage() {
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--clay)]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--clay)]">
                 <Sparkles className="h-3 w-3" /> Essencial para sua rotina
               </div>
-          <h1 className="font-display text-4xl font-semibold leading-tight text-[var(--coffee)] md:text-5xl">
-            {product.name}
-          </h1>
-          <p className="mt-2 text-lg italic text-[var(--sertao)]">
-            “Mais do que um produto natural… uma experiência que vem da terra.”
-          </p>
-              
+              <h1 className="font-display text-4xl font-semibold leading-tight text-[var(--coffee)] md:text-5xl">
+                {product.name}
+              </h1>
+              <p className="mt-2 text-lg italic text-[var(--sertao)]">
+                “Mais do que um produto natural… uma experiência que vem da terra.”
+              </p>
+
               <div className="mt-4 flex items-center gap-4 text-sm">
                 <div className="flex items-center gap-1 text-[var(--clay)]">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -125,7 +146,9 @@ function ProductPage() {
                   ))}
                   <span className="ml-1 font-bold text-[var(--coffee)]">{product.rating}</span>
                 </div>
-                <span className="text-[var(--muted-foreground)]">({product.reviews} avaliações)</span>
+                <span className="text-[var(--muted-foreground)]">
+                  ({product.reviews} avaliações)
+                </span>
               </div>
 
               <div className="mt-6 flex items-baseline gap-3">
@@ -140,15 +163,20 @@ function ProductPage() {
               <p className="mt-5 text-xl font-medium leading-relaxed text-[var(--sertao)]">
                 {product.description || product.short}
               </p>
-              
+
               <div className="mt-4 flex items-center gap-2">
                 <span className="flex h-2 w-2 animate-pulse rounded-full bg-red-500" />
-                <span className="text-sm font-bold text-red-600">Alta procura: 12 unidades restantes hoje!</span>
+                <span className="text-sm font-bold text-red-600">
+                  Alta procura: 12 unidades restantes hoje!
+                </span>
               </div>
 
               <div className="mt-8 flex flex-wrap gap-2">
                 {product.badges.map((b: string) => (
-                  <span key={b} className="inline-flex items-center gap-1.5 rounded-full bg-[var(--leaf)]/10 px-3 py-1 text-xs font-medium text-[var(--leaf)]">
+                  <span
+                    key={b}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[var(--leaf)]/10 px-3 py-1 text-xs font-medium text-[var(--leaf)]"
+                  >
                     <Leaf className="h-3 w-3" /> {b}
                   </span>
                 ))}
@@ -171,7 +199,7 @@ function ProductPage() {
                       <Plus className="h-4 w-4" />
                     </button>
                   </div>
-                  
+
                   <div className="flex-1 flex flex-col gap-2">
                     <Button
                       variant="hero"
@@ -203,9 +231,15 @@ function ProductPage() {
               </div>
 
               <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[var(--border)] pt-6 text-[11px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-[var(--leaf)]" /> Compra Segura</span>
-                <span className="flex items-center gap-1.5"><Truck className="h-4 w-4 text-[var(--clay)]" /> Envio Garantido</span>
-                <span className="flex items-center gap-1.5"><Leaf className="h-4 w-4 text-[var(--leaf)]" /> Produto Natural</span>
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="h-4 w-4 text-[var(--leaf)]" /> Compra Segura
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Truck className="h-4 w-4 text-[var(--clay)]" /> Envio Garantido
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Leaf className="h-4 w-4 text-[var(--leaf)]" /> Produto Natural
+                </span>
               </div>
 
               {/* FRETE PLACEHOLDER */}
@@ -214,8 +248,13 @@ function ProductPage() {
                   <Truck className="h-3.5 w-3.5" /> Calcular Entrega
                 </h4>
                 <div className="flex gap-2">
-                  <input placeholder="00000-000" className="flex-1 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--clay)]" />
-                  <Button variant="soft" size="sm">Calcular</Button>
+                  <input
+                    placeholder="00000-000"
+                    className="flex-1 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--clay)]"
+                  />
+                  <Button variant="soft" size="sm">
+                    Calcular
+                  </Button>
                 </div>
               </div>
             </div>
@@ -233,15 +272,15 @@ function ProductPage() {
               <h2 className="font-display text-2xl font-semibold text-[var(--coffee)] mb-4">
                 Tradição que atravessa gerações
               </h2>
-              <p className="text-lg leading-relaxed text-[var(--sertao)]">
-                {story}
-              </p>
+              <p className="text-lg leading-relaxed text-[var(--sertao)]">{story}</p>
             </div>
 
             {/* BENEFÍCIOS E ESPECIFICAÇÕES */}
             <div className="grid gap-8 sm:grid-cols-2">
               <div className="space-y-4">
-                <h3 className="font-display text-xl font-semibold text-[var(--coffee)]">Benefícios</h3>
+                <h3 className="font-display text-xl font-semibold text-[var(--coffee)]">
+                  Benefícios
+                </h3>
                 <ul className="space-y-3">
                   {benefits.map((b, i) => (
                     <li key={i} className="flex items-start gap-3 text-[var(--sertao)]">
@@ -252,7 +291,9 @@ function ProductPage() {
                 </ul>
               </div>
               <div className="space-y-4">
-                <h3 className="font-display text-xl font-semibold text-[var(--coffee)]">Especificações</h3>
+                <h3 className="font-display text-xl font-semibold text-[var(--coffee)]">
+                  Especificações
+                </h3>
                 <dl className="space-y-3 text-sm">
                   <div className="flex justify-between border-b border-[var(--border)] pb-2">
                     <dt className="text-[var(--muted-foreground)]">Origem</dt>
@@ -276,29 +317,45 @@ function ProductPage() {
             <div className="rounded-3xl bg-[var(--coffee)] p-6 text-white shadow-xl">
               <h3 className="font-display text-lg font-semibold mb-3">Quem produziu</h3>
               <p className="text-sm opacity-90 leading-relaxed mb-4">
-                Produzido pela cooperativa <strong>{product.shop}</strong>, unindo famílias do sertão baiano para fortalecer o comércio justo e a preservação do Licurizal.
+                Produzido pela cooperativa <strong>{product.shop}</strong>, unindo famílias do
+                sertão baiano para fortalecer o comércio justo e a preservação do Licurizal.
               </p>
-              <Link to="/sobre" className="text-xs font-bold uppercase tracking-widest text-[var(--clay)] hover:underline">
+              <Link
+                to="/sobre"
+                className="text-xs font-bold uppercase tracking-widest text-[var(--clay)] hover:underline"
+              >
                 Conheça nossa história →
               </Link>
             </div>
 
             <div className="rounded-3xl border border-[var(--border)] bg-white p-6 shadow-sm">
-              <h3 className="font-display text-lg font-semibold text-[var(--coffee)] mb-4">Avaliações</h3>
+              <h3 className="font-display text-lg font-semibold text-[var(--coffee)] mb-4">
+                Avaliações
+              </h3>
               <div className="space-y-4">
                 <div className="border-b border-[var(--border)] pb-4">
                   <div className="flex text-[var(--clay)] mb-1">
-                    {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-3 w-3 fill-current" />)}
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className="h-3 w-3 fill-current" />
+                    ))}
                   </div>
-                  <p className="text-sm font-medium text-[var(--coffee)] mb-1">"Qualidade excepcional!"</p>
+                  <p className="text-sm font-medium text-[var(--coffee)] mb-1">
+                    "Qualidade excepcional!"
+                  </p>
                   <p className="text-xs text-[var(--muted-foreground)]">Maria S. — Salvador, BA</p>
                 </div>
                 <div className="pb-2">
                   <div className="flex text-[var(--clay)] mb-1">
-                    {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-3 w-3 fill-current" />)}
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className="h-3 w-3 fill-current" />
+                    ))}
                   </div>
-                  <p className="text-sm font-medium text-[var(--coffee)] mb-1">"O sabor é incomparável."</p>
-                  <p className="text-xs text-[var(--muted-foreground)]">João P. — Feira de Santana, BA</p>
+                  <p className="text-sm font-medium text-[var(--coffee)] mb-1">
+                    "O sabor é incomparável."
+                  </p>
+                  <p className="text-xs text-[var(--muted-foreground)]">
+                    João P. — Feira de Santana, BA
+                  </p>
                 </div>
               </div>
             </div>
@@ -312,7 +369,10 @@ function ProductPage() {
               <h2 className="font-display text-3xl font-semibold text-[var(--coffee)]">
                 Você também pode gostar
               </h2>
-              <Link to="/categorias" className="text-sm font-bold text-[var(--clay)] hover:underline">
+              <Link
+                to="/categorias"
+                className="text-sm font-bold text-[var(--clay)] hover:underline"
+              >
                 Ver todos
               </Link>
             </div>
@@ -326,11 +386,17 @@ function ProductPage() {
       </div>
 
       {/* STICKY BUY BUTTON MOBILE */}
-      <div className={`fixed bottom-0 left-0 right-0 z-50 transform bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 md:hidden ${showSticky ? 'translate-y-0' : 'translate-y-full'}`}>
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-50 transform bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 md:hidden ${showSticky ? "translate-y-0" : "translate-y-full"}`}
+      >
         <div className="flex items-center gap-4">
           <div className="flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Total</p>
-            <p className="font-display text-lg font-bold text-[var(--coffee)]">{formatBRL(product.price)}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+              Total
+            </p>
+            <p className="font-display text-lg font-bold text-[var(--coffee)]">
+              {formatBRL(product.price)}
+            </p>
           </div>
           <Button
             variant="hero"

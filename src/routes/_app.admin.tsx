@@ -1,5 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Users, Store, ShoppingBag, DollarSign, Download, Loader2, TrendingUp, PieChart, ArrowUpRight } from "lucide-react";
+import {
+  Users,
+  Store,
+  ShoppingBag,
+  DollarSign,
+  Download,
+  Loader2,
+  TrendingUp,
+  PieChart,
+  ArrowUpRight,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -13,9 +23,7 @@ export const Route = createFileRoute("/_app/admin")({
   component: AdminPage,
 });
 
-const monthly = [
-  300, 420, 380, 510, 470, 520, 600, 680, 720, 810, 760, 880,
-];
+const monthly = [300, 420, 380, 510, 470, 520, 600, 680, 720, 810, 760, 880];
 
 const statuses = [
   { label: "Pago", value: 42, color: "var(--leaf)" },
@@ -34,7 +42,7 @@ function AdminPage() {
     totalSales: 0,
     orderCount: 0,
     sellerCount: 0,
-    userCount: 0
+    userCount: 0,
   });
 
   useEffect(() => {
@@ -50,28 +58,45 @@ function AdminPage() {
   };
 
   const fetchSellers = async () => {
-    const { data } = await supabase.from("sellers").select("*").order("created_at", { ascending: false });
+    const { data } = await supabase
+      .from("sellers")
+      .select("*")
+      .order("created_at", { ascending: false });
     if (data) setSellers(data);
   };
 
   const fetchOrders = async () => {
-    const { data } = await supabase.from("orders").select("*, order_items(*)").order("created_at", { ascending: false }).limit(20);
+    const { data } = await supabase
+      .from("orders")
+      .select("*, order_items(*)")
+      .order("created_at", { ascending: false })
+      .limit(20);
     if (data) setOrders(data);
   };
 
   const fetchTransactions = async () => {
-    const { data } = await supabase.from("wallet_transactions").select("*").order("created_at", { ascending: false }).limit(20);
+    const { data } = await supabase
+      .from("wallet_transactions")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(20);
     if (data) setTransactions(data);
   };
 
   const fetchWithdrawals = async () => {
-    const { data } = await supabase.from("withdrawal_requests").select("*, sellers(store_name)").order("created_at", { ascending: false });
+    const { data } = await supabase
+      .from("withdrawal_requests")
+      .select("*, sellers(store_name)")
+      .order("created_at", { ascending: false });
     if (data) setWithdrawals(data);
   };
 
   const approveSeller = async (id: string) => {
     try {
-      const { error } = await supabase.from("sellers").update({ approved: true, verified_at: new Date().toISOString() }).eq('id', id);
+      const { error } = await supabase
+        .from("sellers")
+        .update({ approved: true, verified_at: new Date().toISOString() })
+        .eq("id", id);
       if (error) throw error;
       toast.success("Vendedor aprovado!");
       fetchSellers();
@@ -82,7 +107,7 @@ function AdminPage() {
 
   const updateOrderStatus = async (id: string, status: string) => {
     try {
-      const { error } = await supabase.from("orders").update({ status }).eq('id', id);
+      const { error } = await supabase.from("orders").update({ status }).eq("id", id);
       if (error) throw error;
       toast.success("Status do pedido atualizado!");
       fetchOrders();
@@ -92,11 +117,11 @@ function AdminPage() {
     }
   };
 
-  const handleWithdrawal = async (id: string, status: 'approved' | 'rejected') => {
+  const handleWithdrawal = async (id: string, status: "approved" | "rejected") => {
     try {
-      const { error } = await supabase.from("withdrawal_requests").update({ status }).eq('id', id);
+      const { error } = await supabase.from("withdrawal_requests").update({ status }).eq("id", id);
       if (error) throw error;
-      toast.success(`Saque ${status === 'approved' ? 'aprovado' : 'recusado'}!`);
+      toast.success(`Saque ${status === "approved" ? "aprovado" : "recusado"}!`);
       fetchWithdrawals();
     } catch (e: any) {
       toast.error(e.message);
@@ -104,19 +129,20 @@ function AdminPage() {
   };
 
   const fetchStats = async () => {
-    const [{ data: ordersData }, { count: sellersCount }, { count: usersCount }] = await Promise.all([
-      supabase.from("orders").select("total"),
-      supabase.from("sellers").select("*", { count: 'exact', head: true }),
-      supabase.from("orders").select("user_id", { count: 'exact', head: true })
-    ]);
+    const [{ data: ordersData }, { count: sellersCount }, { count: usersCount }] =
+      await Promise.all([
+        supabase.from("orders").select("total"),
+        supabase.from("sellers").select("*", { count: "exact", head: true }),
+        supabase.from("orders").select("user_id", { count: "exact", head: true }),
+      ]);
 
     const total = ordersData?.reduce((acc, o) => acc + Number(o.total), 0) || 0;
-    
+
     setStats({
       totalSales: total,
       orderCount: ordersData?.length || 0,
       sellerCount: sellersCount || 0,
-      userCount: usersCount || 0
+      userCount: usersCount || 0,
     });
   };
 
@@ -124,42 +150,42 @@ function AdminPage() {
     setIsGenerating(true);
     try {
       // Fetch real data for the report
-      const { data: reportData, error } = await supabase.rpc('get_monthly_sales_report', { 
-        report_month: new Date().toISOString().split('T')[0] 
+      const { data: reportData, error } = await supabase.rpc("get_monthly_sales_report", {
+        report_month: new Date().toISOString().split("T")[0],
       });
 
       const doc = new jsPDF();
       doc.setFontSize(20);
       doc.text("Relatório Mensal - Licuri Hub", 14, 22);
-      
+
       doc.setFontSize(12);
       doc.text(`Data de geração: ${new Date().toLocaleDateString()}`, 14, 30);
-      
+
       const revenue = reportData?.[0]?.total_revenue || stats.totalSales || 156890;
       const orders = reportData?.[0]?.total_orders || stats.orderCount || 2345;
 
       doc.text("Resumo de Vendas", 14, 45);
       (doc as any).autoTable({
         startY: 50,
-        head: [['Métrica', 'Valor']],
+        head: [["Métrica", "Valor"]],
         body: [
-          ['Vendas Totais', formatBRL(revenue)],
-          ['Total de Pedidos', orders.toString()],
-          ['Ticket Médio', formatBRL(orders > 0 ? revenue / orders : 0)],
+          ["Vendas Totais", formatBRL(revenue)],
+          ["Total de Pedidos", orders.toString()],
+          ["Ticket Médio", formatBRL(orders > 0 ? revenue / orders : 0)],
         ],
       });
 
       const categories = reportData?.[0]?.sales_by_category || {
-        'Alimentos': 45200,
-        'Óleos': 38100,
-        'Cosméticos': 29400,
-        'Artesanato': 12800
+        Alimentos: 45200,
+        Óleos: 38100,
+        Cosméticos: 29400,
+        Artesanato: 12800,
       };
 
       doc.text("Performance por Categoria", 14, (doc as any).lastAutoTable.finalY + 15);
       (doc as any).autoTable({
         startY: (doc as any).lastAutoTable.finalY + 20,
-        head: [['Categoria', 'Vendas']],
+        head: [["Categoria", "Vendas"]],
         body: Object.entries(categories).map(([cat, val]) => [cat, formatBRL(val as number)]),
       });
 
@@ -196,13 +222,21 @@ function AdminPage() {
           Licuri Hub · Admin
         </span>
         <Button variant="hero" size="sm" onClick={generateReport} disabled={isGenerating}>
-          {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+          {isGenerating ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
           Gerar Relatório PDF
         </Button>
       </header>
 
       <div className="mt-8 grid gap-4 md:grid-cols-4">
-        <Stat icon={DollarSign} label="Vendas totais" value={formatBRL(stats.totalSales || 156890)} />
+        <Stat
+          icon={DollarSign}
+          label="Vendas totais"
+          value={formatBRL(stats.totalSales || 156890)}
+        />
         <Stat icon={ShoppingBag} label="Pedidos" value={(stats.orderCount || 2345).toString()} />
         <Stat icon={Store} label="Vendedores" value={(stats.sellerCount || 87).toString()} />
         <Stat icon={Users} label="Clientes" value={(stats.userCount || 1890).toString()} />
@@ -226,7 +260,9 @@ function AdminPage() {
               fill="color-mix(in oklab, var(--clay) 18%, transparent)"
               points={
                 monthly
-                  .map((v, i) => `${(i / (monthly.length - 1)) * 580 + 10},${190 - (v / max) * 170}`)
+                  .map(
+                    (v, i) => `${(i / (monthly.length - 1)) * 580 + 10},${190 - (v / max) * 170}`,
+                  )
                   .join(" ") + " 590,190 10,190"
               }
             />
@@ -260,10 +296,7 @@ function AdminPage() {
             <ul className="space-y-2 text-sm">
               {statuses.map((s) => (
                 <li key={s.label} className="flex items-center gap-2">
-                  <span
-                    className="h-2.5 w-2.5 rounded-full"
-                    style={{ background: s.color }}
-                  />
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: s.color }} />
                   {s.label}
                   <span className="ml-1 text-[var(--muted-foreground)]">{s.value}%</span>
                 </li>
@@ -287,23 +320,33 @@ function AdminPage() {
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
                 {sellers.length === 0 ? (
-                  <tr><td colSpan={4} className="py-4 text-center text-[var(--muted-foreground)]">Nenhum vendedor cadastrado.</td></tr>
+                  <tr>
+                    <td colSpan={4} className="py-4 text-center text-[var(--muted-foreground)]">
+                      Nenhum vendedor cadastrado.
+                    </td>
+                  </tr>
                 ) : (
-                  sellers.map(s => (
+                  sellers.map((s) => (
                     <tr key={s.id}>
                       <td className="py-4">
                         <div className="font-bold text-[var(--coffee)]">{s.store_name}</div>
-                        <div className="text-xs text-[var(--muted-foreground)] line-clamp-1">{s.description}</div>
+                        <div className="text-xs text-[var(--muted-foreground)] line-clamp-1">
+                          {s.description}
+                        </div>
                       </td>
                       <td className="py-4">{new Date(s.created_at).toLocaleDateString()}</td>
                       <td className="py-4">
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${s.approved ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
-                          {s.approved ? 'APROVADO' : 'PENDENTE'}
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${s.approved ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
+                        >
+                          {s.approved ? "APROVADO" : "PENDENTE"}
                         </span>
                       </td>
                       <td className="py-4 text-right">
                         {!s.approved && (
-                          <Button size="sm" variant="hero" onClick={() => approveSeller(s.id)}>Aprovar</Button>
+                          <Button size="sm" variant="hero" onClick={() => approveSeller(s.id)}>
+                            Aprovar
+                          </Button>
                         )}
                       </td>
                     </tr>
@@ -329,29 +372,39 @@ function AdminPage() {
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
                 {orders.length === 0 ? (
-                  <tr><td colSpan={5} className="py-4 text-center text-[var(--muted-foreground)]">Nenhum pedido encontrado.</td></tr>
+                  <tr>
+                    <td colSpan={5} className="py-4 text-center text-[var(--muted-foreground)]">
+                      Nenhum pedido encontrado.
+                    </td>
+                  </tr>
                 ) : (
-                  orders.map(o => (
+                  orders.map((o) => (
                     <tr key={o.id}>
                       <td className="py-4">
                         <div className="font-bold">#{o.id.slice(0, 8)}</div>
-                        <div className="text-[10px] text-[var(--muted-foreground)]">{new Date(o.created_at).toLocaleString()}</div>
+                        <div className="text-[10px] text-[var(--muted-foreground)]">
+                          {new Date(o.created_at).toLocaleString()}
+                        </div>
                       </td>
                       <td className="py-4">{o.customer_name}</td>
                       <td className="py-4 font-bold">{formatBRL(o.total)}</td>
                       <td className="py-4">
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          o.status === 'paid' ? 'bg-green-100 text-green-700' : 
-                          o.status === 'cancelled' ? 'bg-red-100 text-red-700' : 
-                          'bg-amber-100 text-amber-700'
-                        }`}>
-                          {o.status?.toUpperCase() || 'PENDENTE'}
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            o.status === "paid"
+                              ? "bg-green-100 text-green-700"
+                              : o.status === "cancelled"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-amber-100 text-amber-700"
+                          }`}
+                        >
+                          {o.status?.toUpperCase() || "PENDENTE"}
                         </span>
                       </td>
                       <td className="py-4 text-right">
-                        <select 
+                        <select
                           className="text-xs border border-[var(--border)] rounded px-2 py-1 bg-transparent"
-                          value={o.status || 'pending'}
+                          value={o.status || "pending"}
                           onChange={(e) => updateOrderStatus(o.id, e.target.value)}
                         >
                           <option value="pending">Pendente</option>
@@ -374,21 +427,46 @@ function AdminPage() {
             <h2 className="font-display text-lg font-semibold mb-6">Solicitações de Saque</h2>
             <div className="space-y-4">
               {withdrawals.length === 0 ? (
-                <p className="text-sm text-[var(--muted-foreground)]">Nenhuma solicitação pendente.</p>
+                <p className="text-sm text-[var(--muted-foreground)]">
+                  Nenhuma solicitação pendente.
+                </p>
               ) : (
-                withdrawals.map(w => (
-                  <div key={w.id} className="flex items-center justify-between p-4 rounded-xl border border-[var(--border)] bg-[var(--sand)]/10">
+                withdrawals.map((w) => (
+                  <div
+                    key={w.id}
+                    className="flex items-center justify-between p-4 rounded-xl border border-[var(--border)] bg-[var(--sand)]/10"
+                  >
                     <div>
-                      <p className="text-sm font-bold text-[var(--coffee)]">{w.sellers?.store_name}</p>
-                      <p className="text-xs text-[var(--muted-foreground)]">{formatBRL(w.amount)} · {w.pix_key}</p>
+                      <p className="text-sm font-bold text-[var(--coffee)]">
+                        {w.sellers?.store_name}
+                      </p>
+                      <p className="text-xs text-[var(--muted-foreground)]">
+                        {formatBRL(w.amount)} · {w.pix_key}
+                      </p>
                     </div>
-                    {w.status === 'pending' ? (
+                    {w.status === "pending" ? (
                       <div className="flex gap-2">
-                        <Button size="sm" variant="hero" className="h-8" onClick={() => handleWithdrawal(w.id, 'approved')}>Aprovar</Button>
-                        <Button size="sm" variant="soft" className="h-8 text-red-600" onClick={() => handleWithdrawal(w.id, 'rejected')}>Recusar</Button>
+                        <Button
+                          size="sm"
+                          variant="hero"
+                          className="h-8"
+                          onClick={() => handleWithdrawal(w.id, "approved")}
+                        >
+                          Aprovar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="soft"
+                          className="h-8 text-red-600"
+                          onClick={() => handleWithdrawal(w.id, "rejected")}
+                        >
+                          Recusar
+                        </Button>
                       </div>
                     ) : (
-                      <span className={`text-[10px] font-bold px-2 py-1 rounded ${w.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      <span
+                        className={`text-[10px] font-bold px-2 py-1 rounded ${w.status === "approved" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                      >
                         {w.status?.toUpperCase()}
                       </span>
                     )}
@@ -402,15 +480,24 @@ function AdminPage() {
             <h2 className="font-display text-lg font-semibold mb-6">Últimas Transações</h2>
             <div className="space-y-3">
               {transactions.length === 0 ? (
-                <p className="text-sm text-[var(--muted-foreground)]">Nenhuma transação registrada.</p>
+                <p className="text-sm text-[var(--muted-foreground)]">
+                  Nenhuma transação registrada.
+                </p>
               ) : (
-                transactions.map(t => (
-                  <div key={t.id} className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0">
+                transactions.map((t) => (
+                  <div
+                    key={t.id}
+                    className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0"
+                  >
                     <div>
                       <p className="text-xs font-medium">{t.description}</p>
-                      <p className="text-[10px] text-[var(--muted-foreground)]">{new Date(t.created_at).toLocaleString()}</p>
+                      <p className="text-[10px] text-[var(--muted-foreground)]">
+                        {new Date(t.created_at).toLocaleString()}
+                      </p>
                     </div>
-                    <span className={`text-sm font-bold ${t.amount >= 0 ? 'text-[var(--leaf)]' : 'text-red-600'}`}>
+                    <span
+                      className={`text-sm font-bold ${t.amount >= 0 ? "text-[var(--leaf)]" : "text-red-600"}`}
+                    >
                       {formatBRL(t.amount)}
                     </span>
                   </div>
