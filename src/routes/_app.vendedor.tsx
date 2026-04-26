@@ -372,15 +372,21 @@ export function VendorDashboard() {
             Resumo do mês
           </h1>
         </div>
-        <div className="flex flex-col items-end gap-1">
-          <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
-            {sellerProfile?.store_name || "Vendedor não cadastrado"}
-          </span>
-          {sellerProfile && !sellerProfile.approved && (
-            <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-              Aguardando Aprovação
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="sm" onClick={handleShare}>
+            <Share2 className="mr-2 h-4 w-4" />
+            Compartilhar
+          </Button>
+          <div className="flex flex-col items-end gap-1">
+            <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
+              {sellerProfile?.store_name || "Vendedor não cadastrado"}
             </span>
-          )}
+            {sellerProfile && !sellerProfile.approved && (
+              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                Aguardando Aprovação
+              </span>
+            )}
+          </div>
         </div>
       </header>
 
