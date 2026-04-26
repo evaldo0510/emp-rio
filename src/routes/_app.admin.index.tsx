@@ -38,14 +38,23 @@ import { formatBRL } from "@/lib/products";
 import { supabase } from "@/lib/supabase";
 import { validateCommissionRate } from "@/lib/commissions";
 
+const VALID_PERIODS = ["today", "7d", "30d", "all"] as const;
+type StatsPeriod = (typeof VALID_PERIODS)[number];
+
 const statsPeriodSchema = z.object({
-  period: z.enum(["today", "7d", "30d", "all"]).optional(),
+  period: z.enum(VALID_PERIODS).optional(),
 });
 
-type StatsPeriod = z.infer<typeof statsPeriodSchema>["period"];
-
 export const Route = createFileRoute("/_app/admin/")({
-  validateSearch: (search) => statsPeriodSchema.parse(search),
+  validateSearch: (search: Record<string, unknown>) => {
+    const result = statsPeriodSchema.safeParse(search);
+    if (result.success) return result.data;
+    // Período inválido → cai no padrão silenciosamente
+    if (typeof window !== "undefined" && search.period) {
+      console.warn(`[admin] period inválido "${search.period}" — usando padrão.`);
+    }
+    return { period: undefined };
+  },
   head: () => ({ meta: [{ title: "Painel Admin — Licuri Hub" }] }),
   component: AdminPage,
 });
