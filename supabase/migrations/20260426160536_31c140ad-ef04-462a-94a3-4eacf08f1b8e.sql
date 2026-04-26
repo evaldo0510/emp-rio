@@ -1,0 +1,1 @@
+ALTER FUNCTION public.handle_shipment_status_change() SET search_path = public;
