@@ -35,6 +35,51 @@ const pillars = [
 ];
 
 function HomePage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("active", true)
+          .limit(12);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const mapped = data.map(p => ({
+            id: p.id,
+            slug: p.slug,
+            name: p.name,
+            category: p.category,
+            price: Number(p.price),
+            rating: Number(p.rating || 0),
+            reviews: p.reviews || 0,
+            shop: p.shop_name || p.shop || "Vendedor",
+            region: p.region || "Sertão",
+            image: p.image_url,
+            short: p.short_description || "",
+            description: p.description || "",
+            badges: p.badges || [],
+          })) as Product[];
+          setProducts(mapped);
+        } else {
+          setProducts(mockProducts);
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setProducts(mockProducts);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
   const featured = products.slice(0, 4);
   return (
     <>
