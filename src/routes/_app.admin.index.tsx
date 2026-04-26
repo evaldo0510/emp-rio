@@ -73,7 +73,7 @@ function AdminPage() {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [statsPeriod]);
 
   const fetchDashboardData = async () => {
     fetchStats();
