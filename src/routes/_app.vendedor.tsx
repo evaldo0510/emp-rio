@@ -26,6 +26,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from "recharts";
 
 export const Route = createFileRoute("/_app/vendedor")({
   head: () => ({ meta: [{ title: "Painel do Vendedor — Licuri Hub" }] }),
