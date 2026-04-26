@@ -27,8 +27,8 @@ const orders = [
 function VendorDashboard() {
   const [isUploading, setIsUploading] = useState(false);
   const [dbProducts, setDbProducts] = useState<any[]>([]);
-  const [wallet, setWallet] = useState<{ balance: number; total_withdrawn: number } | null>(null);
-  const [sellerProfile, setSellerProfile] = useState<{ approved: boolean; store_name: string } | null>(null);
+  const [wallet, setWallet] = useState<any>(null);
+  const [sellerProfile, setSellerProfile] = useState<any>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [realOrders, setRealOrders] = useState<any[]>([]);
   const [shipments, setShipments] = useState<any[]>([]);

@@ -1,9 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export { supabase };
 
 export async function createOrder(orderData: any, items: any[]) {
   const { data: order, error: orderError } = await supabase
@@ -17,7 +14,7 @@ export async function createOrder(orderData: any, items: any[]) {
   const orderItems = items.map((item) => ({
     order_id: order.id,
     product_id: item.id.startsWith("p") ? null : item.id,
-    seller_id: item.vendor_id || item.seller_id, // Ensure we have the seller
+    seller_id: item.vendor_id || item.seller_id,
     name: item.name,
     price: item.price,
     quantity: item.quantity,
@@ -49,7 +46,7 @@ export async function loginWithEmail(email: string) {
   const { data, error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: window.location.origin,
+      emailRedirectTo: typeof window !== "undefined" ? window.location.origin : undefined,
     },
   });
   if (error) throw error;
@@ -62,19 +59,19 @@ export async function logout() {
 }
 
 export async function syncCartToDB(userId: string, items: any[]) {
-  // Clear existing items and insert new ones (simple sync strategy)
   await supabase.from("cart_items").delete().eq("user_id", userId);
-  
+
   if (items.length === 0) return;
 
-  const dbItems = items.map(i => ({
-    user_id: userId,
-    product_id: i.id.startsWith('p') ? null : i.id,
-    quantity: i.quantity
-  })).filter(i => i.product_id !== null);
+  const dbItems = items
+    .map((i) => ({
+      user_id: userId,
+      product_id: i.id.startsWith("p") ? null : i.id,
+      quantity: i.quantity,
+    }))
+    .filter((i) => i.product_id !== null);
 
   if (dbItems.length > 0) {
     await supabase.from("cart_items").insert(dbItems);
   }
 }
-
