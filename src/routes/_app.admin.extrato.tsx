@@ -263,7 +263,7 @@ function AdminExtratoPage() {
           <select
             className="w-full rounded-lg border border-[var(--border)] bg-[var(--cream)] p-2 text-sm outline-none focus:border-[var(--clay)]"
             value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
+            onChange={(e) => updateSearch({ status: e.target.value })}
           >
             <option value="all">Todos os status</option>
             <option value="pending">Pendente</option>
