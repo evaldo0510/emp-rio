@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useLoaderData } from "@tanstack/react-router";
-import { ChevronRight, Heart, Leaf, Minus, Plus, Sparkles, Star } from "lucide-react";
-import { useState } from "react";
+import { ChevronRight, Heart, Leaf, Minus, Plus, Sparkles, Star, ShieldCheck, Truck, Zap, ShoppingCart } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
 import { useCart } from "@/lib/cart";
@@ -39,7 +39,17 @@ function ProductPage() {
   const product = useLoaderData({ from: "/_app/produto/$slug" });
   const [selectedImage, setSelectedImage] = useState(product.image);
   const [qty, setQty] = useState(1);
+  const [showSticky, setShowSticky] = useState(false);
   const add = useCart((s) => s.add);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowSticky(window.scrollY > 600);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);
 
   // Mocked data for sections not yet in DB
@@ -95,9 +105,15 @@ function ProductPage() {
           {/* INFORMAÇÕES */}
           <div className="flex flex-col">
             <div className="flex-1">
-              <h1 className="font-display text-4xl font-semibold leading-tight text-[var(--coffee)]">
-                {product.name}
-              </h1>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--clay)]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--clay)]">
+                <Sparkles className="h-3 w-3" /> Essencial para sua rotina
+              </div>
+          <h1 className="font-display text-4xl font-semibold leading-tight text-[var(--coffee)] md:text-5xl">
+            {product.name}
+          </h1>
+          <p className="mt-2 text-lg italic text-[var(--sertao)]">
+            “Mais do que um produto natural… uma experiência que vem da terra.”
+          </p>
               
               <div className="mt-4 flex items-center gap-4 text-sm">
                 <div className="flex items-center gap-1 text-[var(--clay)]">
@@ -121,9 +137,14 @@ function ProductPage() {
                 </span>
               </div>
 
-              <p className="mt-6 text-lg leading-relaxed text-[var(--sertao)]">
+              <p className="mt-5 text-xl font-medium leading-relaxed text-[var(--sertao)]">
                 {product.description || product.short}
               </p>
+              
+              <div className="mt-4 flex items-center gap-2">
+                <span className="flex h-2 w-2 animate-pulse rounded-full bg-red-500" />
+                <span className="text-sm font-bold text-red-600">Alta procura: 12 unidades restantes hoje!</span>
+              </div>
 
               <div className="mt-8 flex flex-wrap gap-2">
                 {product.badges.map((b: string) => (
@@ -133,42 +154,68 @@ function ProductPage() {
                 ))}
               </div>
 
-              <div className="mt-10 flex items-center gap-4">
-                <div className="flex h-12 items-center rounded-xl border border-[var(--border)] bg-white">
-                  <button
-                    onClick={() => setQty(Math.max(1, qty - 1))}
-                    className="flex h-12 w-12 items-center justify-center text-[var(--sertao)] transition-colors hover:bg-[var(--sand)] hover:text-[var(--clay)]"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </button>
-                  <span className="w-10 text-center font-display text-lg font-bold">{qty}</span>
-                  <button
-                    onClick={() => setQty(qty + 1)}
-                    className="flex h-12 w-12 items-center justify-center text-[var(--sertao)] transition-colors hover:bg-[var(--sand)] hover:text-[var(--clay)]"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
+              <div className="mt-8 flex flex-col gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 items-center rounded-xl border border-[var(--border)] bg-white">
+                    <button
+                      onClick={() => setQty(Math.max(1, qty - 1))}
+                      className="flex h-12 w-12 items-center justify-center text-[var(--sertao)] transition-colors hover:bg-[var(--sand)] hover:text-[var(--clay)]"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </button>
+                    <span className="w-10 text-center font-display text-lg font-bold">{qty}</span>
+                    <button
+                      onClick={() => setQty(qty + 1)}
+                      className="flex h-12 w-12 items-center justify-center text-[var(--sertao)] transition-colors hover:bg-[var(--sand)] hover:text-[var(--clay)]"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                  
+                  <div className="flex-1 flex flex-col gap-2">
+                    <Button
+                      variant="hero"
+                      size="xl"
+                      className="w-full bg-[#C4682C] hover:bg-[#A35624] text-white shadow-lg shadow-[#C4682C]/20"
+                      onClick={() => {
+                        add(product, qty);
+                        toast.success("Adicionado ao carrinho", { description: product.name });
+                      }}
+                    >
+                      <Zap className="mr-2 h-5 w-5 fill-current" />
+                      COMPRAR AGORA
+                    </Button>
+                  </div>
                 </div>
+
                 <Button
-                  variant="hero"
+                  variant="outline"
                   size="xl"
-                  className="flex-1 shadow-lg shadow-[var(--clay)]/20"
+                  className="w-full border-[#6B4F2A] text-[#6B4F2A] hover:bg-[#6B4F2A]/5"
                   onClick={() => {
                     add(product, qty);
                     toast.success("Adicionado ao carrinho", { description: product.name });
                   }}
                 >
+                  <ShoppingCart className="mr-2 h-5 w-5" />
                   Adicionar ao carrinho
                 </Button>
               </div>
 
-              <div className="mt-6 flex items-center justify-between border-t border-[var(--border)] pt-6">
-                <button className="flex items-center gap-2 text-sm font-medium text-[var(--muted-foreground)] transition-colors hover:text-[var(--clay)]">
-                  <Heart className="h-4 w-4" /> Adicionar aos favoritos
-                </button>
-                <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                  <span>✔ Compra Segura</span>
-                  <span>✔ Envio Nacional</span>
+              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[var(--border)] pt-6 text-[11px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+                <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-[var(--leaf)]" /> Compra Segura</span>
+                <span className="flex items-center gap-1.5"><Truck className="h-4 w-4 text-[var(--clay)]" /> Envio Garantido</span>
+                <span className="flex items-center gap-1.5"><Leaf className="h-4 w-4 text-[var(--leaf)]" /> Produto Natural</span>
+              </div>
+
+              {/* FRETE PLACEHOLDER */}
+              <div className="mt-6 rounded-xl bg-[var(--sand)]/30 p-4 border border-[var(--border)]">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-[var(--coffee)] mb-2 flex items-center gap-2">
+                  <Truck className="h-3.5 w-3.5" /> Calcular Entrega
+                </h4>
+                <div className="flex gap-2">
+                  <input placeholder="00000-000" className="flex-1 rounded-md border border-[var(--border)] px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--clay)]" />
+                  <Button variant="soft" size="sm">Calcular</Button>
                 </div>
               </div>
             </div>
@@ -276,6 +323,26 @@ function ProductPage() {
             </div>
           </section>
         )}
+      </div>
+
+      {/* STICKY BUY BUTTON MOBILE */}
+      <div className={`fixed bottom-0 left-0 right-0 z-50 transform bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 md:hidden ${showSticky ? 'translate-y-0' : 'translate-y-full'}`}>
+        <div className="flex items-center gap-4">
+          <div className="flex-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Total</p>
+            <p className="font-display text-lg font-bold text-[var(--coffee)]">{formatBRL(product.price)}</p>
+          </div>
+          <Button
+            variant="hero"
+            className="flex-[2] bg-[#C4682C] text-white"
+            onClick={() => {
+              add(product, qty);
+              toast.success("Adicionado ao carrinho");
+            }}
+          >
+            COMPRAR AGORA
+          </Button>
+        </div>
       </div>
     </div>
   );
