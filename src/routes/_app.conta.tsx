@@ -186,6 +186,24 @@ function AccountPage() {
                       </div>
                     </div>
 
+                    {order.shipments?.[0] && (
+                      <div className="mb-6 p-4 rounded-xl bg-[var(--sand)]/40 border border-[var(--border)]">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-2">Informações de Envio</p>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-bold text-[var(--coffee)]">{order.shipments[0].carrier}</p>
+                            <p className="text-xs text-[var(--muted-foreground)]">Status: <span className="text-[var(--clay)] font-semibold uppercase">{order.shipments[0].status}</span></p>
+                          </div>
+                          {order.shipments[0].tracking_code && (
+                            <div className="text-right">
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Rastreio</p>
+                              <p className="text-sm font-mono font-bold text-[var(--coffee)]">{order.shipments[0].tracking_code}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="space-y-3">
                       {order.order_items?.map((item: any) => (
                         <div key={item.id} className="flex items-center gap-3">
