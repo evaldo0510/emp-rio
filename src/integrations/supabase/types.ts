@@ -67,7 +67,9 @@ export type Database = {
           created_at: string | null
           id: string
           new_rate: number | null
+          new_rate_percent: number | null
           old_rate: number | null
+          old_rate_percent: number | null
           seller_type: string
         }
         Insert: {
@@ -75,7 +77,9 @@ export type Database = {
           created_at?: string | null
           id?: string
           new_rate?: number | null
+          new_rate_percent?: number | null
           old_rate?: number | null
+          old_rate_percent?: number | null
           seller_type: string
         }
         Update: {
@@ -83,7 +87,9 @@ export type Database = {
           created_at?: string | null
           id?: string
           new_rate?: number | null
+          new_rate_percent?: number | null
           old_rate?: number | null
+          old_rate_percent?: number | null
           seller_type?: string
         }
         Relationships: []
