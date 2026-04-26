@@ -509,6 +509,9 @@ function AdminPage() {
                         {(h.new_rate * 100).toFixed(2)}% <span className="text-[10px] font-normal text-[var(--muted-foreground)]">({h.new_rate})</span>
                       </td>
                       <td className="py-3 text-xs text-[var(--muted-foreground)]">
+                        {h.profiles?.email || h.admin_id || "Sistema"}
+                      </td>
+                      <td className="py-3 text-xs text-[var(--muted-foreground)]">
                         {new Date(h.created_at).toLocaleString()}
                       </td>
                     </tr>
