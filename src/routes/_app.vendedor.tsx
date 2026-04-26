@@ -209,11 +209,12 @@ function VendorDashboard() {
 
       {sellerProfile && (
         <>
-        <Stat icon={TrendingUp} label="Vendas Brutas" value={formatBRL(realOrders.reduce((acc, o) => acc + (o.price * o.quantity), 0))} />
-        <Stat icon={ShoppingBag} label="Pedidos" value={realOrders.length.toString()} />
-        <Stat icon={Package} label="Produtos" value={dbProducts.length.toString()} />
-        <Stat icon={Star} label="Saldo Disponível" value={formatBRL(wallet?.balance || 0)} />
-      </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-4">
+            <Stat icon={TrendingUp} label="Vendas Brutas" value={formatBRL(realOrders.reduce((acc, o) => acc + (o.price * o.quantity), 0))} />
+            <Stat icon={ShoppingBag} label="Pedidos" value={realOrders.length.toString()} />
+            <Stat icon={Package} label="Produtos" value={dbProducts.length.toString()} />
+            <Stat icon={Star} label="Saldo Disponível" value={formatBRL(wallet?.balance || 0)} />
+          </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-[1.6fr_1fr]">
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
