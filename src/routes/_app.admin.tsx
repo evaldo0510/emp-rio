@@ -26,6 +26,7 @@ const statuses = [
 
 function AdminPage() {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [sellers, setSellers] = useState<any[]>([]);
   const [stats, setStats] = useState({
     totalSales: 0,
     orderCount: 0,
@@ -35,7 +36,24 @@ function AdminPage() {
 
   useEffect(() => {
     fetchStats();
+    fetchSellers();
   }, []);
+
+  const fetchSellers = async () => {
+    const { data } = await supabase.from("sellers").select("*").order("created_at", { ascending: false });
+    if (data) setSellers(data);
+  };
+
+  const approveSeller = async (id: string) => {
+    try {
+      const { error } = await supabase.from("sellers").update({ approved: true, verified_at: new Date().toISOString() }).eq('id', id);
+      if (error) throw error;
+      toast.success("Vendedor aprovado!");
+      fetchSellers();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
 
   const fetchStats = async () => {
     const [{ data: orders }, { count: sellers }, { count: users }] = await Promise.all([
