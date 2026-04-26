@@ -439,19 +439,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_monthly_sales_report:
-        | {
-            Args: { report_month: string }
-            Returns: {
-              error: true
-            } & "Could not choose the best candidate function between: public.get_monthly_sales_report(report_month => date), public.get_monthly_sales_report(report_month => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"[]
-          }
-        | {
-            Args: { report_month: string }
-            Returns: {
-              error: true
-            } & "Could not choose the best candidate function between: public.get_monthly_sales_report(report_month => date), public.get_monthly_sales_report(report_month => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"[]
-          }
+      get_monthly_sales_report: {
+        Args: { report_month: string }
+        Returns: {
+          sales_by_category: Json
+          sales_by_status: Json
+          total_orders: number
+          total_revenue: number
+        }[]
+      }
       is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
