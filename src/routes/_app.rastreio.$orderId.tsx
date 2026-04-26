@@ -80,6 +80,7 @@ function TrackingPage() {
   }
 
   const statusMap: any = {
+    'paid': { label: 'Pago', icon: CheckCircle2, color: 'text-green-600', bg: 'bg-green-50' },
     'processing': { label: 'Em Processamento', icon: Clock, color: 'text-blue-600', bg: 'bg-blue-50' },
     'shipped': { label: 'Enviado', icon: Truck, color: 'text-[var(--clay)]', bg: 'bg-[var(--sand)]' },
     'delivered': { label: 'Entregue', icon: CheckCircle2, color: 'text-green-600', bg: 'bg-green-50' },
