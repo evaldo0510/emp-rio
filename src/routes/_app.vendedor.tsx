@@ -52,6 +52,10 @@ export const Route = createFileRoute("/_app/vendedor")({
 // Constants for mock data removed. Using real database data.
 
 export function VendorDashboard() {
+  const navigate = useNavigate({ from: Route.fullPath });
+  const { period: urlPeriod } = Route.useSearch();
+  const period = urlPeriod || "7";
+
   const [isUploading, setIsUploading] = useState(false);
   const [dbProducts, setDbProducts] = useState<any[]>([]);
   const [wallet, setWallet] = useState<any>(null);
@@ -65,7 +69,6 @@ export function VendorDashboard() {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [pixKey, setPixKey] = useState("");
   const [isSubmittingWithdraw, setIsSubmittingWithdraw] = useState(false);
-  const [period, setPeriod] = useState("7");
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
