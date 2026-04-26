@@ -713,16 +713,42 @@ export function VendorDashboard() {
                   <option value="30">Últimos 30 dias</option>
                 </select>
               </div>
-              <div className="flex h-32 items-end gap-2">
-                {dailySales.map((s) => (
-                  <div key={s.day} className="flex flex-1 flex-col items-center gap-1">
-                    <div
-                      className="w-full rounded-sm bg-[var(--clay)]/60 transition-all hover:bg-[var(--clay)]"
-                      style={{ height: `${(s.v / (maxSales || 1)) * 100}%` }}
+              <div className="h-40 w-full mt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={dailySales}>
+                    <defs>
+                      <linearGradient id="colorSalesV" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--clay)" stopOpacity={0.1}/>
+                        <stop offset="95%" stopColor="var(--clay)" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                    <XAxis 
+                      dataKey="day" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} 
                     />
-                    <span className="text-[8px] text-[var(--muted-foreground)]">{s.day}</span>
-                  </div>
-                ))}
+                    <YAxis hide />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'var(--card)', 
+                        border: '1px solid var(--border)',
+                        borderRadius: '8px',
+                        fontSize: '11px'
+                      }} 
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="v" 
+                      name="Vendas"
+                      stroke="var(--clay)" 
+                      fillOpacity={1} 
+                      fill="url(#colorSalesV)" 
+                      strokeWidth={2}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
               </div>
             </div>
           </div>
