@@ -212,61 +212,74 @@ function AdminPage() {
   };
 
   const fetchStats = async () => {
-    const [
-      { data: ordersData }, 
-      { data: sellersData }, 
-      { count: usersCount },
-      { data: transactionsData }
-    ] = await Promise.all([
-      supabase.from("orders").select("total, created_at"),
-      supabase.from("sellers").select("id, store_name"),
-      supabase.from("orders").select("user_id", { count: "exact", head: true }),
-      supabase.from("wallet_transactions").select("amount, commission, type, seller_id, created_at")
-    ]);
+    try {
+      const [
+        { data: ordersData }, 
+        { data: sellersData }, 
+        { count: usersCount },
+        { data: transactionsData }
+      ] = await Promise.all([
+        supabase.from("orders").select("total, created_at"),
+        supabase.from("sellers").select("id, store_name"),
+        supabase.from("orders").select("user_id", { count: "exact", head: true }),
+        supabase.from("wallet_transactions").select(`
+          amount, 
+          commission, 
+          type, 
+          created_at, 
+          seller_wallet(seller_id)
+        `)
+      ]);
 
-    const total = ordersData?.reduce((acc, o) => acc + Number(o.total), 0) || 0;
-    const platformTotal = transactionsData?.reduce((acc, t) => acc + Number(t.commission || 0), 0) || 0;
+      const total = ordersData?.reduce((acc, o) => acc + Number(o.total || 0), 0) || 0;
+      const platformTotal = (transactionsData as any[])?.reduce((acc, t) => acc + Number(t.commission || 0), 0) || 0;
 
-    // Top Sellers calculation
-    const sellerMap: Record<string, number> = {};
-    transactionsData?.filter(t => t.type === 'sale').forEach(t => {
-      const amount = Number(t.amount || 0) + Number(t.commission || 0); // Gross sale
-      sellerMap[t.seller_id] = (sellerMap[t.seller_id] || 0) + amount;
-    });
+      // Top Sellers calculation
+      const sellerMap: Record<string, number> = {};
+      (transactionsData as any[])?.filter(t => t.type === 'sale').forEach(t => {
+        const amount = Number(t.amount || 0) + Number(t.commission || 0); // Gross sale
+        const sellerId = t.seller_wallet?.seller_id;
+        if (sellerId) {
+          sellerMap[sellerId] = (sellerMap[sellerId] || 0) + amount;
+        }
+      });
 
-    const sortedSellers = Object.entries(sellerMap)
-      .map(([id, total]) => ({
-        id,
-        total,
-        name: sellersData?.find(s => s.id === id)?.store_name || "Vendedor " + id.slice(0, 4)
-      }))
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 5);
+      const sortedSellers = Object.entries(sellerMap)
+        .map(([id, total]) => ({
+          id,
+          total,
+          name: sellersData?.find(s => s.id === id)?.store_name || "Vendedor " + id.slice(0, 4)
+        }))
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 5);
 
-    // Sales by day (last 7 days)
-    const last7Days = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      return d.toISOString().split('T')[0];
-    }).reverse();
+      // Sales by day (last 7 days)
+      const last7Days = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        return d.toISOString().split('T')[0];
+      }).reverse();
 
-    const dailyData = last7Days.map(date => {
-      const dayOrders = ordersData?.filter(o => o.created_at.startsWith(date)) || [];
-      return {
-        date: new Date(date).toLocaleDateString('pt-BR', { weekday: 'short' }),
-        vendas: dayOrders.reduce((acc, o) => acc + Number(o.total), 0)
-      };
-    });
+      const dailyData = last7Days.map(date => {
+        const dayOrders = ordersData?.filter(o => o.created_at?.startsWith(date)) || [];
+        return {
+          date: new Date(date).toLocaleDateString('pt-BR', { weekday: 'short' }),
+          vendas: dayOrders.reduce((acc, o) => acc + Number(o.total || 0), 0)
+        };
+      });
 
-    setStats({
-      totalSales: total,
-      platformRevenue: platformTotal,
-      orderCount: ordersData?.length || 0,
-      sellerCount: sellersData?.length || 0,
-      userCount: usersCount || 0,
-    });
-    setTopSellers(sortedSellers);
-    setSalesByDay(dailyData);
+      setStats({
+        totalSales: total,
+        platformRevenue: platformTotal,
+        orderCount: ordersData?.length || 0,
+        sellerCount: sellersData?.length || 0,
+        userCount: usersCount || 0,
+      });
+      setTopSellers(sortedSellers);
+      setSalesByDay(dailyData);
+    } catch (err) {
+      console.error("Error fetching dashboard stats:", err);
+    }
   };
 
   const generateReport = async () => {
