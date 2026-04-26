@@ -1,5 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Users, Store, ShoppingBag, DollarSign } from "lucide-react";
+import { Users, Store, ShoppingBag, DollarSign, Download, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import { formatBRL } from "@/lib/products";
 
 export const Route = createFileRoute("/_app/admin")({
   head: () => ({ meta: [{ title: "Painel Admin — Licuri Hub" }] }),
@@ -18,6 +23,46 @@ const statuses = [
 ];
 
 function AdminPage() {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const generateReport = () => {
+    setIsGenerating(true);
+    try {
+      const doc = new jsPDF();
+      doc.setFontSize(20);
+      doc.text("Relatório Mensal - Licuri Hub", 14, 22);
+      
+      doc.setFontSize(12);
+      doc.text(`Data de geração: ${new Date().toLocaleDateString()}`, 14, 30);
+      
+      doc.text("Resumo de Vendas", 14, 45);
+      (doc as any).autoTable({
+        startY: 50,
+        head: [['Métrica', 'Valor']],
+        body: [
+          ['Vendas Totais', 'R$ 156.890,00'],
+          ['Total de Pedidos', '2.345'],
+          ['Ticket Médio', 'R$ 66,90'],
+        ],
+      });
+
+      doc.text("Performance por Categoria", 14, (doc as any).lastAutoTable.finalY + 15);
+      (doc as any).autoTable({
+        startY: (doc as any).lastAutoTable.finalY + 20,
+        head: [['Categoria', 'Vendas', 'Crescimento']],
+        body: [
+          ['Alimentos', 'R$ 45.200', '+12%'],
+          ['Óleos', 'R$ 38.100', '+8%'],
+          ['Cosméticos', 'R$ 29.400', '+15%'],
+          ['Artesanato', 'R$ 12.800', '-2%'],
+        ],
+      });
+
+      doc.save("relatorio-mensal-licuri.pdf");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
   const total = statuses.reduce((a, s) => a + s.value, 0);
   let acc = 0;
   const arcs = statuses.map((s) => {
@@ -41,6 +86,10 @@ function AdminPage() {
         <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
           Licuri Hub · Admin
         </span>
+        <Button variant="hero" size="sm" onClick={generateReport} disabled={isGenerating}>
+          {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+          Gerar Relatório PDF
+        </Button>
       </header>
 
       <div className="mt-8 grid gap-4 md:grid-cols-4">
