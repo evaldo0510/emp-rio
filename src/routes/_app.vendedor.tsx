@@ -55,11 +55,11 @@ function VendorDashboard() {
     category: "alimentos",
     description: "",
     image_url: "",
-    shop_name: "Sertão Natural", // Default shop
+    shop_name: "", 
     stock_quantity: 10
   });
 
-  const max = Math.max(...sales.map((s) => s.v));
+  const [dailySales, setDailySales] = useState<any[]>([]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -72,9 +72,12 @@ function VendorDashboard() {
     // Fetch Seller Profile
     const { data: profile } = await supabase.from("sellers").select("*").eq('user_id', user.id).maybeSingle();
     setSellerProfile(profile);
+    if (profile && !newProduct.shop_name) {
+      setNewProduct(prev => ({ ...prev, shop_name: profile.store_name }));
+    }
 
     // Fetch products
-    const { data: prods } = await supabase.from("products").select("*").eq('vendor_id', user.id).order("created_at", { ascending: false });
+    const { data: prods } = await supabase.from("products").select("*").eq('seller_id', user.id).order("created_at", { ascending: false });
     if (prods) setDbProducts(prods);
 
     // Fetch Wallet
@@ -102,6 +105,21 @@ function VendorDashboard() {
     if (salesData) {
       setRealOrders(salesData);
       
+      // Calculate daily sales for chart (last 7 days)
+      const last7Days = [...Array(7)].map((_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+      }).reverse();
+
+      const dailyTotals = last7Days.map(day => {
+        const total = salesData
+          .filter(o => new Date(o.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) === day)
+          .reduce((acc, o) => acc + (o.net_amount || (o.price * o.quantity)), 0);
+        return { day, v: total };
+      });
+      setDailySales(dailyTotals);
+
       // Fetch Shipments for these orders
       const orderIds = [...new Set(salesData.map(o => o.order_id))];
       if (orderIds.length > 0) {
