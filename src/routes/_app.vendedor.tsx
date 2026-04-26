@@ -854,9 +854,10 @@ function VendorDashboard() {
           </div>
         </div>
       )}
-    </>)}
-    </div>
-  );
+    </>
+  )}
+</div>
+);
 }
 
 function Stat({
