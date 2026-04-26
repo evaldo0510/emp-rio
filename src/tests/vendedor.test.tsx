@@ -73,5 +73,7 @@ describe('VendorDashboard', () => {
       expect(screen.getByText(/Saldo Disponível/i)).toBeInTheDocument();
       expect(screen.getByText(/Minha Loja/i)).toBeInTheDocument();
     });
+
+    expect(consoleSpy).not.toHaveBeenCalled();
   });
 });
