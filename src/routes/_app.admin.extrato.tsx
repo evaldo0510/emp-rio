@@ -48,16 +48,31 @@ export const Route = createFileRoute("/_app/admin/extrato")({
 });
 
 function AdminExtratoPage() {
+  const navigate = useNavigate({ from: Route.fullPath });
+  const search = Route.useSearch();
+  const filterType = search.type ?? "all";
+  const filterStatus = search.status ?? "all";
+  const searchTerm = search.q ?? "";
+  const dateRange = { start: search.start ?? "", end: search.end ?? "" };
+
+  // Helper para atualizar parcialmente search params (preservando os demais)
+  const updateSearch = (patch: Record<string, string | undefined>) => {
+    navigate({
+      search: (prev: any) => {
+        const next = { ...prev, ...patch };
+        // Limpa chaves vazias/padrão para manter URL enxuta
+        Object.keys(next).forEach((k) => {
+          if (next[k] === "" || next[k] === "all" || next[k] === undefined) delete next[k];
+        });
+        return next;
+      },
+      replace: true,
+    });
+  };
+
   const [transactions, setTransactions] = useState<any[]>([]);
   const [sellers, setSellers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterType, setFilterType] = useState<string>("all");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
-    start: "",
-    end: "",
-  });
 
   useEffect(() => {
     const init = async () => {
@@ -65,7 +80,7 @@ function AdminExtratoPage() {
       await fetchTransactions();
     };
     init();
-  }, [filterType, filterStatus, dateRange]);
+  }, [filterType, filterStatus, dateRange.start, dateRange.end]);
 
   const fetchSellers = async () => {
     const { data } = await supabase.from("sellers").select("user_id, store_name");
