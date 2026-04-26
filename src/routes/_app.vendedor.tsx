@@ -53,6 +53,10 @@ function VendorDashboard() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // Fetch Seller Profile
+    const { data: profile } = await supabase.from("sellers").select("*").eq('user_id', user.id).maybeSingle();
+    setSellerProfile(profile);
+
     // Fetch products
     const { data: prods } = await supabase.from("products").select("*").eq('vendor_id', user.id).order("created_at", { ascending: false });
     if (prods) setDbProducts(prods);
@@ -79,7 +83,55 @@ function VendorDashboard() {
       .eq('seller_id', user.id)
       .order("created_at", { ascending: false });
     
-    if (salesData) setRealOrders(salesData);
+    if (salesData) {
+      setRealOrders(salesData);
+      
+      // Fetch Shipments for these orders
+      const orderIds = [...new Set(salesData.map(o => o.order_id))];
+      if (orderIds.length > 0) {
+        const { data: shipData } = await supabase.from("shipments").select("*").in('order_id', orderIds);
+        if (shipData) setShipments(shipData);
+      }
+    }
+  };
+
+  const handleRegisterSeller = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("store_name") as string;
+    const desc = formData.get("description") as string;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase.from("sellers").insert([{
+        user_id: user.id,
+        store_name: name,
+        description: desc
+      }]);
+
+      if (error) throw error;
+      toast.success("Perfil enviado para aprovação!");
+      fetchDashboardData();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
+  const updateTracking = async (shipmentId: string, code: string) => {
+    try {
+      const { error } = await supabase
+        .from("shipments")
+        .update({ tracking_code: code, status: 'shipped' })
+        .eq('id', shipmentId);
+      
+      if (error) throw error;
+      toast.success("Rastreio atualizado!");
+      fetchDashboardData();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
