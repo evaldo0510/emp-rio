@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Minus, Plus, Trash2, ShoppingBag, Loader2 } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { formatBRL } from "@/lib/products";
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase, syncCartToDB } from "@/lib/supabase";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/carrinho")({
@@ -18,14 +18,26 @@ function CartPage() {
   const setQty = useCart((s) => s.setQty);
   const remove = useCart((s) => s.remove);
   const clear = useCart((s) => s.clear);
-  const add = useCart((s) => s.add);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   useEffect(() => {
-    fetchDBCart();
-  }, []);
+    handleCartSync();
+  }, [items]);
+
+  const handleCartSync = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user && items.length > 0) {
+      try {
+        await syncCartToDB(user.id, items);
+      } catch (e) {
+        console.error("Erro ao sincronizar carrinho:", e);
+      }
+    }
+  };
 
   const fetchDBCart = async () => {
     try {
+      setIsSyncing(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setLoading(false);
@@ -39,12 +51,13 @@ function CartPage() {
 
       if (error) throw error;
 
-      // If DB has items, we could sync them to local state
-      // For this MVP, we'll stick to Zustand but sync to DB on changes
+      // If DB has items and local cart is empty, maybe populate from DB
+      // But for this simplified flow, we prioritize the Zustand state and push to DB
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
+      setIsSyncing(false);
     }
   };
 
@@ -113,7 +126,10 @@ function CartPage() {
           </ul>
 
           <aside className="h-max rounded-2xl border border-[var(--border)] bg-[var(--cream)] p-6">
-            <h2 className="font-display text-lg font-semibold">Resumo</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-semibold">Resumo</h2>
+              {isSyncing && <RefreshCw className="h-3 w-3 animate-spin text-[var(--muted-foreground)]" />}
+            </div>
             <dl className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">
                 <dt className="text-[var(--muted-foreground)]">Subtotal ({items.length} itens)</dt>
