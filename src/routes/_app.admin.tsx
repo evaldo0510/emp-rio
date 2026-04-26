@@ -769,10 +769,12 @@ function Stat({
   icon: Icon,
   label,
   value,
+  color = "var(--clay)",
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
+  color?: string;
 }) {
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
@@ -780,7 +782,7 @@ function Stat({
         <span className="text-xs uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
           {label}
         </span>
-        <Icon className="h-4 w-4 text-[var(--clay)]" />
+        <Icon className="h-4 w-4" style={{ color }} />
       </div>
       <div className="mt-3 font-display text-2xl font-bold text-[var(--coffee)]">{value}</div>
     </div>
