@@ -282,7 +282,68 @@ function VendorDashboard() {
             <Stat icon={TrendingUp} label="Vendas Brutas" value={formatBRL(realOrders.reduce((acc, o) => acc + (o.price * o.quantity), 0))} />
             <Stat icon={ShoppingBag} label="Pedidos" value={realOrders.length.toString()} />
             <Stat icon={Package} label="Produtos" value={dbProducts.length.toString()} />
-            <Stat icon={Star} label="Saldo Disponível" value={formatBRL(wallet?.balance || 0)} />
+            <Stat icon={Star} label="Saldo Disponível" value={formatBRL(wallet?.balance || 0)}>
+              <Dialog open={isWithdrawOpen} onOpenChange={setIsWithdrawOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 px-2 text-[10px] uppercase tracking-widest text-[var(--clay)] hover:bg-[var(--clay)]/10">
+                    <ArrowUpRight className="mr-1 h-3 w-3" />
+                    Sacar
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle className="font-display text-xl text-[var(--coffee)]">Solicitar Saque</DialogTitle>
+                    <DialogDescription>
+                      O valor será transferido para sua chave PIX após aprovação.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleWithdraw} className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="balance" className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Saldo Atual</Label>
+                      <div className="text-xl font-bold text-[var(--leaf)]">{formatBRL(wallet?.balance || 0)}</div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="amount" className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Valor do Saque (R$)</Label>
+                      <Input
+                        id="amount"
+                        type="number"
+                        step="0.01"
+                        placeholder="0,00"
+                        value={withdrawAmount}
+                        onChange={(e) => setWithdrawAmount(e.target.value)}
+                        className="rounded-xl border-[var(--border)] focus:border-[var(--clay)]"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="pix" className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Chave PIX para Recebimento</Label>
+                      <Input
+                        id="pix"
+                        placeholder="CPF, E-mail, Celular ou Chave Aleatória"
+                        value={pixKey}
+                        onChange={(e) => setPixKey(e.target.value)}
+                        className="rounded-xl border-[var(--border)] focus:border-[var(--clay)]"
+                        required
+                      />
+                    </div>
+                    <DialogFooter>
+                      <Button 
+                        type="submit" 
+                        variant="hero" 
+                        className="w-full" 
+                        disabled={isSubmittingWithdraw}
+                      >
+                        {isSubmittingWithdraw ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          "Confirmar Solicitação"
+                        )}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </Stat>
           </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-[1.6fr_1fr]">
