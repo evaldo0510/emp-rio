@@ -576,6 +576,7 @@ function VendorDashboard() {
                       price: parseFloat(newProduct.price),
                       slug: newProduct.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
                       region: "Bahia",
+                      seller_id: user.id,
                       vendor_id: user.id
                     }]);
                     if (error) throw error;
