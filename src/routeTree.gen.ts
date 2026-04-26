@@ -9,51 +9,319 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppVendedorRouteImport } from './routes/_app.vendedor'
+import { Route as AppSobreRouteImport } from './routes/_app.sobre'
+import { Route as AppLojasRouteImport } from './routes/_app.lojas'
+import { Route as AppFavoritosRouteImport } from './routes/_app.favoritos'
+import { Route as AppContaRouteImport } from './routes/_app.conta'
+import { Route as AppCheckoutRouteImport } from './routes/_app.checkout'
+import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
+import { Route as AppCarrinhoRouteImport } from './routes/_app.carrinho'
+import { Route as AppBlogRouteImport } from './routes/_app.blog'
+import { Route as AppAdminRouteImport } from './routes/_app.admin'
+import { Route as AppProdutoSlugRouteImport } from './routes/_app.produto.$slug'
 
-const IndexRoute = IndexRouteImport.update({
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppVendedorRoute = AppVendedorRouteImport.update({
+  id: '/vendedor',
+  path: '/vendedor',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSobreRoute = AppSobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLojasRoute = AppLojasRouteImport.update({
+  id: '/lojas',
+  path: '/lojas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFavoritosRoute = AppFavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContaRoute = AppContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCheckoutRoute = AppCheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCategoriasRoute = AppCategoriasRouteImport.update({
+  id: '/categorias',
+  path: '/categorias',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCarrinhoRoute = AppCarrinhoRouteImport.update({
+  id: '/carrinho',
+  path: '/carrinho',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBlogRoute = AppBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProdutoSlugRoute = AppProdutoSlugRouteImport.update({
+  id: '/produto/$slug',
+  path: '/produto/$slug',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AppIndexRoute
+  '/admin': typeof AppAdminRoute
+  '/blog': typeof AppBlogRoute
+  '/carrinho': typeof AppCarrinhoRoute
+  '/categorias': typeof AppCategoriasRoute
+  '/checkout': typeof AppCheckoutRoute
+  '/conta': typeof AppContaRoute
+  '/favoritos': typeof AppFavoritosRoute
+  '/lojas': typeof AppLojasRoute
+  '/sobre': typeof AppSobreRoute
+  '/vendedor': typeof AppVendedorRoute
+  '/produto/$slug': typeof AppProdutoSlugRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/admin': typeof AppAdminRoute
+  '/blog': typeof AppBlogRoute
+  '/carrinho': typeof AppCarrinhoRoute
+  '/categorias': typeof AppCategoriasRoute
+  '/checkout': typeof AppCheckoutRoute
+  '/conta': typeof AppContaRoute
+  '/favoritos': typeof AppFavoritosRoute
+  '/lojas': typeof AppLojasRoute
+  '/sobre': typeof AppSobreRoute
+  '/vendedor': typeof AppVendedorRoute
+  '/': typeof AppIndexRoute
+  '/produto/$slug': typeof AppProdutoSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_app/admin': typeof AppAdminRoute
+  '/_app/blog': typeof AppBlogRoute
+  '/_app/carrinho': typeof AppCarrinhoRoute
+  '/_app/categorias': typeof AppCategoriasRoute
+  '/_app/checkout': typeof AppCheckoutRoute
+  '/_app/conta': typeof AppContaRoute
+  '/_app/favoritos': typeof AppFavoritosRoute
+  '/_app/lojas': typeof AppLojasRoute
+  '/_app/sobre': typeof AppSobreRoute
+  '/_app/vendedor': typeof AppVendedorRoute
+  '/_app/': typeof AppIndexRoute
+  '/_app/produto/$slug': typeof AppProdutoSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/blog'
+    | '/carrinho'
+    | '/categorias'
+    | '/checkout'
+    | '/conta'
+    | '/favoritos'
+    | '/lojas'
+    | '/sobre'
+    | '/vendedor'
+    | '/produto/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/admin'
+    | '/blog'
+    | '/carrinho'
+    | '/categorias'
+    | '/checkout'
+    | '/conta'
+    | '/favoritos'
+    | '/lojas'
+    | '/sobre'
+    | '/vendedor'
+    | '/'
+    | '/produto/$slug'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/admin'
+    | '/_app/blog'
+    | '/_app/carrinho'
+    | '/_app/categorias'
+    | '/_app/checkout'
+    | '/_app/conta'
+    | '/_app/favoritos'
+    | '/_app/lojas'
+    | '/_app/sobre'
+    | '/_app/vendedor'
+    | '/_app/'
+    | '/_app/produto/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/vendedor': {
+      id: '/_app/vendedor'
+      path: '/vendedor'
+      fullPath: '/vendedor'
+      preLoaderRoute: typeof AppVendedorRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/sobre': {
+      id: '/_app/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof AppSobreRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/lojas': {
+      id: '/_app/lojas'
+      path: '/lojas'
+      fullPath: '/lojas'
+      preLoaderRoute: typeof AppLojasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/favoritos': {
+      id: '/_app/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof AppFavoritosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/conta': {
+      id: '/_app/conta'
+      path: '/conta'
+      fullPath: '/conta'
+      preLoaderRoute: typeof AppContaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/checkout': {
+      id: '/_app/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof AppCheckoutRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categorias': {
+      id: '/_app/categorias'
+      path: '/categorias'
+      fullPath: '/categorias'
+      preLoaderRoute: typeof AppCategoriasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/carrinho': {
+      id: '/_app/carrinho'
+      path: '/carrinho'
+      fullPath: '/carrinho'
+      preLoaderRoute: typeof AppCarrinhoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/blog': {
+      id: '/_app/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof AppBlogRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/admin': {
+      id: '/_app/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/produto/$slug': {
+      id: '/_app/produto/$slug'
+      path: '/produto/$slug'
+      fullPath: '/produto/$slug'
+      preLoaderRoute: typeof AppProdutoSlugRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppAdminRoute: typeof AppAdminRoute
+  AppBlogRoute: typeof AppBlogRoute
+  AppCarrinhoRoute: typeof AppCarrinhoRoute
+  AppCategoriasRoute: typeof AppCategoriasRoute
+  AppCheckoutRoute: typeof AppCheckoutRoute
+  AppContaRoute: typeof AppContaRoute
+  AppFavoritosRoute: typeof AppFavoritosRoute
+  AppLojasRoute: typeof AppLojasRoute
+  AppSobreRoute: typeof AppSobreRoute
+  AppVendedorRoute: typeof AppVendedorRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppProdutoSlugRoute: typeof AppProdutoSlugRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAdminRoute: AppAdminRoute,
+  AppBlogRoute: AppBlogRoute,
+  AppCarrinhoRoute: AppCarrinhoRoute,
+  AppCategoriasRoute: AppCategoriasRoute,
+  AppCheckoutRoute: AppCheckoutRoute,
+  AppContaRoute: AppContaRoute,
+  AppFavoritosRoute: AppFavoritosRoute,
+  AppLojasRoute: AppLojasRoute,
+  AppSobreRoute: AppSobreRoute,
+  AppVendedorRoute: AppVendedorRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppProdutoSlugRoute: AppProdutoSlugRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
