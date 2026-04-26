@@ -130,7 +130,10 @@ function AdminPage() {
     if (data) setCommissionSettings(data);
   };
 
-  const updateTypeCommissionRate = async (type: string, rate: number) => {
+  const updateTypeCommissionRate = async (type: string, rateInput: number) => {
+    // Round to 2 decimal places before processing
+    const rate = Math.round(rateInput * 100) / 100;
+
     if (isNaN(rate) || rate < 0 || rate > 100) {
       toast.error("A taxa de comissão deve estar entre 0% e 100%.");
       fetchCommissionSettings(); // Reset to current value from DB
@@ -448,7 +451,7 @@ function AdminPage() {
                     type="number"
                     min="0"
                     max="100"
-                    step="0.1"
+                    step="0.01"
                     defaultValue={s.commission_rate * 100}
                     className="w-full bg-transparent border-b border-[var(--border)] py-1 text-lg font-bold text-[var(--coffee)] focus:border-[var(--clay)] outline-none"
                     onBlur={(e) => updateTypeCommissionRate(s.seller_type, Number(e.target.value))}
