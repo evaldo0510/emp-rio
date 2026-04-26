@@ -76,4 +76,33 @@ describe("VendorDashboard", () => {
 
     expect(consoleSpy).not.toHaveBeenCalled();
   });
+
+  it('renders "Aguardando Aprovação" badge when seller is not approved', async () => {
+    // Mock authenticated user and pending profile
+    const mockProfile = { id: 'seller-1', store_name: 'Loja Pendente', approved: false };
+
+    (supabase.from as any).mockImplementation((table: string) => {
+      if (table === 'sellers') {
+        return {
+          select: vi.fn().mockReturnThis(),
+          eq: vi.fn().mockReturnThis(),
+          maybeSingle: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
+        };
+      }
+      return {
+        select: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockReturnThis(),
+        order: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockReturnThis(),
+        maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+      };
+    });
+
+    render(<VendorDashboard />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Aguardando Aprovação/i)).toBeInTheDocument();
+      expect(screen.getByText(/Loja Pendente/i)).toBeInTheDocument();
+    });
+  });
 });
