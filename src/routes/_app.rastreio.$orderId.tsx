@@ -80,6 +80,7 @@ function TrackingPage() {
   }
 
   const statusMap: any = {
+    'paid': { label: 'Pago', icon: CheckCircle2, color: 'text-green-600', bg: 'bg-green-50' },
     'processing': { label: 'Em Processamento', icon: Clock, color: 'text-blue-600', bg: 'bg-blue-50' },
     'shipped': { label: 'Enviado', icon: Truck, color: 'text-[var(--clay)]', bg: 'bg-[var(--sand)]' },
     'delivered': { label: 'Entregue', icon: CheckCircle2, color: 'text-green-600', bg: 'bg-green-50' },
@@ -191,18 +192,40 @@ function TrackingPage() {
             </div>
           </div>
 
-          {shipment?.carrier === 'Melhor Envio' && (
+          <div className="bg-white rounded-3xl border border-[var(--border)] p-6 shadow-sm">
+            <h3 className="font-display text-lg font-semibold mb-4 text-[var(--coffee)]">Produtos</h3>
+            <div className="space-y-4">
+              {order.order_items?.map((item: any) => (
+                <div key={item.id} className="flex gap-3">
+                  <div className="h-12 w-12 rounded-xl border border-[var(--border)] overflow-hidden shrink-0 bg-[var(--sand)]">
+                    <img src={item.image_url} alt="" className="h-full w-full object-cover" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-[var(--coffee)] line-clamp-2">{item.name}</p>
+                    <p className="text-xs text-[var(--muted-foreground)]">Qtd: {item.quantity}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {shipment?.carrier && (
             <div className="bg-[var(--sand)]/50 rounded-3xl border border-[var(--border)] p-6 shadow-sm">
-              <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-3">Link Externo</h3>
-              <p className="text-xs text-[var(--muted-foreground)] mb-4 leading-relaxed">
-                Você também pode acompanhar seu pedido diretamente no site da transportadora.
-              </p>
-              <Button asChild variant="soft" size="sm" className="w-full">
-                <a href="https://melhorenvio.com.br/rastreamento" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                  Rastrear no Melhor Envio
-                  <ExternalLink className="ml-2 h-3 w-3" />
-                </a>
-              </Button>
+              <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-3">Transportadora</h3>
+              <p className="text-sm font-semibold text-[var(--coffee)] mb-1">{shipment.carrier}</p>
+              {shipment.carrier === 'Melhor Envio' && (
+                <>
+                  <p className="text-xs text-[var(--muted-foreground)] mb-4 leading-relaxed">
+                    Acompanhe também no site oficial da transportadora.
+                  </p>
+                  <Button asChild variant="soft" size="sm" className="w-full">
+                    <a href="https://melhorenvio.com.br/rastreamento" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
+                      Site Oficial
+                      <ExternalLink className="ml-2 h-3 w-3" />
+                    </a>
+                  </Button>
+                </>
+              )}
             </div>
           )}
         </aside>

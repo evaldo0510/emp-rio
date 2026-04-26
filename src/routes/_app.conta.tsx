@@ -165,47 +165,47 @@ function AccountPage() {
                           <StatusStep 
                             icon={CheckCircle2} 
                             label="Pago" 
-                            active={['pago', 'em preparo', 'enviado', 'entregue'].includes(order.status)} 
+                            active={['paid', 'processing', 'shipped', 'delivered'].includes(order.status)} 
                           />
                           <StatusStep 
                             icon={Clock} 
                             label="Em preparo" 
-                            active={['em preparo', 'enviado', 'entregue'].includes(order.status)} 
+                            active={['processing', 'shipped', 'delivered'].includes(order.status)} 
                           />
                           <StatusStep 
                             icon={Truck} 
                             label="Enviado" 
-                            active={['enviado', 'entregue'].includes(order.status)} 
+                            active={['shipped', 'delivered'].includes(order.status)} 
                           />
                           <StatusStep 
                             icon={Package} 
                             label="Entregue" 
-                            active={['entregue'].includes(order.status)} 
+                            active={['delivered'].includes(order.status)} 
                           />
                         </div>
                       </div>
                     </div>
 
-                    {order.shipments?.[0] && (
-                      <div className="mb-6 p-4 rounded-xl bg-[var(--sand)]/40 border border-[var(--border)]">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-2">Informações de Envio</p>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-bold text-[var(--coffee)]">{order.shipments[0].carrier}</p>
-                            <p className="text-xs text-[var(--muted-foreground)]">Status: <span className="text-[var(--clay)] font-semibold uppercase">{order.shipments[0].status}</span></p>
-                          </div>
-                          {order.shipments[0].tracking_code && (
-                            <div className="text-right flex flex-col items-end">
-                              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Rastreio</p>
-                              <p className="text-sm font-mono font-bold text-[var(--coffee)]">{order.shipments[0].tracking_code}</p>
-                              <Button asChild variant="link" size="sm" className="h-auto p-0 text-[var(--clay)] font-bold text-xs mt-1">
-                                <Link to="/rastreio/$orderId" params={{ orderId: order.id }}>
-                                  Ver Detalhes <ChevronRight className="h-3 w-3 ml-1" />
-                                </Link>
-                              </Button>
-                            </div>
-                          )}
+                    <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                      <Button asChild variant="soft" className="flex-1 rounded-xl">
+                        <Link to="/rastreio/$orderId" params={{ orderId: order.id }}>
+                          <Truck className="mr-2 h-4 w-4" />
+                          Rastrear Pedido
+                        </Link>
+                      </Button>
+                      
+                      {order.shipments?.[0]?.tracking_code && (
+                        <div className="flex flex-col items-end justify-center px-4 py-2 bg-[var(--sand)]/40 rounded-xl border border-[var(--border)] min-w-[140px]">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Código</p>
+                          <p className="text-sm font-mono font-bold text-[var(--clay)]">{order.shipments[0].tracking_code}</p>
                         </div>
+                      )}
+                    </div>
+
+                    {order.shipments?.[0] && !order.shipments[0].tracking_code && (
+                      <div className="mb-6 p-3 rounded-xl bg-blue-50 border border-blue-100 flex items-center gap-3">
+                        <Clock className="h-4 w-4 text-blue-500" />
+                        <p className="text-xs text-blue-700">Aguardando código de rastreio da transportadora.</p>
                       </div>
                     )}
 
