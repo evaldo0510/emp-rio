@@ -771,7 +771,7 @@ function Stat({
   value,
   color = "var(--clay)",
 }: {
-  icon: React.ComponentType<{ className?: string }>;
+  icon: any;
   label: string;
   value: string;
   color?: string;
