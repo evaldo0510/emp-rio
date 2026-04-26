@@ -14,6 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_admins: {
+        Row: {
+          created_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           created_at: string | null
@@ -424,15 +439,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_monthly_sales_report: {
-        Args: { report_month: string }
-        Returns: {
-          orders_by_status: Json
-          sales_by_category: Json
-          total_orders: number
-          total_revenue: number
-        }[]
-      }
+      get_monthly_sales_report:
+        | {
+            Args: { report_month: string }
+            Returns: {
+              error: true
+            } & "Could not choose the best candidate function between: public.get_monthly_sales_report(report_month => date), public.get_monthly_sales_report(report_month => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"[]
+          }
+        | {
+            Args: { report_month: string }
+            Returns: {
+              error: true
+            } & "Could not choose the best candidate function between: public.get_monthly_sales_report(report_month => date), public.get_monthly_sales_report(report_month => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"[]
+          }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
