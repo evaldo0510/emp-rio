@@ -21,6 +21,7 @@ import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppCarrinhoRouteImport } from './routes/_app.carrinho'
 import { Route as AppBlogRouteImport } from './routes/_app.blog'
 import { Route as AppAdminRouteImport } from './routes/_app.admin'
+import { Route as AppRastreioOrderIdRouteImport } from './routes/_app.rastreio.$orderId'
 import { Route as AppProdutoSlugRouteImport } from './routes/_app.produto.$slug'
 
 const AppRoute = AppRouteImport.update({
@@ -82,6 +83,11 @@ const AppAdminRoute = AppAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AppRoute,
 } as any)
+const AppRastreioOrderIdRoute = AppRastreioOrderIdRouteImport.update({
+  id: '/rastreio/$orderId',
+  path: '/rastreio/$orderId',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppProdutoSlugRoute = AppProdutoSlugRouteImport.update({
   id: '/produto/$slug',
   path: '/produto/$slug',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
+  '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
 }
 export interface FileRoutesByTo {
   '/admin': typeof AppAdminRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   '/vendedor': typeof AppVendedorRoute
   '/': typeof AppIndexRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
+  '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/_app/vendedor': typeof AppVendedorRoute
   '/_app/': typeof AppIndexRoute
   '/_app/produto/$slug': typeof AppProdutoSlugRoute
+  '/_app/rastreio/$orderId': typeof AppRastreioOrderIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/vendedor'
     | '/produto/$slug'
+    | '/rastreio/$orderId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/vendedor'
     | '/'
     | '/produto/$slug'
+    | '/rastreio/$orderId'
   id:
     | '__root__'
     | '/_app'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/_app/vendedor'
     | '/_app/'
     | '/_app/produto/$slug'
+    | '/_app/rastreio/$orderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -268,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/rastreio/$orderId': {
+      id: '/_app/rastreio/$orderId'
+      path: '/rastreio/$orderId'
+      fullPath: '/rastreio/$orderId'
+      preLoaderRoute: typeof AppRastreioOrderIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/produto/$slug': {
       id: '/_app/produto/$slug'
       path: '/produto/$slug'
@@ -291,6 +310,7 @@ interface AppRouteChildren {
   AppVendedorRoute: typeof AppVendedorRoute
   AppIndexRoute: typeof AppIndexRoute
   AppProdutoSlugRoute: typeof AppProdutoSlugRoute
+  AppRastreioOrderIdRoute: typeof AppRastreioOrderIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -306,6 +326,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppVendedorRoute: AppVendedorRoute,
   AppIndexRoute: AppIndexRoute,
   AppProdutoSlugRoute: AppProdutoSlugRoute,
+  AppRastreioOrderIdRoute: AppRastreioOrderIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

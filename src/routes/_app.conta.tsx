@@ -195,9 +195,14 @@ function AccountPage() {
                             <p className="text-xs text-[var(--muted-foreground)]">Status: <span className="text-[var(--clay)] font-semibold uppercase">{order.shipments[0].status}</span></p>
                           </div>
                           {order.shipments[0].tracking_code && (
-                            <div className="text-right">
+                            <div className="text-right flex flex-col items-end">
                               <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Rastreio</p>
                               <p className="text-sm font-mono font-bold text-[var(--coffee)]">{order.shipments[0].tracking_code}</p>
+                              <Button asChild variant="link" size="sm" className="h-auto p-0 text-[var(--clay)] font-bold text-xs mt-1">
+                                <Link to="/rastreio/$orderId" params={{ orderId: order.id }}>
+                                  Ver Detalhes <ChevronRight className="h-3 w-3 ml-1" />
+                                </Link>
+                              </Button>
                             </div>
                           )}
                         </div>

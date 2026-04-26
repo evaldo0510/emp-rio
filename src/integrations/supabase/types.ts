@@ -271,6 +271,41 @@ export type Database = {
         }
         Relationships: []
       }
+      shipment_updates: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          location: string | null
+          shipment_id: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string | null
+          shipment_id?: string | null
+          status: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string | null
+          shipment_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipment_updates_shipment_id_fkey"
+            columns: ["shipment_id"]
+            isOneToOne: false
+            referencedRelation: "shipments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shipments: {
         Row: {
           carrier: string | null
