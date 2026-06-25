@@ -94,10 +94,10 @@ function ProcessingPage() {
       .select("steps_log")
       .eq("id", currentJobId)
       .maybeSingle();
-    const prev = Array.isArray(row?.steps_log) ? (row?.steps_log as unknown[]) : [];
+    const prev = Array.isArray(row?.steps_log) ? (row!.steps_log as unknown as object[]) : [];
     await supabase
       .from("ai_extraction_jobs")
-      .update({ current_step: step, steps_log: [...prev, entry] })
+      .update({ current_step: step, steps_log: [...prev, entry] as never })
       .eq("id", currentJobId);
   }
 
