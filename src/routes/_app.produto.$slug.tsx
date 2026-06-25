@@ -183,51 +183,67 @@ function ProductPage() {
               </div>
 
               <div className="mt-8 flex flex-col gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 items-center rounded-xl border border-[var(--border)] bg-white">
-                    <button
-                      onClick={() => setQty(Math.max(1, qty - 1))}
-                      className="flex h-12 w-12 items-center justify-center text-[var(--sertao)] transition-colors hover:bg-[var(--sand)] hover:text-[var(--clay)]"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <span className="w-10 text-center font-display text-lg font-bold">{qty}</span>
-                    <button
-                      onClick={() => setQty(qty + 1)}
-                      className="flex h-12 w-12 items-center justify-center text-[var(--sertao)] transition-colors hover:bg-[var(--sand)] hover:text-[var(--clay)]"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  </div>
+                {product.external_buy_url ? (
+                  <a
+                    href={product.external_buy_url}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="inline-flex items-center justify-center gap-2 rounded-md bg-[#FFE600] px-6 py-4 font-bold text-[#2D3277] shadow-lg shadow-[#FFE600]/30 transition-transform hover:scale-[1.01]"
+                  >
+                    <Zap className="h-5 w-5" />
+                    Comprar na loja oficial do vendedor
+                  </a>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 items-center rounded-xl border border-[var(--border)] bg-white">
+                      <button
+                        onClick={() => setQty(Math.max(1, qty - 1))}
+                        className="flex h-12 w-12 items-center justify-center text-[var(--sertao)] transition-colors hover:bg-[var(--sand)] hover:text-[var(--clay)]"
+                        aria-label="Diminuir quantidade"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+                      <span className="w-10 text-center font-display text-lg font-bold">{qty}</span>
+                      <button
+                        onClick={() => setQty(qty + 1)}
+                        className="flex h-12 w-12 items-center justify-center text-[var(--sertao)] transition-colors hover:bg-[var(--sand)] hover:text-[var(--clay)]"
+                        aria-label="Aumentar quantidade"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+                    </div>
 
-                  <div className="flex-1 flex flex-col gap-2">
-                    <Button
-                      variant="hero"
-                      size="xl"
-                      className="w-full bg-[#C4682C] hover:bg-[#A35624] text-white shadow-lg shadow-[#C4682C]/20"
-                      onClick={() => {
-                        add(product, qty);
-                        toast.success("Adicionado ao carrinho", { description: product.name });
-                      }}
-                    >
-                      <Zap className="mr-2 h-5 w-5 fill-current" />
-                      COMPRAR AGORA
-                    </Button>
+                    <div className="flex-1 flex flex-col gap-2">
+                      <Button
+                        variant="hero"
+                        size="xl"
+                        className="w-full bg-[#C4682C] hover:bg-[#A35624] text-white shadow-lg shadow-[#C4682C]/20"
+                        onClick={() => {
+                          add(product, qty);
+                          toast.success("Adicionado ao carrinho", { description: product.name });
+                        }}
+                      >
+                        <Zap className="mr-2 h-5 w-5 fill-current" />
+                        COMPRAR AGORA
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <Button
-                  variant="outline"
-                  size="xl"
-                  className="w-full border-[#6B4F2A] text-[#6B4F2A] hover:bg-[#6B4F2A]/5"
-                  onClick={() => {
-                    add(product, qty);
-                    toast.success("Adicionado ao carrinho", { description: product.name });
-                  }}
-                >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
-                  Adicionar ao carrinho
-                </Button>
+                {!product.external_buy_url && (
+                  <Button
+                    variant="outline"
+                    size="xl"
+                    className="w-full border-[#6B4F2A] text-[#6B4F2A] hover:bg-[#6B4F2A]/5"
+                    onClick={() => {
+                      add(product, qty);
+                      toast.success("Adicionado ao carrinho", { description: product.name });
+                    }}
+                  >
+                    <ShoppingCart className="mr-2 h-5 w-5" />
+                    Adicionar ao carrinho
+                  </Button>
+                )}
               </div>
 
               <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[var(--border)] pt-6 text-[11px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
