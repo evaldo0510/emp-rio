@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_extraction_jobs: {
+        Row: {
+          created_at: string
+          current_step: string | null
+          error_message: string | null
+          id: string
+          product_id: string | null
+          result: Json | null
+          seller_id: string
+          source_kind: string
+          source_meta: Json
+          status: string
+          steps_log: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_step?: string | null
+          error_message?: string | null
+          id?: string
+          product_id?: string | null
+          result?: Json | null
+          seller_id: string
+          source_kind: string
+          source_meta?: Json
+          status?: string
+          steps_log?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_step?: string | null
+          error_message?: string | null
+          id?: string
+          product_id?: string | null
+          result?: Json | null
+          seller_id?: string
+          source_kind?: string
+          source_meta?: Json
+          status?: string
+          steps_log?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_extraction_jobs_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       app_admins: {
         Row: {
           created_at: string | null
@@ -208,12 +261,14 @@ export type Database = {
       products: {
         Row: {
           active: boolean | null
+          ai_job_id: string | null
           badges: string[] | null
           category: string
           created_at: string | null
           description: string | null
           id: string
           image_url: string | null
+          is_draft: boolean
           is_published: boolean | null
           name: string
           price: number
@@ -231,12 +286,14 @@ export type Database = {
         }
         Insert: {
           active?: boolean | null
+          ai_job_id?: string | null
           badges?: string[] | null
           category: string
           created_at?: string | null
           description?: string | null
           id?: string
           image_url?: string | null
+          is_draft?: boolean
           is_published?: boolean | null
           name: string
           price: number
@@ -254,12 +311,14 @@ export type Database = {
         }
         Update: {
           active?: boolean | null
+          ai_job_id?: string | null
           badges?: string[] | null
           category?: string
           created_at?: string | null
           description?: string | null
           id?: string
           image_url?: string | null
+          is_draft?: boolean
           is_published?: boolean | null
           name?: string
           price?: number
