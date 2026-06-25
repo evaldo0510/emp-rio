@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Camera, FileText, PencilLine, ArrowRight, Loader2 } from "lucide-react";
+import { Camera, FileText, PencilLine, ArrowRight, Loader2, Link2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/vendedor/importar")({
@@ -9,14 +10,14 @@ export const Route = createFileRoute("/_app/vendedor/importar")({
   component: ImportarProdutos,
 });
 
+type MethodId = "fotos" | "pdf" | "link" | "manual";
 type Method = {
-  id: "fotos" | "pdf" | "manual";
-  icon: any;
+  id: MethodId;
+  icon: typeof Camera;
   title: string;
   desc: string;
   hint: string;
   accept?: string;
-  multiple?: boolean;
 };
 
 const methods: Method[] = [
@@ -25,9 +26,8 @@ const methods: Method[] = [
     icon: Camera,
     title: "Enviar fotos",
     desc: "Fotos dos seus produtos, vitrine ou prateleira. A IA identifica e descreve cada um.",
-    hint: "JPG ou PNG, até 8MB cada",
+    hint: "JPG ou PNG, até 8MB",
     accept: "image/*",
-    multiple: false,
   },
   {
     id: "pdf",
@@ -36,6 +36,13 @@ const methods: Method[] = [
     desc: "Catálogo, tabela de preços ou cardápio em PDF. Extraímos os produtos automaticamente.",
     hint: "PDF até 8MB",
     accept: "application/pdf",
+  },
+  {
+    id: "link",
+    icon: Link2,
+    title: "Importar por link",
+    desc: "Cole o link de um anúncio (Mercado Livre, sua loja, blog) e a IA lê os dados pra você.",
+    hint: "URL pública (sem login)",
   },
   {
     id: "manual",
@@ -61,6 +68,7 @@ function ImportarProdutos() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState<Method | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [url, setUrl] = useState("");
   const [preparing, setPreparing] = useState(false);
 
   const handleStart = async () => {
@@ -69,35 +77,52 @@ function ImportarProdutos() {
       navigate({ to: "/vendedor" });
       return;
     }
-    if (!file) {
-      toast.error("Selecione um arquivo primeiro.");
-      return;
-    }
-    if (file.size > MAX_BYTES) {
-      toast.error("Arquivo muito grande. Limite 8MB.");
-      return;
-    }
 
     try {
       setPreparing(true);
-      const dataUrl = await fileToDataUrl(file);
-      // Guardar em sessionStorage para a próxima rota consumir (evita querystring gigante)
-      sessionStorage.setItem(
-        "licuri:import-payload",
-        JSON.stringify({
-          kind: selected.id === "fotos" ? "image" : "pdf",
-          source: dataUrl,
-          mime: file.type,
-          fileName: file.name,
-        }),
-      );
+
+      if (selected.id === "link") {
+        const trimmed = url.trim();
+        if (!/^https?:\/\//i.test(trimmed)) {
+          toast.error("Cole uma URL completa (começando com http:// ou https://).");
+          return;
+        }
+        sessionStorage.setItem(
+          "licuri:import-payload",
+          JSON.stringify({ kind: "url", url: trimmed }),
+        );
+      } else {
+        if (!file) {
+          toast.error("Selecione um arquivo primeiro.");
+          return;
+        }
+        if (file.size > MAX_BYTES) {
+          toast.error("Arquivo muito grande. Limite 8MB.");
+          return;
+        }
+        const dataUrl = await fileToDataUrl(file);
+        sessionStorage.setItem(
+          "licuri:import-payload",
+          JSON.stringify({
+            kind: selected.id === "fotos" ? "image" : "pdf",
+            source: dataUrl,
+            mime: file.type,
+            fileName: file.name,
+          }),
+        );
+      }
+
       navigate({ to: "/vendedor/importar/processando" });
-    } catch (e: any) {
-      toast.error("Erro ao preparar arquivo: " + e.message);
+    } catch (e) {
+      toast.error("Erro ao preparar: " + (e instanceof Error ? e.message : "desconhecido"));
     } finally {
       setPreparing(false);
     }
   };
+
+  const canSubmit =
+    selected?.id === "manual" ||
+    (selected?.id === "link" ? url.trim().length > 8 : !!file);
 
   return (
     <div className="container-narrow py-10">
@@ -109,12 +134,12 @@ function ImportarProdutos() {
           Como você quer adicionar seus produtos?
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--muted-foreground)]">
-          A Licuri Inteligência analisa suas fotos ou catálogo em PDF e gera nome, preço,
-          categoria e descrição para cada produto.
+          A Licuri Inteligência analisa fotos, PDFs ou links e gera um rascunho que você revisa
+          antes de publicar.
         </p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {methods.map((m) => {
           const Icon = m.icon;
           const isActive = selected?.id === m.id;
@@ -125,6 +150,7 @@ function ImportarProdutos() {
               onClick={() => {
                 setSelected(m);
                 setFile(null);
+                setUrl("");
               }}
               className={`text-left rounded-2xl border p-5 transition-all ${
                 isActive
@@ -162,19 +188,38 @@ function ImportarProdutos() {
             {selected.title}
           </h2>
 
-          <label className="mt-5 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[var(--clay)]/30 bg-white p-10 text-center hover:border-[var(--clay)]">
-            <selected.icon className="mb-3 h-8 w-8 text-[var(--clay)]" />
-            <span className="text-sm font-medium text-[var(--coffee)]">
-              {file ? file.name : "Clique para selecionar ou arraste aqui"}
-            </span>
-            <span className="mt-1 text-xs text-[var(--muted-foreground)]">{selected.hint}</span>
-            <input
-              type="file"
-              accept={selected.accept}
-              className="hidden"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            />
-          </label>
+          {selected.id === "link" ? (
+            <div className="mt-5 space-y-2">
+              <label className="text-xs font-medium text-[var(--coffee)]" htmlFor="import-url">
+                Cole o link público do produto
+              </label>
+              <Input
+                id="import-url"
+                type="url"
+                placeholder="https://produto.mercadolivre.com.br/MLB-..."
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+              <p className="text-xs text-[var(--muted-foreground)]">
+                Funciona melhor com Mercado Livre. Para outras lojas, tentamos ler os dados
+                públicos da página (Open Graph) — alguns sites bloqueiam essa leitura.
+              </p>
+            </div>
+          ) : (
+            <label className="mt-5 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[var(--clay)]/30 bg-white p-10 text-center hover:border-[var(--clay)]">
+              <selected.icon className="mb-3 h-8 w-8 text-[var(--clay)]" />
+              <span className="text-sm font-medium text-[var(--coffee)]">
+                {file ? file.name : "Clique para selecionar ou arraste aqui"}
+              </span>
+              <span className="mt-1 text-xs text-[var(--muted-foreground)]">{selected.hint}</span>
+              <input
+                type="file"
+                accept={selected.accept}
+                className="hidden"
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              />
+            </label>
+          )}
 
           <div className="mt-5 flex items-center justify-between gap-3">
             <Link
@@ -183,7 +228,7 @@ function ImportarProdutos() {
             >
               Cancelar
             </Link>
-            <Button variant="hero" disabled={!file || preparing} onClick={handleStart}>
+            <Button variant="hero" disabled={!canSubmit || preparing} onClick={handleStart}>
               {preparing ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Preparando...
