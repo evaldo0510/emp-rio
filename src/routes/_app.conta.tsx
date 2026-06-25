@@ -25,6 +25,7 @@ function AccountPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<any[]>([]);
   const [email, setEmail] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const navigate = useNavigate();
@@ -47,15 +48,25 @@ function AccountPage() {
     } = await supabase.auth.getUser();
     setUser(user);
     if (user) {
-      const { data } = await supabase
-        .from("orders")
-        .select("*, order_items(*), shipments(*)")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      setOrders(data || []);
+      const [ordersRes, favsRes] = await Promise.all([
+        supabase
+          .from("orders")
+          .select("*, order_items(*), shipments(*)")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("favorites")
+          .select("product_id, products(id, slug, name, image_url, price)")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(6),
+      ]);
+      setOrders(ordersRes.data || []);
+      setFavorites(favsRes.data || []);
     }
     setLoading(false);
   }
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
