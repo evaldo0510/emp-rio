@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   Clock,
   Truck,
+  Store,
+  X,
 } from "lucide-react";
 import { formatBRL } from "@/lib/products";
 
@@ -26,6 +28,7 @@ function AccountPage() {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState<any[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
+  const [follows, setFollows] = useState<any[]>([]);
   const [email, setEmail] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const navigate = useNavigate();
@@ -48,7 +51,7 @@ function AccountPage() {
     } = await supabase.auth.getUser();
     setUser(user);
     if (user) {
-      const [ordersRes, favsRes] = await Promise.all([
+      const [ordersRes, favsRes, followsRes] = await Promise.all([
         supabase
           .from("orders")
           .select("*, order_items(*), shipments(*)")
@@ -60,12 +63,31 @@ function AccountPage() {
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
           .limit(6),
+        supabase
+          .from("seller_follows")
+          .select("id, seller_id, sellers(id, store_name, logo_url, seller_type)")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false }),
       ]);
       setOrders(ordersRes.data || []);
       setFavorites(favsRes.data || []);
+      setFollows(followsRes.data || []);
     }
     setLoading(false);
   }
+
+  async function handleUnfollow(followId: string, storeName?: string) {
+    const prev = follows;
+    setFollows((f) => f.filter((x) => x.id !== followId));
+    const { error } = await supabase.from("seller_follows").delete().eq("id", followId);
+    if (error) {
+      setFollows(prev);
+      toast.error("Não foi possível deixar de seguir a loja.");
+      return;
+    }
+    toast.success(storeName ? `Você deixou de seguir ${storeName}.` : "Loja removida.");
+  }
+
 
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -352,6 +374,55 @@ function AccountPage() {
               </ul>
             )}
           </div>
+
+          <div className="rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm">
+            <h3 className="font-display text-lg font-semibold mb-4 text-[var(--coffee)]">
+              Lojas Seguidas
+            </h3>
+            {follows.length === 0 ? (
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Você ainda não segue nenhuma loja.
+              </p>
+            ) : (
+              <ul className="space-y-3">
+                {follows.map((f: any) => {
+                  const s = f.sellers;
+                  if (!s) return null;
+                  return (
+                    <li key={f.id} className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full overflow-hidden border border-[var(--border)] bg-[var(--sand)] shrink-0 flex items-center justify-center">
+                        {s.logo_url ? (
+                          <img src={s.logo_url} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          <Store className="h-4 w-4 text-[var(--clay)]" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-[var(--coffee)] line-clamp-1">
+                          {s.store_name}
+                        </p>
+                        {s.seller_type && (
+                          <p className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">
+                            {s.seller_type}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleUnfollow(f.id, s.store_name)}
+                        aria-label={`Deixar de seguir ${s.store_name}`}
+                        className="h-7 w-7 rounded-full flex items-center justify-center text-[var(--muted-foreground)] hover:bg-red-50 hover:text-red-600 transition-colors"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+
 
           <div className="rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm">
             <h3 className="font-display text-lg font-semibold mb-4 text-[var(--coffee)]">
