@@ -69,12 +69,12 @@ Se for uma única foto de um produto único, retorne apenas 1 item. Não invente
         }
 
         try {
-          const { experimental_output } = await generateText({
+          const { output } = await generateText({
             model: gateway("google/gemini-3-flash-preview"),
-            experimental_output: Output.object({ schema: OutputSchema }),
+            output: Output.object({ schema: OutputSchema }),
             messages: [{ role: "user", content: contentBlocks }],
           });
-          return Response.json(experimental_output);
+          return Response.json(output);
         } catch (e: any) {
           console.error("[extract-products] erro:", e);
           return Response.json(
