@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   Clock,
   Truck,
+  Store,
+  X,
 } from "lucide-react";
 import { formatBRL } from "@/lib/products";
 
