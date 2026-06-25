@@ -57,11 +57,15 @@ export const Route = createFileRoute("/_app/conta")({
 function AccountPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [ordersError, setOrdersError] = useState<string | null>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
   const [follows, setFollows] = useState<any[]>([]);
   const [email, setEmail] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [sortBy, setSortBy] = useState<"date_desc" | "date_asc" | "status">("date_desc");
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,30 +86,63 @@ function AccountPage() {
     } = await supabase.auth.getUser();
     setUser(user);
     if (user) {
-      const [ordersRes, favsRes, followsRes] = await Promise.all([
-        supabase
-          .from("orders")
-          .select("*, order_items(*), shipments(*)")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false }),
-        supabase
-          .from("favorites")
-          .select("product_id, products(id, slug, name, image_url, price)")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(6),
-        supabase
-          .from("seller_follows")
-          .select("id, seller_id, sellers(id, store_name, logo_url, seller_type)")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false }),
-      ]);
-      setOrders(ordersRes.data || []);
-      setFavorites(favsRes.data || []);
-      setFollows(followsRes.data || []);
+      setOrdersLoading(true);
+      setOrdersError(null);
+      try {
+        const [ordersRes, favsRes, followsRes] = await Promise.all([
+          supabase
+            .from("orders")
+            .select("*, order_items(*), shipments(*)")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false }),
+          supabase
+            .from("favorites")
+            .select("product_id, products(id, slug, name, image_url, price)")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(6),
+          supabase
+            .from("seller_follows")
+            .select("id, seller_id, sellers(id, store_name, logo_url, seller_type)")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false }),
+        ]);
+        if (ordersRes.error) throw ordersRes.error;
+        setOrders(ordersRes.data || []);
+        setFavorites(favsRes.data || []);
+        setFollows(followsRes.data || []);
+      } catch (e: any) {
+        setOrdersError(e?.message || "Não foi possível carregar seus pedidos.");
+      } finally {
+        setOrdersLoading(false);
+      }
     }
     setLoading(false);
   }
+
+  const sortedOrders = useMemo(() => {
+    const arr = [...orders];
+    if (sortBy === "date_asc") {
+      arr.sort((a, b) => +new Date(a.created_at) - +new Date(b.created_at));
+    } else if (sortBy === "status") {
+      arr.sort(
+        (a, b) =>
+          (STATUS_RANK[a.status] ?? 99) - (STATUS_RANK[b.status] ?? 99) ||
+          +new Date(b.created_at) - +new Date(a.created_at),
+      );
+    } else {
+      arr.sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
+    }
+    return arr;
+  }, [orders, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedOrders.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pagedOrders = sortedOrders.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
+
 
   async function handleUnfollow(followId: string, storeName?: string) {
     const prev = follows;
