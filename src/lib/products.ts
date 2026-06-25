@@ -1,12 +1,4 @@
-import oleo from "@/assets/product-oleo-licuri.jpg";
-import farinha from "@/assets/product-farinha-licuri.jpg";
-import doce from "@/assets/product-doce-licuri.jpg";
-import pacoca from "@/assets/product-pacoca-licuri.jpg";
-import desidratado from "@/assets/product-licuri-desidratado.jpg";
-import granola from "@/assets/product-granola-licuri.jpg";
-import cosmetico from "@/assets/product-cosmetico-licuri.jpg";
-import artesanato from "@/assets/product-artesanato-licuri.jpg";
-import kit from "@/assets/product-kit-presente.jpg";
+import { supabase } from "./supabase";
 
 export type Category =
   | "alimentos"
@@ -29,28 +21,31 @@ export type Product = {
   short: string;
   description: string;
   badges: string[];
+  external_buy_url?: string | null;
 };
 
+// URLs servidas de /public/products/<slug>.jpg
+const img = (slug: string) => `/products/${slug}.jpg`;
+
 export const categories: { id: Category; label: string; image: string; count: number }[] = [
-  { id: "alimentos", label: "Alimentos", image: farinha, count: 32 },
-  { id: "oleos-extratos", label: "Óleos e Extratos", image: oleo, count: 18 },
-  { id: "cosmeticos", label: "Cosméticos", image: cosmetico, count: 24 },
-  { id: "artesanato", label: "Artesanato", image: artesanato, count: 15 },
-  { id: "kits-presentes", label: "Kits e Presentes", image: kit, count: 12 },
+  { id: "alimentos", label: "Alimentos", image: img("farinha-de-licuri-artesanal-500g"), count: 32 },
+  { id: "oleos-extratos", label: "Óleos e Extratos", image: img("oleo-de-licuri-extra-virgem-200ml"), count: 18 },
+  { id: "cosmeticos", label: "Cosméticos", image: img("manteiga-corporal-de-licuri"), count: 24 },
+  { id: "artesanato", label: "Artesanato", image: img("cesto-artesanal-palha-de-licuri"), count: 15 },
+  { id: "kits-presentes", label: "Kits e Presentes", image: img("kit-presente-raizes-do-nordeste"), count: 12 },
 ];
 
+// Catálogo demo síncrono — espelha os mesmos slugs que existem no banco (seed via migration).
+// Para uso transacional (favoritos, reviews) sempre buscar o UUID real via getProductBySlug.
 export const products: Product[] = [
   {
     id: "p1",
     slug: "oleo-de-licuri-extra-virgem-200ml",
     name: "Óleo de Licuri Extra Virgem 200ml",
     category: "oleos-extratos",
-    price: 49.9,
-    rating: 4.9,
-    reviews: 78,
-    shop: "Sertão Natural",
-    region: "Bahia",
-    image: oleo,
+    price: 49.9, rating: 4.9, reviews: 78,
+    shop: "Sertão Natural", region: "Bahia",
+    image: img("oleo-de-licuri-extra-virgem-200ml"),
     short: "100% puro, prensado a frio.",
     description:
       "Nosso óleo de licuri é puro e natural, extraído da polpa do licuri. Rico em antioxidantes e ácidos graxos essenciais. Ideal para alimentação, skincare e cuidados com os cabelos.",
@@ -61,12 +56,9 @@ export const products: Product[] = [
     slug: "farinha-de-licuri-artesanal-500g",
     name: "Farinha de Licuri Artesanal 500g",
     category: "alimentos",
-    price: 18.9,
-    rating: 4.8,
-    reviews: 45,
-    shop: "Licuri da Caatinga",
-    region: "Bahia",
-    image: farinha,
+    price: 18.9, rating: 4.8, reviews: 45,
+    shop: "Licuri da Caatinga", region: "Bahia",
+    image: img("farinha-de-licuri-artesanal-500g"),
     short: "Moída na pedra, sabor delicado.",
     description:
       "Farinha artesanal de licuri produzida por famílias da Caatinga baiana. Versátil na cozinha — vai bem em mingaus, pães e bolos.",
@@ -77,14 +69,12 @@ export const products: Product[] = [
     slug: "doce-de-licuri-tradicional",
     name: "Doce de Licuri Tradicional",
     category: "alimentos",
-    price: 25.9,
-    rating: 4.9,
-    reviews: 32,
-    shop: "Sabor do Sertão",
-    region: "Piauí",
-    image: doce,
+    price: 25.9, rating: 4.9, reviews: 32,
+    shop: "Sabor do Sertão", region: "Piauí",
+    image: img("doce-de-licuri-tradicional"),
     short: "Receita de família, cozido em tacho.",
-    description: "Doce cremoso preparado em tacho de cobre, no fogo lento, com licuri e rapadura.",
+    description:
+      "Doce cremoso preparado em tacho de cobre, no fogo lento, com licuri e rapadura.",
     badges: ["Receita tradicional", "Sem conservantes"],
   },
   {
@@ -92,14 +82,12 @@ export const products: Product[] = [
     slug: "pacoca-de-licuri",
     name: "Paçoca de Licuri Artesanal",
     category: "alimentos",
-    price: 22.9,
-    rating: 4.7,
-    reviews: 28,
-    shop: "Delícias do Cerrado",
-    region: "Ceará",
-    image: pacoca,
+    price: 22.9, rating: 4.7, reviews: 28,
+    shop: "Delícias do Cerrado", region: "Ceará",
+    image: img("pacoca-de-licuri"),
     short: "Crocante e levemente adocicada.",
-    description: "Paçoca de licuri torrada, com toque de rapadura. Acompanha bem o cafezinho.",
+    description:
+      "Paçoca de licuri torrada, com toque de rapadura. Acompanha bem o cafezinho.",
     badges: ["Artesanal", "Crocante"],
   },
   {
@@ -107,14 +95,12 @@ export const products: Product[] = [
     slug: "licuri-desidratado-premium",
     name: "Licuri Desidratado Premium 250g",
     category: "alimentos",
-    price: 28.9,
-    rating: 4.8,
-    reviews: 21,
-    shop: "Licuri da Caatinga",
-    region: "Bahia",
-    image: desidratado,
+    price: 28.9, rating: 4.8, reviews: 21,
+    shop: "Licuri da Caatinga", region: "Bahia",
+    image: img("licuri-desidratado-premium"),
     short: "Crocante, ideal para snacks.",
-    description: "Licuri desidratado em baixa temperatura para preservar nutrientes e crocância.",
+    description:
+      "Licuri desidratado em baixa temperatura para preservar nutrientes e crocância.",
     badges: ["Sem açúcar", "Snack natural"],
   },
   {
@@ -122,14 +108,12 @@ export const products: Product[] = [
     slug: "granola-de-licuri-artesanal",
     name: "Granola de Licuri Artesanal 400g",
     category: "alimentos",
-    price: 29.9,
-    rating: 4.9,
-    reviews: 16,
-    shop: "Nutri Sertão",
-    region: "Minas Gerais",
-    image: granola,
+    price: 29.9, rating: 4.9, reviews: 16,
+    shop: "Nutri Sertão", region: "Minas Gerais",
+    image: img("granola-de-licuri-artesanal"),
     short: "Aveia, mel e pedaços de licuri.",
-    description: "Granola produzida em pequenos lotes, com aveia, mel e licuri torrado.",
+    description:
+      "Granola produzida em pequenos lotes, com aveia, mel e licuri torrado.",
     badges: ["Sem glúten adicionado", "Pequenos lotes"],
   },
   {
@@ -137,14 +121,12 @@ export const products: Product[] = [
     slug: "manteiga-corporal-de-licuri",
     name: "Manteiga Corporal de Licuri 100g",
     category: "cosmeticos",
-    price: 64.9,
-    rating: 4.9,
-    reviews: 54,
-    shop: "Sertão Natural",
-    region: "Bahia",
-    image: cosmetico,
+    price: 64.9, rating: 4.9, reviews: 54,
+    shop: "Sertão Natural", region: "Bahia",
+    image: img("manteiga-corporal-de-licuri"),
     short: "Hidratação intensa para pele e cabelo.",
-    description: "Manteiga rica em vitamina E. Hidrata profundamente e protege a barreira cutânea.",
+    description:
+      "Manteiga rica em vitamina E. Hidrata profundamente e protege a barreira cutânea.",
     badges: ["Vegano", "Cruelty-free", "Pequenos produtores"],
   },
   {
@@ -152,14 +134,12 @@ export const products: Product[] = [
     slug: "cesto-artesanal-palha-de-licuri",
     name: "Cesto Artesanal Palha de Licuri",
     category: "artesanato",
-    price: 89.9,
-    rating: 5,
-    reviews: 12,
-    shop: "Mãos da Caatinga",
-    region: "Bahia",
-    image: artesanato,
+    price: 89.9, rating: 5, reviews: 12,
+    shop: "Mãos da Caatinga", region: "Bahia",
+    image: img("cesto-artesanal-palha-de-licuri"),
     short: "Tecido à mão por artesãs da região.",
-    description: "Peça única, tecida em palha de licuri por mestras artesãs nordestinas.",
+    description:
+      "Peça única, tecida em palha de licuri por mestras artesãs nordestinas.",
     badges: ["Feito à mão", "Peça única", "Comércio justo"],
   },
   {
@@ -167,12 +147,9 @@ export const products: Product[] = [
     slug: "kit-presente-raizes-do-nordeste",
     name: "Kit Presente Raízes do Nordeste",
     category: "kits-presentes",
-    price: 159.9,
-    rating: 4.9,
-    reviews: 9,
-    shop: "Licuri Hub",
-    region: "Bahia",
-    image: kit,
+    price: 159.9, rating: 4.9, reviews: 9,
+    shop: "Licuri Hub", region: "Bahia",
+    image: img("kit-presente-raizes-do-nordeste"),
     short: "Óleo, doce e paçoca em embalagem especial.",
     description:
       "Kit com óleo de licuri 100ml, doce tradicional e paçoca artesanal. Ideal para presentear.",
@@ -186,13 +163,15 @@ export function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-export async function getProductBySlug(slug: string) {
-  // Check mock data first
-  const mock = products.find((p) => p.slug === slug);
-  if (mock) return mock;
-
-  // Then check DB
-  const { data } = await supabase.from("products").select("*").eq("slug", slug).single();
+/** Busca um produto pelo slug priorizando o banco (UUID real + external_buy_url). Cai no estático em offline. */
+export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+  const { data } = await supabase
+    .from("products")
+    .select("*")
+    .eq("slug", slug)
+    .eq("active", true)
+    .eq("is_draft", false)
+    .maybeSingle();
 
   if (data) {
     return {
@@ -201,17 +180,22 @@ export async function getProductBySlug(slug: string) {
       name: data.name,
       category: data.category as Category,
       price: Number(data.price),
-      rating: Number(data.rating),
-      reviews: data.reviews,
-      shop: data.shop,
-      region: data.region,
-      image: data.image_url,
-      short: data.short_description,
-      description: data.description,
-      badges: data.badges || [],
-    } as Product;
+      rating: Number(data.rating ?? 0),
+      reviews: data.reviews ?? 0,
+      shop: data.shop ?? "Licuri Hub",
+      region: data.region ?? "Bahia",
+      image: data.image_url || img(slug),
+      short: data.short_description ?? "",
+      description: data.description ?? "",
+      badges: data.badges ?? [],
+      external_buy_url: data.external_buy_url ?? null,
+    };
   }
-  return undefined;
+  return products.find((p) => p.slug === slug);
 }
 
-import { supabase } from "./supabase";
+/** Resolve o UUID do produto no banco a partir do slug. Usado por favoritos e reviews. */
+export async function getProductIdBySlug(slug: string): Promise<string | null> {
+  const { data } = await supabase.from("products").select("id").eq("slug", slug).maybeSingle();
+  return data?.id ?? null;
+}
