@@ -26,6 +26,7 @@ import { Route as AppVendedorImportarRouteImport } from './routes/_app.vendedor.
 import { Route as AppRastreioOrderIdRouteImport } from './routes/_app.rastreio.$orderId'
 import { Route as AppProdutoSlugRouteImport } from './routes/_app.produto.$slug'
 import { Route as AppAdminExtratoRouteImport } from './routes/_app.admin.extrato'
+import { Route as AppVendedorImportarProcessandoRouteImport } from './routes/_app.vendedor.importar.processando'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -111,6 +112,12 @@ const AppAdminExtratoRoute = AppAdminExtratoRouteImport.update({
   path: '/extrato',
   getParentRoute: () => AppAdminRoute,
 } as any)
+const AppVendedorImportarProcessandoRoute =
+  AppVendedorImportarProcessandoRouteImport.update({
+    id: '/processando',
+    path: '/processando',
+    getParentRoute: () => AppVendedorImportarRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -127,8 +134,9 @@ export interface FileRoutesByFullPath {
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
-  '/vendedor/importar': typeof AppVendedorImportarRoute
+  '/vendedor/importar': typeof AppVendedorImportarRouteWithChildren
   '/admin/': typeof AppAdminIndexRoute
+  '/vendedor/importar/processando': typeof AppVendedorImportarProcessandoRoute
 }
 export interface FileRoutesByTo {
   '/blog': typeof AppBlogRoute
@@ -144,8 +152,9 @@ export interface FileRoutesByTo {
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
-  '/vendedor/importar': typeof AppVendedorImportarRoute
+  '/vendedor/importar': typeof AppVendedorImportarRouteWithChildren
   '/admin': typeof AppAdminIndexRoute
+  '/vendedor/importar/processando': typeof AppVendedorImportarProcessandoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -164,8 +173,9 @@ export interface FileRoutesById {
   '/_app/admin/extrato': typeof AppAdminExtratoRoute
   '/_app/produto/$slug': typeof AppProdutoSlugRoute
   '/_app/rastreio/$orderId': typeof AppRastreioOrderIdRoute
-  '/_app/vendedor/importar': typeof AppVendedorImportarRoute
+  '/_app/vendedor/importar': typeof AppVendedorImportarRouteWithChildren
   '/_app/admin/': typeof AppAdminIndexRoute
+  '/_app/vendedor/importar/processando': typeof AppVendedorImportarProcessandoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/rastreio/$orderId'
     | '/vendedor/importar'
     | '/admin/'
+    | '/vendedor/importar/processando'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/blog'
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/rastreio/$orderId'
     | '/vendedor/importar'
     | '/admin'
+    | '/vendedor/importar/processando'
   id:
     | '__root__'
     | '/_app'
@@ -222,6 +234,7 @@ export interface FileRouteTypes {
     | '/_app/rastreio/$orderId'
     | '/_app/vendedor/importar'
     | '/_app/admin/'
+    | '/_app/vendedor/importar/processando'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -349,6 +362,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminExtratoRouteImport
       parentRoute: typeof AppAdminRoute
     }
+    '/_app/vendedor/importar/processando': {
+      id: '/_app/vendedor/importar/processando'
+      path: '/processando'
+      fullPath: '/vendedor/importar/processando'
+      preLoaderRoute: typeof AppVendedorImportarProcessandoRouteImport
+      parentRoute: typeof AppVendedorImportarRoute
+    }
   }
 }
 
@@ -366,12 +386,23 @@ const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
   AppAdminRouteChildren,
 )
 
+interface AppVendedorImportarRouteChildren {
+  AppVendedorImportarProcessandoRoute: typeof AppVendedorImportarProcessandoRoute
+}
+
+const AppVendedorImportarRouteChildren: AppVendedorImportarRouteChildren = {
+  AppVendedorImportarProcessandoRoute: AppVendedorImportarProcessandoRoute,
+}
+
+const AppVendedorImportarRouteWithChildren =
+  AppVendedorImportarRoute._addFileChildren(AppVendedorImportarRouteChildren)
+
 interface AppVendedorRouteChildren {
-  AppVendedorImportarRoute: typeof AppVendedorImportarRoute
+  AppVendedorImportarRoute: typeof AppVendedorImportarRouteWithChildren
 }
 
 const AppVendedorRouteChildren: AppVendedorRouteChildren = {
-  AppVendedorImportarRoute: AppVendedorImportarRoute,
+  AppVendedorImportarRoute: AppVendedorImportarRouteWithChildren,
 }
 
 const AppVendedorRouteWithChildren = AppVendedorRoute._addFileChildren(
