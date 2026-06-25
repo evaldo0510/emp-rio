@@ -377,6 +377,55 @@ function AccountPage() {
 
           <div className="rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm">
             <h3 className="font-display text-lg font-semibold mb-4 text-[var(--coffee)]">
+              Lojas Seguidas
+            </h3>
+            {follows.length === 0 ? (
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Você ainda não segue nenhuma loja.
+              </p>
+            ) : (
+              <ul className="space-y-3">
+                {follows.map((f: any) => {
+                  const s = f.sellers;
+                  if (!s) return null;
+                  return (
+                    <li key={f.id} className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full overflow-hidden border border-[var(--border)] bg-[var(--sand)] shrink-0 flex items-center justify-center">
+                        {s.logo_url ? (
+                          <img src={s.logo_url} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          <Store className="h-4 w-4 text-[var(--clay)]" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-[var(--coffee)] line-clamp-1">
+                          {s.store_name}
+                        </p>
+                        {s.seller_type && (
+                          <p className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">
+                            {s.seller_type}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleUnfollow(f.id, s.store_name)}
+                        aria-label={`Deixar de seguir ${s.store_name}`}
+                        className="h-7 w-7 rounded-full flex items-center justify-center text-[var(--muted-foreground)] hover:bg-red-50 hover:text-red-600 transition-colors"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+
+
+          <div className="rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm">
+            <h3 className="font-display text-lg font-semibold mb-4 text-[var(--coffee)]">
               Endereço
             </h3>
             <p className="text-xs text-[var(--muted-foreground)]">
