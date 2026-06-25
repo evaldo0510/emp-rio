@@ -20,11 +20,14 @@ import { Route as AppCheckoutRouteImport } from './routes/_app.checkout'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppCarrinhoRouteImport } from './routes/_app.carrinho'
 import { Route as AppBlogRouteImport } from './routes/_app.blog'
+import { Route as AppAssistenteRouteImport } from './routes/_app.assistente'
 import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppAdminIndexRouteImport } from './routes/_app.admin.index'
+import { Route as AppVendedorImportarRouteImport } from './routes/_app.vendedor.importar'
 import { Route as AppRastreioOrderIdRouteImport } from './routes/_app.rastreio.$orderId'
 import { Route as AppProdutoSlugRouteImport } from './routes/_app.produto.$slug'
 import { Route as AppAdminExtratoRouteImport } from './routes/_app.admin.extrato'
+import { Route as AppVendedorImportarProcessandoRouteImport } from './routes/_app.vendedor.importar.processando'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -80,6 +83,11 @@ const AppBlogRoute = AppBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAssistenteRoute = AppAssistenteRouteImport.update({
+  id: '/assistente',
+  path: '/assistente',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAdminRoute = AppAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -89,6 +97,11 @@ const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppAdminRoute,
+} as any)
+const AppVendedorImportarRoute = AppVendedorImportarRouteImport.update({
+  id: '/importar',
+  path: '/importar',
+  getParentRoute: () => AppVendedorRoute,
 } as any)
 const AppRastreioOrderIdRoute = AppRastreioOrderIdRouteImport.update({
   id: '/rastreio/$orderId',
@@ -105,10 +118,17 @@ const AppAdminExtratoRoute = AppAdminExtratoRouteImport.update({
   path: '/extrato',
   getParentRoute: () => AppAdminRoute,
 } as any)
+const AppVendedorImportarProcessandoRoute =
+  AppVendedorImportarProcessandoRouteImport.update({
+    id: '/processando',
+    path: '/processando',
+    getParentRoute: () => AppVendedorImportarRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/admin': typeof AppAdminRouteWithChildren
+  '/assistente': typeof AppAssistenteRoute
   '/blog': typeof AppBlogRoute
   '/carrinho': typeof AppCarrinhoRoute
   '/categorias': typeof AppCategoriasRoute
@@ -117,13 +137,16 @@ export interface FileRoutesByFullPath {
   '/favoritos': typeof AppFavoritosRoute
   '/lojas': typeof AppLojasRoute
   '/sobre': typeof AppSobreRoute
-  '/vendedor': typeof AppVendedorRoute
+  '/vendedor': typeof AppVendedorRouteWithChildren
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
+  '/vendedor/importar': typeof AppVendedorImportarRouteWithChildren
   '/admin/': typeof AppAdminIndexRoute
+  '/vendedor/importar/processando': typeof AppVendedorImportarProcessandoRoute
 }
 export interface FileRoutesByTo {
+  '/assistente': typeof AppAssistenteRoute
   '/blog': typeof AppBlogRoute
   '/carrinho': typeof AppCarrinhoRoute
   '/categorias': typeof AppCategoriasRoute
@@ -132,17 +155,20 @@ export interface FileRoutesByTo {
   '/favoritos': typeof AppFavoritosRoute
   '/lojas': typeof AppLojasRoute
   '/sobre': typeof AppSobreRoute
-  '/vendedor': typeof AppVendedorRoute
+  '/vendedor': typeof AppVendedorRouteWithChildren
   '/': typeof AppIndexRoute
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
+  '/vendedor/importar': typeof AppVendedorImportarRouteWithChildren
   '/admin': typeof AppAdminIndexRoute
+  '/vendedor/importar/processando': typeof AppVendedorImportarProcessandoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_app/admin': typeof AppAdminRouteWithChildren
+  '/_app/assistente': typeof AppAssistenteRoute
   '/_app/blog': typeof AppBlogRoute
   '/_app/carrinho': typeof AppCarrinhoRoute
   '/_app/categorias': typeof AppCategoriasRoute
@@ -151,18 +177,21 @@ export interface FileRoutesById {
   '/_app/favoritos': typeof AppFavoritosRoute
   '/_app/lojas': typeof AppLojasRoute
   '/_app/sobre': typeof AppSobreRoute
-  '/_app/vendedor': typeof AppVendedorRoute
+  '/_app/vendedor': typeof AppVendedorRouteWithChildren
   '/_app/': typeof AppIndexRoute
   '/_app/admin/extrato': typeof AppAdminExtratoRoute
   '/_app/produto/$slug': typeof AppProdutoSlugRoute
   '/_app/rastreio/$orderId': typeof AppRastreioOrderIdRoute
+  '/_app/vendedor/importar': typeof AppVendedorImportarRouteWithChildren
   '/_app/admin/': typeof AppAdminIndexRoute
+  '/_app/vendedor/importar/processando': typeof AppVendedorImportarProcessandoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
+    | '/assistente'
     | '/blog'
     | '/carrinho'
     | '/categorias'
@@ -175,9 +204,12 @@ export interface FileRouteTypes {
     | '/admin/extrato'
     | '/produto/$slug'
     | '/rastreio/$orderId'
+    | '/vendedor/importar'
     | '/admin/'
+    | '/vendedor/importar/processando'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/assistente'
     | '/blog'
     | '/carrinho'
     | '/categorias'
@@ -191,11 +223,14 @@ export interface FileRouteTypes {
     | '/admin/extrato'
     | '/produto/$slug'
     | '/rastreio/$orderId'
+    | '/vendedor/importar'
     | '/admin'
+    | '/vendedor/importar/processando'
   id:
     | '__root__'
     | '/_app'
     | '/_app/admin'
+    | '/_app/assistente'
     | '/_app/blog'
     | '/_app/carrinho'
     | '/_app/categorias'
@@ -209,7 +244,9 @@ export interface FileRouteTypes {
     | '/_app/admin/extrato'
     | '/_app/produto/$slug'
     | '/_app/rastreio/$orderId'
+    | '/_app/vendedor/importar'
     | '/_app/admin/'
+    | '/_app/vendedor/importar/processando'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -295,6 +332,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBlogRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/assistente': {
+      id: '/_app/assistente'
+      path: '/assistente'
+      fullPath: '/assistente'
+      preLoaderRoute: typeof AppAssistenteRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/admin': {
       id: '/_app/admin'
       path: '/admin'
@@ -308,6 +352,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AppAdminIndexRouteImport
       parentRoute: typeof AppAdminRoute
+    }
+    '/_app/vendedor/importar': {
+      id: '/_app/vendedor/importar'
+      path: '/importar'
+      fullPath: '/vendedor/importar'
+      preLoaderRoute: typeof AppVendedorImportarRouteImport
+      parentRoute: typeof AppVendedorRoute
     }
     '/_app/rastreio/$orderId': {
       id: '/_app/rastreio/$orderId'
@@ -330,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminExtratoRouteImport
       parentRoute: typeof AppAdminRoute
     }
+    '/_app/vendedor/importar/processando': {
+      id: '/_app/vendedor/importar/processando'
+      path: '/processando'
+      fullPath: '/vendedor/importar/processando'
+      preLoaderRoute: typeof AppVendedorImportarProcessandoRouteImport
+      parentRoute: typeof AppVendedorImportarRoute
+    }
   }
 }
 
@@ -347,8 +405,32 @@ const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
   AppAdminRouteChildren,
 )
 
+interface AppVendedorImportarRouteChildren {
+  AppVendedorImportarProcessandoRoute: typeof AppVendedorImportarProcessandoRoute
+}
+
+const AppVendedorImportarRouteChildren: AppVendedorImportarRouteChildren = {
+  AppVendedorImportarProcessandoRoute: AppVendedorImportarProcessandoRoute,
+}
+
+const AppVendedorImportarRouteWithChildren =
+  AppVendedorImportarRoute._addFileChildren(AppVendedorImportarRouteChildren)
+
+interface AppVendedorRouteChildren {
+  AppVendedorImportarRoute: typeof AppVendedorImportarRouteWithChildren
+}
+
+const AppVendedorRouteChildren: AppVendedorRouteChildren = {
+  AppVendedorImportarRoute: AppVendedorImportarRouteWithChildren,
+}
+
+const AppVendedorRouteWithChildren = AppVendedorRoute._addFileChildren(
+  AppVendedorRouteChildren,
+)
+
 interface AppRouteChildren {
   AppAdminRoute: typeof AppAdminRouteWithChildren
+  AppAssistenteRoute: typeof AppAssistenteRoute
   AppBlogRoute: typeof AppBlogRoute
   AppCarrinhoRoute: typeof AppCarrinhoRoute
   AppCategoriasRoute: typeof AppCategoriasRoute
@@ -357,7 +439,7 @@ interface AppRouteChildren {
   AppFavoritosRoute: typeof AppFavoritosRoute
   AppLojasRoute: typeof AppLojasRoute
   AppSobreRoute: typeof AppSobreRoute
-  AppVendedorRoute: typeof AppVendedorRoute
+  AppVendedorRoute: typeof AppVendedorRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppProdutoSlugRoute: typeof AppProdutoSlugRoute
   AppRastreioOrderIdRoute: typeof AppRastreioOrderIdRoute
@@ -365,6 +447,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAdminRoute: AppAdminRouteWithChildren,
+  AppAssistenteRoute: AppAssistenteRoute,
   AppBlogRoute: AppBlogRoute,
   AppCarrinhoRoute: AppCarrinhoRoute,
   AppCategoriasRoute: AppCategoriasRoute,
@@ -373,7 +456,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppFavoritosRoute: AppFavoritosRoute,
   AppLojasRoute: AppLojasRoute,
   AppSobreRoute: AppSobreRoute,
-  AppVendedorRoute: AppVendedorRoute,
+  AppVendedorRoute: AppVendedorRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppProdutoSlugRoute: AppProdutoSlugRoute,
   AppRastreioOrderIdRoute: AppRastreioOrderIdRoute,
@@ -387,12 +470,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
