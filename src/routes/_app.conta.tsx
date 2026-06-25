@@ -261,138 +261,222 @@ function AccountPage() {
 
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
         <div className="space-y-6">
-          <h2 className="font-display text-2xl font-semibold text-[var(--coffee)]">Meus Pedidos</h2>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <h2 className="font-display text-2xl font-semibold text-[var(--coffee)]">Meus Pedidos</h2>
+            {orders.length > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-[var(--muted-foreground)]">Ordenar por</span>
+                <Select
+                  value={sortBy}
+                  onValueChange={(v) => {
+                    setSortBy(v as typeof sortBy);
+                    setPage(1);
+                  }}
+                >
+                  <SelectTrigger className="h-9 w-[180px] text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="date_desc">Mais recentes</SelectItem>
+                    <SelectItem value="date_asc">Mais antigos</SelectItem>
+                    <SelectItem value="status">Status</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
 
-          {orders.length === 0 ? (
+          {ordersLoading ? (
+            <div className="space-y-4">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="rounded-2xl border border-[var(--border)] bg-white p-6 space-y-4">
+                  <div className="flex justify-between">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-4 w-20" />
+                  </div>
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              ))}
+            </div>
+          ) : ordersError ? (
+            <div className="rounded-2xl border border-red-100 bg-red-50 p-8 text-center">
+              <XCircle className="mx-auto h-8 w-8 text-red-500 mb-3" />
+              <p className="text-sm font-semibold text-red-700 mb-1">Não foi possível carregar seus pedidos</p>
+              <p className="text-xs text-red-600 mb-4">{ordersError}</p>
+              <Button variant="soft" size="sm" onClick={() => checkUser()}>
+                Tentar novamente
+              </Button>
+            </div>
+          ) : orders.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-[var(--border)] p-12 text-center bg-white">
               <Package className="mx-auto h-10 w-10 text-[var(--muted-foreground)] opacity-20 mb-3" />
+              <p className="text-sm font-semibold text-[var(--coffee)] mb-1">Sem pedidos por aqui ainda</p>
               <p className="text-sm text-[var(--muted-foreground)] mb-6">
-                Você ainda não realizou nenhum pedido.
+                Quando você comprar algo, seus pedidos aparecerão aqui.
               </p>
               <Button asChild variant="hero">
                 <Link to="/categorias">Ver produtos</Link>
               </Button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {orders.map((order) => (
-                <div
-                  key={order.id}
-                  className="rounded-2xl border border-[var(--border)] bg-white overflow-hidden shadow-sm"
-                >
-                  <div className="p-4 border-b border-[var(--border)] flex items-center justify-between bg-[var(--sand)]/30">
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                        Pedido
-                      </p>
-                      <p className="text-sm font-semibold text-[var(--coffee)]">
-                        #{order.id.slice(0, 8)}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                        Total
-                      </p>
-                      <p className="text-sm font-bold text-[var(--clay)]">
-                        {formatBRL(order.total)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="p-6">
-                    <div className="mb-8">
-                      <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-4">
-                        Status do Pedido
-                      </p>
-                      <div className="relative">
-                        <div className="absolute top-4 left-0 w-full h-0.5 bg-[var(--border)]" />
-                        <div className="relative flex justify-between">
-                          <StatusStep
-                            icon={CheckCircle2}
-                            label="Pago"
-                            active={["paid", "processing", "shipped", "delivered"].includes(
-                              order.status,
-                            )}
-                          />
-                          <StatusStep
-                            icon={Clock}
-                            label="Em preparo"
-                            active={["processing", "shipped", "delivered"].includes(order.status)}
-                          />
-                          <StatusStep
-                            icon={Truck}
-                            label="Enviado"
-                            active={["shipped", "delivered"].includes(order.status)}
-                          />
-                          <StatusStep
-                            icon={Package}
-                            label="Entregue"
-                            active={["delivered"].includes(order.status)}
-                          />
-                        </div>
+            <>
+              <div className="space-y-4">
+                {pagedOrders.map((order) => (
+                  <div
+                    key={order.id}
+                    className="rounded-2xl border border-[var(--border)] bg-white overflow-hidden shadow-sm"
+                  >
+                    <div className="p-4 border-b border-[var(--border)] flex items-center justify-between bg-[var(--sand)]/30">
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+                          Pedido · {STATUS_LABEL[order.status] || order.status}
+                        </p>
+                        <p className="text-sm font-semibold text-[var(--coffee)]">
+                          #{order.id.slice(0, 8)}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+                          Total
+                        </p>
+                        <p className="text-sm font-bold text-[var(--clay)]">
+                          {formatBRL(order.total)}
+                        </p>
                       </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                      <Button asChild variant="hero" className="flex-1 rounded-xl">
-                        <Link to="/pedido/$orderId" params={{ orderId: order.id }}>
-                          <Package className="mr-2 h-4 w-4" />
-                          Ver detalhes
-                        </Link>
-                      </Button>
-                      <Button asChild variant="soft" className="flex-1 rounded-xl">
-                        <Link to="/rastreio/$orderId" params={{ orderId: order.id }}>
-                          <Truck className="mr-2 h-4 w-4" />
-                          Rastrear
-                        </Link>
-                      </Button>
+                    <div className="p-6">
+                      <div className="mb-8">
+                        <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-4">
+                          Status do Pedido
+                        </p>
+                        <div className="relative">
+                          <div className="absolute top-4 left-0 w-full h-0.5 bg-[var(--border)]" />
+                          <div className="relative flex justify-between">
+                            <StatusStep
+                              icon={CheckCircle2}
+                              label="Pago"
+                              active={["paid", "processing", "shipped", "delivered"].includes(
+                                order.status,
+                              )}
+                            />
+                            <StatusStep
+                              icon={Clock}
+                              label="Em preparo"
+                              active={["processing", "shipped", "delivered"].includes(order.status)}
+                            />
+                            <StatusStep
+                              icon={Truck}
+                              label="Enviado"
+                              active={["shipped", "delivered"].includes(order.status)}
+                            />
+                            <StatusStep
+                              icon={Package}
+                              label="Entregue"
+                              active={["delivered"].includes(order.status)}
+                            />
+                          </div>
+                        </div>
+                      </div>
 
-                      {order.shipments?.[0]?.tracking_code && (
-                        <div className="flex flex-col items-end justify-center px-4 py-2 bg-[var(--sand)]/40 rounded-xl border border-[var(--border)] min-w-[140px]">
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                            Código
-                          </p>
-                          <p className="text-sm font-mono font-bold text-[var(--clay)]">
-                            {order.shipments[0].tracking_code}
+                      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                        <Button asChild variant="hero" className="flex-1 rounded-xl">
+                          <Link to="/pedido/$orderId" params={{ orderId: order.id }}>
+                            <Package className="mr-2 h-4 w-4" />
+                            Ver detalhes
+                          </Link>
+                        </Button>
+                        <Button asChild variant="soft" className="flex-1 rounded-xl">
+                          <Link to="/rastreio/$orderId" params={{ orderId: order.id }}>
+                            <Truck className="mr-2 h-4 w-4" />
+                            Rastrear
+                          </Link>
+                        </Button>
+
+                        {order.shipments?.[0]?.tracking_code && (
+                          <div className="flex flex-col items-end justify-center px-4 py-2 bg-[var(--sand)]/40 rounded-xl border border-[var(--border)] min-w-[140px]">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+                              Código
+                            </p>
+                            <p className="text-sm font-mono font-bold text-[var(--clay)]">
+                              {order.shipments[0].tracking_code}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {order.shipments?.[0] && !order.shipments[0].tracking_code && (
+                        <div className="mb-6 p-3 rounded-xl bg-blue-50 border border-blue-100 flex items-center gap-3">
+                          <Clock className="h-4 w-4 text-blue-500" />
+                          <p className="text-xs text-blue-700">
+                            Aguardando código de rastreio da transportadora.
                           </p>
                         </div>
                       )}
-                    </div>
 
-                    {order.shipments?.[0] && !order.shipments[0].tracking_code && (
-                      <div className="mb-6 p-3 rounded-xl bg-blue-50 border border-blue-100 flex items-center gap-3">
-                        <Clock className="h-4 w-4 text-blue-500" />
-                        <p className="text-xs text-blue-700">
-                          Aguardando código de rastreio da transportadora.
-                        </p>
-                      </div>
-                    )}
-
-                    <div className="space-y-3">
-                      {order.order_items?.map((item: any) => (
-                        <div key={item.id} className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-lg overflow-hidden border border-[var(--border)] bg-[var(--sand)]">
-                            <img
-                              src={item.image_url}
-                              alt=""
-                              className="h-full w-full object-cover"
-                            />
-                          </div>
-                          <p className="text-xs flex-1 text-[var(--coffee)] line-clamp-1">
-                            {item.name}
-                          </p>
-                          <p className="text-xs font-bold text-[var(--muted-foreground)]">
-                            x{item.quantity}
+                      {!order.shipments?.[0] && order.status !== "pending" && (
+                        <div className="mb-6 p-3 rounded-xl bg-amber-50 border border-amber-100 flex items-center gap-3">
+                          <AlertTriangle className="h-4 w-4 text-amber-600" />
+                          <p className="text-xs text-amber-800">
+                            O vendedor ainda não criou o envio deste pedido.
                           </p>
                         </div>
-                      ))}
+                      )}
+
+                      <div className="space-y-3">
+                        {order.order_items?.map((item: any) => (
+                          <div key={item.id} className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-lg overflow-hidden border border-[var(--border)] bg-[var(--sand)]">
+                              <img
+                                src={item.image_url}
+                                alt=""
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                            <p className="text-xs flex-1 text-[var(--coffee)] line-clamp-1">
+                              {item.name}
+                            </p>
+                            <p className="text-xs font-bold text-[var(--muted-foreground)]">
+                              x{item.quantity}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
+                ))}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between pt-2">
+                  <p className="text-xs text-[var(--muted-foreground)]">
+                    Página {currentPage} de {totalPages} · {sortedOrders.length} pedidos
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="soft"
+                      size="sm"
+                      disabled={currentPage <= 1}
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="soft"
+                      size="sm"
+                      disabled={currentPage >= totalPages}
+                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
+
 
         <aside className="space-y-6">
           <div className="rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm">
