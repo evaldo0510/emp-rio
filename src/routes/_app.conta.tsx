@@ -265,11 +265,17 @@ function AccountPage() {
                       </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                    <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                      <Button asChild variant="hero" className="flex-1 rounded-xl">
+                        <Link to="/pedido/$orderId" params={{ orderId: order.id }}>
+                          <Package className="mr-2 h-4 w-4" />
+                          Ver detalhes
+                        </Link>
+                      </Button>
                       <Button asChild variant="soft" className="flex-1 rounded-xl">
                         <Link to="/rastreio/$orderId" params={{ orderId: order.id }}>
                           <Truck className="mr-2 h-4 w-4" />
-                          Rastrear Pedido
+                          Rastrear
                         </Link>
                       </Button>
 

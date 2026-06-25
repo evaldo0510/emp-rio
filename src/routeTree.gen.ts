@@ -29,6 +29,7 @@ import { Route as AppAdminIndexRouteImport } from './routes/_app.admin.index'
 import { Route as AppVendedorImportarRouteImport } from './routes/_app.vendedor.importar'
 import { Route as AppRastreioOrderIdRouteImport } from './routes/_app.rastreio.$orderId'
 import { Route as AppProdutoSlugRouteImport } from './routes/_app.produto.$slug'
+import { Route as AppPedidoOrderIdRouteImport } from './routes/_app.pedido.$orderId'
 import { Route as AppLojaIdRouteImport } from './routes/_app.loja.$id'
 import { Route as AppAdminExtratoRouteImport } from './routes/_app.admin.extrato'
 import { Route as AppVendedorImportarProcessandoRouteImport } from './routes/_app.vendedor.importar.processando'
@@ -132,6 +133,11 @@ const AppProdutoSlugRoute = AppProdutoSlugRouteImport.update({
   path: '/produto/$slug',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPedidoOrderIdRoute = AppPedidoOrderIdRouteImport.update({
+  id: '/pedido/$orderId',
+  path: '/pedido/$orderId',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppLojaIdRoute = AppLojaIdRouteImport.update({
   id: '/loja/$id',
   path: '/loja/$id',
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/api/extract-products': typeof ApiExtractProductsRoute
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/loja/$id': typeof AppLojaIdRoute
+  '/pedido/$orderId': typeof AppPedidoOrderIdRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
   '/vendedor/importar': typeof AppVendedorImportarRouteWithChildren
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/loja/$id': typeof AppLojaIdRoute
+  '/pedido/$orderId': typeof AppPedidoOrderIdRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
   '/vendedor/importar': typeof AppVendedorImportarRouteWithChildren
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/_app/': typeof AppIndexRoute
   '/_app/admin/extrato': typeof AppAdminExtratoRoute
   '/_app/loja/$id': typeof AppLojaIdRoute
+  '/_app/pedido/$orderId': typeof AppPedidoOrderIdRoute
   '/_app/produto/$slug': typeof AppProdutoSlugRoute
   '/_app/rastreio/$orderId': typeof AppRastreioOrderIdRoute
   '/_app/vendedor/importar': typeof AppVendedorImportarRouteWithChildren
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
     | '/api/extract-products'
     | '/admin/extrato'
     | '/loja/$id'
+    | '/pedido/$orderId'
     | '/produto/$slug'
     | '/rastreio/$orderId'
     | '/vendedor/importar'
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/extrato'
     | '/loja/$id'
+    | '/pedido/$orderId'
     | '/produto/$slug'
     | '/rastreio/$orderId'
     | '/vendedor/importar'
@@ -290,6 +301,7 @@ export interface FileRouteTypes {
     | '/_app/'
     | '/_app/admin/extrato'
     | '/_app/loja/$id'
+    | '/_app/pedido/$orderId'
     | '/_app/produto/$slug'
     | '/_app/rastreio/$orderId'
     | '/_app/vendedor/importar'
@@ -446,6 +458,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProdutoSlugRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/pedido/$orderId': {
+      id: '/_app/pedido/$orderId'
+      path: '/pedido/$orderId'
+      fullPath: '/pedido/$orderId'
+      preLoaderRoute: typeof AppPedidoOrderIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/loja/$id': {
       id: '/_app/loja/$id'
       path: '/loja/$id'
@@ -521,6 +540,7 @@ interface AppRouteChildren {
   AppVendedorRoute: typeof AppVendedorRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppLojaIdRoute: typeof AppLojaIdRoute
+  AppPedidoOrderIdRoute: typeof AppPedidoOrderIdRoute
   AppProdutoSlugRoute: typeof AppProdutoSlugRoute
   AppRastreioOrderIdRoute: typeof AppRastreioOrderIdRoute
 }
@@ -539,6 +559,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppVendedorRoute: AppVendedorRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppLojaIdRoute: AppLojaIdRoute,
+  AppPedidoOrderIdRoute: AppPedidoOrderIdRoute,
   AppProdutoSlugRoute: AppProdutoSlugRoute,
   AppRastreioOrderIdRoute: AppRastreioOrderIdRoute,
 }
