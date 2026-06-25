@@ -81,8 +81,8 @@ function ShopsPage() {
           {sellers.map((s) => (
             <Link
               key={s.id}
-              to="/categorias"
-              search={{ shop: s.id } as any}
+              to="/loja/$id"
+              params={{ id: s.id }}
               className="group rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]"
             >
               <h3 className="font-display text-xl font-semibold text-[var(--coffee)] group-hover:text-[var(--clay)] transition-colors">
