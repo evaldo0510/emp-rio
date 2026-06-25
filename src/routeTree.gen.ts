@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as ApiExtractProductsRouteImport } from './routes/api/extract-products'
+import { Route as ApiExtractFromUrlRouteImport } from './routes/api/extract-from-url'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppVendedorRouteImport } from './routes/_app.vendedor'
 import { Route as AppSobreRouteImport } from './routes/_app.sobre'
@@ -43,6 +44,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const ApiExtractProductsRoute = ApiExtractProductsRouteImport.update({
   id: '/api/extract-products',
   path: '/api/extract-products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiExtractFromUrlRoute = ApiExtractFromUrlRouteImport.update({
+  id: '/api/extract-from-url',
+  path: '/api/extract-from-url',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRouteWithChildren
   '/api/chat': typeof ApiChatRoute
+  '/api/extract-from-url': typeof ApiExtractFromUrlRoute
   '/api/extract-products': typeof ApiExtractProductsRoute
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRouteWithChildren
   '/api/chat': typeof ApiChatRoute
+  '/api/extract-from-url': typeof ApiExtractFromUrlRoute
   '/api/extract-products': typeof ApiExtractProductsRoute
   '/': typeof AppIndexRoute
   '/admin/extrato': typeof AppAdminExtratoRoute
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/_app/sobre': typeof AppSobreRoute
   '/_app/vendedor': typeof AppVendedorRouteWithChildren
   '/api/chat': typeof ApiChatRoute
+  '/api/extract-from-url': typeof ApiExtractFromUrlRoute
   '/api/extract-products': typeof ApiExtractProductsRoute
   '/_app/': typeof AppIndexRoute
   '/_app/admin/extrato': typeof AppAdminExtratoRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/vendedor'
     | '/api/chat'
+    | '/api/extract-from-url'
     | '/api/extract-products'
     | '/admin/extrato'
     | '/produto/$slug'
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/vendedor'
     | '/api/chat'
+    | '/api/extract-from-url'
     | '/api/extract-products'
     | '/'
     | '/admin/extrato'
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '/_app/sobre'
     | '/_app/vendedor'
     | '/api/chat'
+    | '/api/extract-from-url'
     | '/api/extract-products'
     | '/_app/'
     | '/_app/admin/extrato'
@@ -276,6 +288,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   ApiChatRoute: typeof ApiChatRoute
+  ApiExtractFromUrlRoute: typeof ApiExtractFromUrlRoute
   ApiExtractProductsRoute: typeof ApiExtractProductsRoute
 }
 
@@ -300,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/api/extract-products'
       fullPath: '/api/extract-products'
       preLoaderRoute: typeof ApiExtractProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/extract-from-url': {
+      id: '/api/extract-from-url'
+      path: '/api/extract-from-url'
+      fullPath: '/api/extract-from-url'
+      preLoaderRoute: typeof ApiExtractFromUrlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
@@ -507,6 +527,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   ApiChatRoute: ApiChatRoute,
+  ApiExtractFromUrlRoute: ApiExtractFromUrlRoute,
   ApiExtractProductsRoute: ApiExtractProductsRoute,
 }
 export const routeTree = rootRouteImport
