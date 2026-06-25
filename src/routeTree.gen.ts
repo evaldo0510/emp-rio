@@ -20,6 +20,7 @@ import { Route as AppCheckoutRouteImport } from './routes/_app.checkout'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppCarrinhoRouteImport } from './routes/_app.carrinho'
 import { Route as AppBlogRouteImport } from './routes/_app.blog'
+import { Route as AppAssistenteRouteImport } from './routes/_app.assistente'
 import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppAdminIndexRouteImport } from './routes/_app.admin.index'
 import { Route as AppVendedorImportarRouteImport } from './routes/_app.vendedor.importar'
@@ -82,6 +83,11 @@ const AppBlogRoute = AppBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAssistenteRoute = AppAssistenteRouteImport.update({
+  id: '/assistente',
+  path: '/assistente',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAdminRoute = AppAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -122,6 +128,7 @@ const AppVendedorImportarProcessandoRoute =
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/admin': typeof AppAdminRouteWithChildren
+  '/assistente': typeof AppAssistenteRoute
   '/blog': typeof AppBlogRoute
   '/carrinho': typeof AppCarrinhoRoute
   '/categorias': typeof AppCategoriasRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/vendedor/importar/processando': typeof AppVendedorImportarProcessandoRoute
 }
 export interface FileRoutesByTo {
+  '/assistente': typeof AppAssistenteRoute
   '/blog': typeof AppBlogRoute
   '/carrinho': typeof AppCarrinhoRoute
   '/categorias': typeof AppCategoriasRoute
@@ -160,6 +168,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_app/admin': typeof AppAdminRouteWithChildren
+  '/_app/assistente': typeof AppAssistenteRoute
   '/_app/blog': typeof AppBlogRoute
   '/_app/carrinho': typeof AppCarrinhoRoute
   '/_app/categorias': typeof AppCategoriasRoute
@@ -182,6 +191,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/assistente'
     | '/blog'
     | '/carrinho'
     | '/categorias'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/vendedor/importar/processando'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/assistente'
     | '/blog'
     | '/carrinho'
     | '/categorias'
@@ -219,6 +230,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/_app/admin'
+    | '/_app/assistente'
     | '/_app/blog'
     | '/_app/carrinho'
     | '/_app/categorias'
@@ -320,6 +332,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBlogRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/assistente': {
+      id: '/_app/assistente'
+      path: '/assistente'
+      fullPath: '/assistente'
+      preLoaderRoute: typeof AppAssistenteRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/admin': {
       id: '/_app/admin'
       path: '/admin'
@@ -411,6 +430,7 @@ const AppVendedorRouteWithChildren = AppVendedorRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppAdminRoute: typeof AppAdminRouteWithChildren
+  AppAssistenteRoute: typeof AppAssistenteRoute
   AppBlogRoute: typeof AppBlogRoute
   AppCarrinhoRoute: typeof AppCarrinhoRoute
   AppCategoriasRoute: typeof AppCategoriasRoute
@@ -427,6 +447,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAdminRoute: AppAdminRouteWithChildren,
+  AppAssistenteRoute: AppAssistenteRoute,
   AppBlogRoute: AppBlogRoute,
   AppCarrinhoRoute: AppCarrinhoRoute,
   AppCategoriasRoute: AppCategoriasRoute,

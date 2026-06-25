@@ -8,7 +8,8 @@ const nav = [
   { to: "/", label: "Início" },
   { to: "/categorias", label: "Categorias" },
   { to: "/lojas", label: "Lojas" },
-  { to: "/sobre", label: "Sobre o Licuri" },
+  { to: "/assistente", label: "Licuri IA" },
+  { to: "/sobre", label: "Sobre" },
   { to: "/blog", label: "Blog" },
 ] as const;
 
