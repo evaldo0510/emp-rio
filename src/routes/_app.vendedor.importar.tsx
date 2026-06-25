@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Camera, FileText, MessageCircle, Link2, ShoppingBag, PencilLine, ArrowRight } from "lucide-react";
+import { Camera, FileText, PencilLine, ArrowRight, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/vendedor/importar")({
   head: () => ({ meta: [{ title: "Importar produtos com IA — Licuri Hub" }] }),
@@ -9,14 +10,13 @@ export const Route = createFileRoute("/_app/vendedor/importar")({
 });
 
 type Method = {
-  id: string;
+  id: "fotos" | "pdf" | "manual";
   icon: any;
   title: string;
   desc: string;
   hint: string;
-  inputType: "file" | "text" | "url";
   accept?: string;
-  placeholder?: string;
+  multiple?: boolean;
 };
 
 const methods: Method[] = [
@@ -24,79 +24,79 @@ const methods: Method[] = [
     id: "fotos",
     icon: Camera,
     title: "Enviar fotos",
-    desc: "Tire ou envie fotos dos seus produtos. A IA identifica, recorta e descreve cada um.",
-    hint: "JPG, PNG até 10MB cada",
-    inputType: "file",
+    desc: "Fotos dos seus produtos, vitrine ou prateleira. A IA identifica e descreve cada um.",
+    hint: "JPG ou PNG, até 8MB cada",
     accept: "image/*",
+    multiple: false,
   },
   {
     id: "pdf",
     icon: FileText,
     title: "Enviar PDF",
-    desc: "Catálogo, tabela de preços ou cardápio em PDF. Extraímos produtos automaticamente.",
-    hint: "PDF até 20MB",
-    inputType: "file",
+    desc: "Catálogo, tabela de preços ou cardápio em PDF. Extraímos os produtos automaticamente.",
+    hint: "PDF até 8MB",
     accept: "application/pdf",
-  },
-  {
-    id: "whatsapp",
-    icon: MessageCircle,
-    title: "Catálogo WhatsApp",
-    desc: "Cole o link do seu catálogo do WhatsApp Business e importamos tudo.",
-    hint: "Ex: wa.me/c/55119...",
-    inputType: "url",
-    placeholder: "https://wa.me/c/...",
-  },
-  {
-    id: "mercadolivre",
-    icon: Link2,
-    title: "Link Mercado Livre",
-    desc: "Cole o link da sua loja ou de um anúncio. Trazemos preços, fotos e variações.",
-    hint: "Ex: mercadolivre.com.br/perfil/...",
-    inputType: "url",
-    placeholder: "https://www.mercadolivre.com.br/perfil/...",
-  },
-  {
-    id: "shopee",
-    icon: ShoppingBag,
-    title: "Link Shopee",
-    desc: "Importe sua loja da Shopee diretamente para o Licuri Hub.",
-    hint: "Ex: shopee.com.br/loja...",
-    inputType: "url",
-    placeholder: "https://shopee.com.br/...",
   },
   {
     id: "manual",
     icon: PencilLine,
     title: "Digitar manualmente",
-    desc: "Prefere o cadastro tradicional? Adicione produto por produto.",
+    desc: "Prefere cadastrar produto por produto? Vá direto ao formulário.",
     hint: "Formulário guiado",
-    inputType: "text",
   },
 ];
+
+const MAX_BYTES = 8 * 1024 * 1024;
+
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result as string);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
 
 function ImportarProdutos() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState<Method | null>(null);
-  const [value, setValue] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [preparing, setPreparing] = useState(false);
 
-  const canSubmit =
-    selected &&
-    (selected.inputType === "text" ||
-      (selected.inputType === "file" && file) ||
-      (selected.inputType === "url" && value.trim().length > 5));
-
-  const handleStart = () => {
+  const handleStart = async () => {
     if (!selected) return;
     if (selected.id === "manual") {
       navigate({ to: "/vendedor" });
       return;
     }
-    navigate({
-      to: "/vendedor/importar/processando",
-      search: { method: selected.id, source: value || file?.name || "" } as never,
-    });
+    if (!file) {
+      toast.error("Selecione um arquivo primeiro.");
+      return;
+    }
+    if (file.size > MAX_BYTES) {
+      toast.error("Arquivo muito grande. Limite 8MB.");
+      return;
+    }
+
+    try {
+      setPreparing(true);
+      const dataUrl = await fileToDataUrl(file);
+      // Guardar em sessionStorage para a próxima rota consumir (evita querystring gigante)
+      sessionStorage.setItem(
+        "licuri:import-payload",
+        JSON.stringify({
+          kind: selected.id === "fotos" ? "image" : "pdf",
+          source: dataUrl,
+          mime: file.type,
+          fileName: file.name,
+        }),
+      );
+      navigate({ to: "/vendedor/importar/processando" });
+    } catch (e: any) {
+      toast.error("Erro ao preparar arquivo: " + e.message);
+    } finally {
+      setPreparing(false);
+    }
   };
 
   return (
@@ -109,12 +109,12 @@ function ImportarProdutos() {
           Como você quer adicionar seus produtos?
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--muted-foreground)]">
-          A inteligência do Licuri organiza, descreve e categoriza tudo para você. Escolha o
-          jeito mais prático.
+          A Licuri Inteligência analisa suas fotos ou catálogo em PDF e gera nome, preço,
+          categoria e descrição para cada produto.
         </p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3">
         {methods.map((m) => {
           const Icon = m.icon;
           const isActive = selected?.id === m.id;
@@ -124,7 +124,6 @@ function ImportarProdutos() {
               type="button"
               onClick={() => {
                 setSelected(m);
-                setValue("");
                 setFile(null);
               }}
               className={`text-left rounded-2xl border p-5 transition-all ${
@@ -135,7 +134,9 @@ function ImportarProdutos() {
             >
               <div
                 className={`mb-4 grid h-11 w-11 place-items-center rounded-xl ${
-                  isActive ? "bg-[var(--clay)] text-[var(--clay-foreground)]" : "bg-[var(--cream)] text-[var(--clay)]"
+                  isActive
+                    ? "bg-[var(--clay)] text-[var(--clay-foreground)]"
+                    : "bg-[var(--cream)] text-[var(--clay)]"
                 }`}
               >
                 <Icon className="h-5 w-5" />
@@ -161,33 +162,19 @@ function ImportarProdutos() {
             {selected.title}
           </h2>
 
-          <div className="mt-5">
-            {selected.inputType === "file" && (
-              <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[var(--clay)]/30 bg-white p-10 text-center hover:border-[var(--clay)]">
-                <selected.icon className="mb-3 h-8 w-8 text-[var(--clay)]" />
-                <span className="text-sm font-medium text-[var(--coffee)]">
-                  {file ? file.name : "Clique para selecionar ou arraste aqui"}
-                </span>
-                <span className="mt-1 text-xs text-[var(--muted-foreground)]">{selected.hint}</span>
-                <input
-                  type="file"
-                  accept={selected.accept}
-                  className="hidden"
-                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                />
-              </label>
-            )}
-
-            {selected.inputType === "url" && (
-              <input
-                type="url"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder={selected.placeholder}
-                className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm outline-none focus:border-[var(--clay)]"
-              />
-            )}
-          </div>
+          <label className="mt-5 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[var(--clay)]/30 bg-white p-10 text-center hover:border-[var(--clay)]">
+            <selected.icon className="mb-3 h-8 w-8 text-[var(--clay)]" />
+            <span className="text-sm font-medium text-[var(--coffee)]">
+              {file ? file.name : "Clique para selecionar ou arraste aqui"}
+            </span>
+            <span className="mt-1 text-xs text-[var(--muted-foreground)]">{selected.hint}</span>
+            <input
+              type="file"
+              accept={selected.accept}
+              className="hidden"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            />
+          </label>
 
           <div className="mt-5 flex items-center justify-between gap-3">
             <Link
@@ -196,9 +183,16 @@ function ImportarProdutos() {
             >
               Cancelar
             </Link>
-            <Button variant="hero" disabled={!canSubmit} onClick={handleStart}>
-              Analisar com IA
-              <ArrowRight className="ml-2 h-4 w-4" />
+            <Button variant="hero" disabled={!file || preparing} onClick={handleStart}>
+              {preparing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Preparando...
+                </>
+              ) : (
+                <>
+                  Analisar com IA <ArrowRight className="ml-2 h-4 w-4" />
+                </>
+              )}
             </Button>
           </div>
         </div>

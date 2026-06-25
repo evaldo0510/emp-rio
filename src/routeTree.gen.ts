@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as ApiExtractProductsRouteImport } from './routes/api/extract-products'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppVendedorRouteImport } from './routes/_app.vendedor'
 import { Route as AppSobreRouteImport } from './routes/_app.sobre'
 import { Route as AppLojasRouteImport } from './routes/_app.lojas'
@@ -37,6 +39,16 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const ApiExtractProductsRoute = ApiExtractProductsRouteImport.update({
+  id: '/api/extract-products',
+  path: '/api/extract-products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppVendedorRoute = AppVendedorRouteImport.update({
   id: '/vendedor',
@@ -138,6 +150,8 @@ export interface FileRoutesByFullPath {
   '/lojas': typeof AppLojasRoute
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
+  '/api/extract-products': typeof ApiExtractProductsRoute
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
@@ -156,6 +170,8 @@ export interface FileRoutesByTo {
   '/lojas': typeof AppLojasRoute
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
+  '/api/extract-products': typeof ApiExtractProductsRoute
   '/': typeof AppIndexRoute
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
@@ -178,6 +194,8 @@ export interface FileRoutesById {
   '/_app/lojas': typeof AppLojasRoute
   '/_app/sobre': typeof AppSobreRoute
   '/_app/vendedor': typeof AppVendedorRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
+  '/api/extract-products': typeof ApiExtractProductsRoute
   '/_app/': typeof AppIndexRoute
   '/_app/admin/extrato': typeof AppAdminExtratoRoute
   '/_app/produto/$slug': typeof AppProdutoSlugRoute
@@ -201,6 +219,8 @@ export interface FileRouteTypes {
     | '/lojas'
     | '/sobre'
     | '/vendedor'
+    | '/api/chat'
+    | '/api/extract-products'
     | '/admin/extrato'
     | '/produto/$slug'
     | '/rastreio/$orderId'
@@ -219,6 +239,8 @@ export interface FileRouteTypes {
     | '/lojas'
     | '/sobre'
     | '/vendedor'
+    | '/api/chat'
+    | '/api/extract-products'
     | '/'
     | '/admin/extrato'
     | '/produto/$slug'
@@ -240,6 +262,8 @@ export interface FileRouteTypes {
     | '/_app/lojas'
     | '/_app/sobre'
     | '/_app/vendedor'
+    | '/api/chat'
+    | '/api/extract-products'
     | '/_app/'
     | '/_app/admin/extrato'
     | '/_app/produto/$slug'
@@ -251,6 +275,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  ApiChatRoute: typeof ApiChatRoute
+  ApiExtractProductsRoute: typeof ApiExtractProductsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -268,6 +294,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/api/extract-products': {
+      id: '/api/extract-products'
+      path: '/api/extract-products'
+      fullPath: '/api/extract-products'
+      preLoaderRoute: typeof ApiExtractProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/vendedor': {
       id: '/_app/vendedor'
@@ -466,6 +506,8 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  ApiChatRoute: ApiChatRoute,
+  ApiExtractProductsRoute: ApiExtractProductsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
