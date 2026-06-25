@@ -28,6 +28,7 @@ function AccountPage() {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState<any[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
+  const [follows, setFollows] = useState<any[]>([]);
   const [email, setEmail] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ function AccountPage() {
     } = await supabase.auth.getUser();
     setUser(user);
     if (user) {
-      const [ordersRes, favsRes] = await Promise.all([
+      const [ordersRes, favsRes, followsRes] = await Promise.all([
         supabase
           .from("orders")
           .select("*, order_items(*), shipments(*)")
@@ -62,12 +63,31 @@ function AccountPage() {
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
           .limit(6),
+        supabase
+          .from("seller_follows")
+          .select("id, seller_id, sellers(id, store_name, logo_url, seller_type)")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false }),
       ]);
       setOrders(ordersRes.data || []);
       setFavorites(favsRes.data || []);
+      setFollows(followsRes.data || []);
     }
     setLoading(false);
   }
+
+  async function handleUnfollow(followId: string, storeName?: string) {
+    const prev = follows;
+    setFollows((f) => f.filter((x) => x.id !== followId));
+    const { error } = await supabase.from("seller_follows").delete().eq("id", followId);
+    if (error) {
+      setFollows(prev);
+      toast.error("Não foi possível deixar de seguir a loja.");
+      return;
+    }
+    toast.success(storeName ? `Você deixou de seguir ${storeName}.` : "Loja removida.");
+  }
+
 
 
   const handleLogin = async (e: React.FormEvent) => {
