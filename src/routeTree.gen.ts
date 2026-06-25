@@ -22,6 +22,7 @@ import { Route as AppCarrinhoRouteImport } from './routes/_app.carrinho'
 import { Route as AppBlogRouteImport } from './routes/_app.blog'
 import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppAdminIndexRouteImport } from './routes/_app.admin.index'
+import { Route as AppVendedorImportarRouteImport } from './routes/_app.vendedor.importar'
 import { Route as AppRastreioOrderIdRouteImport } from './routes/_app.rastreio.$orderId'
 import { Route as AppProdutoSlugRouteImport } from './routes/_app.produto.$slug'
 import { Route as AppAdminExtratoRouteImport } from './routes/_app.admin.extrato'
@@ -90,6 +91,11 @@ const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppAdminRoute,
 } as any)
+const AppVendedorImportarRoute = AppVendedorImportarRouteImport.update({
+  id: '/importar',
+  path: '/importar',
+  getParentRoute: () => AppVendedorRoute,
+} as any)
 const AppRastreioOrderIdRoute = AppRastreioOrderIdRouteImport.update({
   id: '/rastreio/$orderId',
   path: '/rastreio/$orderId',
@@ -117,10 +123,11 @@ export interface FileRoutesByFullPath {
   '/favoritos': typeof AppFavoritosRoute
   '/lojas': typeof AppLojasRoute
   '/sobre': typeof AppSobreRoute
-  '/vendedor': typeof AppVendedorRoute
+  '/vendedor': typeof AppVendedorRouteWithChildren
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
+  '/vendedor/importar': typeof AppVendedorImportarRoute
   '/admin/': typeof AppAdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -132,11 +139,12 @@ export interface FileRoutesByTo {
   '/favoritos': typeof AppFavoritosRoute
   '/lojas': typeof AppLojasRoute
   '/sobre': typeof AppSobreRoute
-  '/vendedor': typeof AppVendedorRoute
+  '/vendedor': typeof AppVendedorRouteWithChildren
   '/': typeof AppIndexRoute
   '/admin/extrato': typeof AppAdminExtratoRoute
   '/produto/$slug': typeof AppProdutoSlugRoute
   '/rastreio/$orderId': typeof AppRastreioOrderIdRoute
+  '/vendedor/importar': typeof AppVendedorImportarRoute
   '/admin': typeof AppAdminIndexRoute
 }
 export interface FileRoutesById {
@@ -151,11 +159,12 @@ export interface FileRoutesById {
   '/_app/favoritos': typeof AppFavoritosRoute
   '/_app/lojas': typeof AppLojasRoute
   '/_app/sobre': typeof AppSobreRoute
-  '/_app/vendedor': typeof AppVendedorRoute
+  '/_app/vendedor': typeof AppVendedorRouteWithChildren
   '/_app/': typeof AppIndexRoute
   '/_app/admin/extrato': typeof AppAdminExtratoRoute
   '/_app/produto/$slug': typeof AppProdutoSlugRoute
   '/_app/rastreio/$orderId': typeof AppRastreioOrderIdRoute
+  '/_app/vendedor/importar': typeof AppVendedorImportarRoute
   '/_app/admin/': typeof AppAdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/admin/extrato'
     | '/produto/$slug'
     | '/rastreio/$orderId'
+    | '/vendedor/importar'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/admin/extrato'
     | '/produto/$slug'
     | '/rastreio/$orderId'
+    | '/vendedor/importar'
     | '/admin'
   id:
     | '__root__'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/_app/admin/extrato'
     | '/_app/produto/$slug'
     | '/_app/rastreio/$orderId'
+    | '/_app/vendedor/importar'
     | '/_app/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -309,6 +321,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminIndexRouteImport
       parentRoute: typeof AppAdminRoute
     }
+    '/_app/vendedor/importar': {
+      id: '/_app/vendedor/importar'
+      path: '/importar'
+      fullPath: '/vendedor/importar'
+      preLoaderRoute: typeof AppVendedorImportarRouteImport
+      parentRoute: typeof AppVendedorRoute
+    }
     '/_app/rastreio/$orderId': {
       id: '/_app/rastreio/$orderId'
       path: '/rastreio/$orderId'
@@ -347,6 +366,18 @@ const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
   AppAdminRouteChildren,
 )
 
+interface AppVendedorRouteChildren {
+  AppVendedorImportarRoute: typeof AppVendedorImportarRoute
+}
+
+const AppVendedorRouteChildren: AppVendedorRouteChildren = {
+  AppVendedorImportarRoute: AppVendedorImportarRoute,
+}
+
+const AppVendedorRouteWithChildren = AppVendedorRoute._addFileChildren(
+  AppVendedorRouteChildren,
+)
+
 interface AppRouteChildren {
   AppAdminRoute: typeof AppAdminRouteWithChildren
   AppBlogRoute: typeof AppBlogRoute
@@ -357,7 +388,7 @@ interface AppRouteChildren {
   AppFavoritosRoute: typeof AppFavoritosRoute
   AppLojasRoute: typeof AppLojasRoute
   AppSobreRoute: typeof AppSobreRoute
-  AppVendedorRoute: typeof AppVendedorRoute
+  AppVendedorRoute: typeof AppVendedorRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppProdutoSlugRoute: typeof AppProdutoSlugRoute
   AppRastreioOrderIdRoute: typeof AppRastreioOrderIdRoute
@@ -373,7 +404,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppFavoritosRoute: AppFavoritosRoute,
   AppLojasRoute: AppLojasRoute,
   AppSobreRoute: AppSobreRoute,
-  AppVendedorRoute: AppVendedorRoute,
+  AppVendedorRoute: AppVendedorRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppProdutoSlugRoute: AppProdutoSlugRoute,
   AppRastreioOrderIdRoute: AppRastreioOrderIdRoute,
@@ -387,12 +418,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
