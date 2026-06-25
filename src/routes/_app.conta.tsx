@@ -300,12 +300,57 @@ function AccountPage() {
 
         <aside className="space-y-6">
           <div className="rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm">
-            <h3 className="font-display text-lg font-semibold mb-4 text-[var(--coffee)]">
-              Favoritos
-            </h3>
-            <p className="text-sm text-[var(--muted-foreground)]">
-              Sua lista de desejos está vazia.
-            </p>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-display text-lg font-semibold text-[var(--coffee)]">
+                Favoritos
+              </h3>
+              {favorites.length > 0 && (
+                <Link
+                  to="/favoritos"
+                  className="text-xs font-bold uppercase tracking-wider text-[var(--clay)] hover:underline"
+                >
+                  Ver todos
+                </Link>
+              )}
+            </div>
+            {favorites.length === 0 ? (
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Sua lista de desejos está vazia.
+              </p>
+            ) : (
+              <ul className="space-y-3">
+                {favorites.slice(0, 4).map((fav: any) => {
+                  const p = fav.products;
+                  if (!p) return null;
+                  return (
+                    <li key={fav.product_id}>
+                      <Link
+                        to="/produto/$slug"
+                        params={{ slug: p.slug }}
+                        className="flex items-center gap-3 group"
+                      >
+                        <div className="h-10 w-10 rounded-lg overflow-hidden border border-[var(--border)] bg-[var(--sand)] shrink-0">
+                          <img
+                            src={p.image_url}
+                            alt=""
+                            className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-[var(--coffee)] line-clamp-1 group-hover:text-[var(--clay)]">
+                            {p.name}
+                          </p>
+                          <p className="text-xs font-bold text-[var(--clay)]">
+                            {formatBRL(Number(p.price))}
+                          </p>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-[var(--muted-foreground)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
 
           <div className="rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm">
