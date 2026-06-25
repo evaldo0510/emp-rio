@@ -1,6 +1,14 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase, loginWithEmail, logout } from "@/lib/supabase";
 import { toast } from "sonner";
 import {
@@ -10,13 +18,36 @@ import {
   User as UserIcon,
   Package,
   ChevronRight,
+  ChevronLeft,
   CheckCircle2,
   Clock,
   Truck,
   Store,
   X,
+  AlertTriangle,
+  XCircle,
 } from "lucide-react";
 import { formatBRL } from "@/lib/products";
+
+const PAGE_SIZE = 5;
+const STATUS_LABEL: Record<string, string> = {
+  pending: "Aguardando",
+  paid: "Pago",
+  processing: "Em preparo",
+  shipped: "Enviado",
+  delivered: "Entregue",
+  canceled: "Cancelado",
+  cancelled: "Cancelado",
+};
+const STATUS_RANK: Record<string, number> = {
+  pending: 0,
+  paid: 1,
+  processing: 2,
+  shipped: 3,
+  delivered: 4,
+  canceled: 5,
+  cancelled: 5,
+};
 
 export const Route = createFileRoute("/_app/conta")({
   head: () => ({ meta: [{ title: "Minha Conta — Licuri Hub" }] }),
