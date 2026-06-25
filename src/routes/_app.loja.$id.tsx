@@ -56,7 +56,7 @@ function StorePage() {
         supabase
           .from("products")
           .select("id, slug, name, price, image_url, rating, reviews")
-          .eq("seller_id", sellerData.user_id)
+          .eq("seller_id", sellerData.user_id ?? "")
           .eq("is_published", true)
           .order("created_at", { ascending: false }),
         supabase.auth.getUser(),
