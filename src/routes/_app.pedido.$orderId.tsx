@@ -18,8 +18,6 @@ import {
   Download,
   Inbox,
   XCircle,
-  RotateCcw,
-  Store,
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";

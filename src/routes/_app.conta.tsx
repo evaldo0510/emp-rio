@@ -24,8 +24,6 @@ import {
   Truck,
   Store,
   Heart,
-  ShoppingBag,
-  Search,
   X,
   AlertTriangle,
   XCircle,
