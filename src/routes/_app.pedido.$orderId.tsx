@@ -70,58 +70,60 @@ function OrderDetailsPage() {
   const [shipments, setShipments] = useState<any[]>([]);
   const [updates, setUpdates] = useState<any[]>([]);
 
+  const load = useCallback(async () => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    try {
+      const { data: orderData, error: oErr } = await supabase
+        .from("orders")
+        .select("*, order_items(*)")
+        .eq("id", orderId)
+        .maybeSingle();
+      if (oErr) throw oErr;
+      if (cancelled) return;
+      if (!orderData) {
+        setOrder(null);
+        setLoading(false);
+        return;
+      }
+      setOrder(orderData);
+
+      const { data: shipmentsData, error: sErr } = await supabase
+        .from("shipments")
+        .select("*")
+        .eq("order_id", orderId)
+        .order("created_at", { ascending: true });
+      if (sErr) throw sErr;
+      if (cancelled) return;
+      const ships = shipmentsData || [];
+      setShipments(ships);
+
+      if (ships.length > 0) {
+        const { data: upd, error: uErr } = await supabase
+          .from("shipment_updates")
+          .select("*")
+          .in("shipment_id", ships.map((s) => s.id))
+          .order("created_at", { ascending: false });
+        if (uErr) throw uErr;
+        if (!cancelled) setUpdates(upd || []);
+      } else {
+        setUpdates([]);
+      }
+    } catch (e: any) {
+      if (!cancelled) setError(e?.message || "Não foi possível carregar o pedido.");
+    } finally {
+      if (!cancelled) setLoading(false);
+    }
+  }, [orderId]);
+
   useEffect(() => {
     let cancelled = false;
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const { data: orderData, error: oErr } = await supabase
-          .from("orders")
-          .select("*, order_items(*)")
-          .eq("id", orderId)
-          .maybeSingle();
-        if (oErr) throw oErr;
-        if (cancelled) return;
-        if (!orderData) {
-          setOrder(null);
-          setLoading(false);
-          return;
-        }
-        setOrder(orderData);
-
-        const { data: shipmentsData, error: sErr } = await supabase
-          .from("shipments")
-          .select("*")
-          .eq("order_id", orderId)
-          .order("created_at", { ascending: true });
-        if (sErr) throw sErr;
-        if (cancelled) return;
-        const ships = shipmentsData || [];
-        setShipments(ships);
-
-        if (ships.length > 0) {
-          const { data: upd, error: uErr } = await supabase
-            .from("shipment_updates")
-            .select("*")
-            .in("shipment_id", ships.map((s) => s.id))
-            .order("created_at", { ascending: false });
-          if (uErr) throw uErr;
-          if (!cancelled) setUpdates(upd || []);
-        } else {
-          setUpdates([]);
-        }
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message || "Não foi possível carregar o pedido.");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
     load();
     return () => {
       cancelled = true;
     };
-  }, [orderId]);
+  }, [load]);
 
   if (loading) return <OrderSkeleton />;
 
