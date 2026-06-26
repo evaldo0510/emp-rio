@@ -304,14 +304,13 @@ function AccountPage() {
               ))}
             </div>
           ) : ordersError ? (
-            <div className="rounded-2xl border border-red-100 bg-red-50 p-8 text-center">
-              <XCircle className="mx-auto h-8 w-8 text-red-500 mb-3" />
-              <p className="text-sm font-semibold text-red-700 mb-1">Não foi possível carregar seus pedidos</p>
-              <p className="text-xs text-red-600 mb-4">{ordersError}</p>
-              <Button variant="soft" size="sm" onClick={() => checkUser()}>
-                Tentar novamente
-              </Button>
-            </div>
+            <EmptyState
+              icon={XCircle}
+              title="Erro ao carregar seus pedidos"
+              description={ordersError}
+              primaryAction={{ label: "Tentar novamente", onClick: () => checkUser(), variant: "hero" }}
+              secondaryAction={{ label: "Voltar à loja", to: "/categorias" }}
+            />
           ) : orders.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-[var(--border)] p-12 text-center bg-white">
               <Package className="mx-auto h-10 w-10 text-[var(--muted-foreground)] opacity-20 mb-3" />
