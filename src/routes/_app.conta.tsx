@@ -312,16 +312,13 @@ function AccountPage() {
               secondaryAction={{ label: "Voltar à loja", to: "/categorias" }}
             />
           ) : orders.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-[var(--border)] p-12 text-center bg-white">
-              <Package className="mx-auto h-10 w-10 text-[var(--muted-foreground)] opacity-20 mb-3" />
-              <p className="text-sm font-semibold text-[var(--coffee)] mb-1">Sem pedidos por aqui ainda</p>
-              <p className="text-sm text-[var(--muted-foreground)] mb-6">
-                Quando você comprar algo, seus pedidos aparecerão aqui.
-              </p>
-              <Button asChild variant="hero">
-                <Link to="/categorias">Ver produtos</Link>
-              </Button>
-            </div>
+            <EmptyState
+              icon={Package}
+              title="Nenhum pedido ainda"
+              description="Quando você fizer uma compra, seus pedidos aparecerão aqui."
+              primaryAction={{ label: "Explorar produtos", to: "/categorias", variant: "hero" }}
+              secondaryAction={{ label: "Ver lojas", to: "/lojas" }}
+            />
           ) : (
             <>
               <div className="space-y-4">
