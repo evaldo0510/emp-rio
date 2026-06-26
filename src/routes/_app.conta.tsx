@@ -23,10 +23,14 @@ import {
   Clock,
   Truck,
   Store,
+  Heart,
+  ShoppingBag,
+  Search,
   X,
   AlertTriangle,
   XCircle,
 } from "lucide-react";
+import { EmptyState } from "@/components/empty-state";
 import { formatBRL } from "@/lib/products";
 
 const PAGE_SIZE = 5;
