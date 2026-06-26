@@ -23,10 +23,12 @@ import {
   Clock,
   Truck,
   Store,
+  Heart,
   X,
   AlertTriangle,
   XCircle,
 } from "lucide-react";
+import { EmptyState } from "@/components/empty-state";
 import { formatBRL } from "@/lib/products";
 
 const PAGE_SIZE = 5;
@@ -300,25 +302,21 @@ function AccountPage() {
               ))}
             </div>
           ) : ordersError ? (
-            <div className="rounded-2xl border border-red-100 bg-red-50 p-8 text-center">
-              <XCircle className="mx-auto h-8 w-8 text-red-500 mb-3" />
-              <p className="text-sm font-semibold text-red-700 mb-1">Não foi possível carregar seus pedidos</p>
-              <p className="text-xs text-red-600 mb-4">{ordersError}</p>
-              <Button variant="soft" size="sm" onClick={() => checkUser()}>
-                Tentar novamente
-              </Button>
-            </div>
+            <EmptyState
+              icon={XCircle}
+              title="Erro ao carregar seus pedidos"
+              description={ordersError}
+              primaryAction={{ label: "Tentar novamente", onClick: () => checkUser(), variant: "hero" }}
+              secondaryAction={{ label: "Voltar à loja", to: "/categorias" }}
+            />
           ) : orders.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-[var(--border)] p-12 text-center bg-white">
-              <Package className="mx-auto h-10 w-10 text-[var(--muted-foreground)] opacity-20 mb-3" />
-              <p className="text-sm font-semibold text-[var(--coffee)] mb-1">Sem pedidos por aqui ainda</p>
-              <p className="text-sm text-[var(--muted-foreground)] mb-6">
-                Quando você comprar algo, seus pedidos aparecerão aqui.
-              </p>
-              <Button asChild variant="hero">
-                <Link to="/categorias">Ver produtos</Link>
-              </Button>
-            </div>
+            <EmptyState
+              icon={Package}
+              title="Nenhum pedido ainda"
+              description="Quando você fizer uma compra, seus pedidos aparecerão aqui."
+              primaryAction={{ label: "Explorar produtos", to: "/categorias", variant: "hero" }}
+              secondaryAction={{ label: "Ver lojas", to: "/lojas" }}
+            />
           ) : (
             <>
               <div className="space-y-4">
@@ -494,9 +492,13 @@ function AccountPage() {
               )}
             </div>
             {favorites.length === 0 ? (
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Sua lista de desejos está vazia.
-              </p>
+              <EmptyState
+                icon={Heart}
+                title="Lista de desejos vazia"
+                description="Salve produtos que você gosta para encontrá-los depois."
+                primaryAction={{ label: "Ver produtos", to: "/categorias", variant: "hero" }}
+                className="border-none bg-transparent p-0"
+              />
             ) : (
               <ul className="space-y-3">
                 {favorites.slice(0, 4).map((fav: any) => {
@@ -538,9 +540,13 @@ function AccountPage() {
               Lojas Seguidas
             </h3>
             {follows.length === 0 ? (
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Você ainda não segue nenhuma loja.
-              </p>
+              <EmptyState
+                icon={Store}
+                title="Você ainda não segue lojas"
+                description="Siga vendedores para acompanhar novidades e ofertas."
+                primaryAction={{ label: "Descobrir lojas", to: "/lojas", variant: "hero" }}
+                className="border-none bg-transparent p-0"
+              />
             ) : (
               <ul className="space-y-3">
                 {follows.map((f: any) => {

@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatBRL } from "@/lib/products";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/empty-state";
 import {
   ArrowLeft,
   Package,
@@ -67,85 +68,87 @@ function OrderDetailsPage() {
   const [shipments, setShipments] = useState<any[]>([]);
   const [updates, setUpdates] = useState<any[]>([]);
 
+  const load = useCallback(async () => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    try {
+      const { data: orderData, error: oErr } = await supabase
+        .from("orders")
+        .select("*, order_items(*)")
+        .eq("id", orderId)
+        .maybeSingle();
+      if (oErr) throw oErr;
+      if (cancelled) return;
+      if (!orderData) {
+        setOrder(null);
+        setLoading(false);
+        return;
+      }
+      setOrder(orderData);
+
+      const { data: shipmentsData, error: sErr } = await supabase
+        .from("shipments")
+        .select("*")
+        .eq("order_id", orderId)
+        .order("created_at", { ascending: true });
+      if (sErr) throw sErr;
+      if (cancelled) return;
+      const ships = shipmentsData || [];
+      setShipments(ships);
+
+      if (ships.length > 0) {
+        const { data: upd, error: uErr } = await supabase
+          .from("shipment_updates")
+          .select("*")
+          .in("shipment_id", ships.map((s) => s.id))
+          .order("created_at", { ascending: false });
+        if (uErr) throw uErr;
+        if (!cancelled) setUpdates(upd || []);
+      } else {
+        setUpdates([]);
+      }
+    } catch (e: any) {
+      if (!cancelled) setError(e?.message || "Não foi possível carregar o pedido.");
+    } finally {
+      if (!cancelled) setLoading(false);
+    }
+  }, [orderId]);
+
   useEffect(() => {
     let cancelled = false;
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const { data: orderData, error: oErr } = await supabase
-          .from("orders")
-          .select("*, order_items(*)")
-          .eq("id", orderId)
-          .maybeSingle();
-        if (oErr) throw oErr;
-        if (cancelled) return;
-        if (!orderData) {
-          setOrder(null);
-          setLoading(false);
-          return;
-        }
-        setOrder(orderData);
-
-        const { data: shipmentsData, error: sErr } = await supabase
-          .from("shipments")
-          .select("*")
-          .eq("order_id", orderId)
-          .order("created_at", { ascending: true });
-        if (sErr) throw sErr;
-        if (cancelled) return;
-        const ships = shipmentsData || [];
-        setShipments(ships);
-
-        if (ships.length > 0) {
-          const { data: upd, error: uErr } = await supabase
-            .from("shipment_updates")
-            .select("*")
-            .in("shipment_id", ships.map((s) => s.id))
-            .order("created_at", { ascending: false });
-          if (uErr) throw uErr;
-          if (!cancelled) setUpdates(upd || []);
-        } else {
-          setUpdates([]);
-        }
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message || "Não foi possível carregar o pedido.");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
     load();
     return () => {
       cancelled = true;
     };
-  }, [orderId]);
+  }, [load]);
 
   if (loading) return <OrderSkeleton />;
 
   if (error) {
     return (
-      <div className="container-narrow py-20 text-center">
-        <XCircle className="mx-auto h-10 w-10 text-red-500 mb-3" />
-        <h1 className="text-xl font-semibold mb-2 text-[var(--coffee)]">Erro ao carregar pedido</h1>
-        <p className="text-sm text-[var(--muted-foreground)] mb-6">{error}</p>
-        <Button asChild variant="soft">
-          <Link to="/conta">Voltar para Minha Conta</Link>
-        </Button>
+      <div className="container-narrow py-20">
+        <EmptyState
+          icon={XCircle}
+          title="Não foi possível carregar o pedido"
+          description={error}
+          primaryAction={{ label: "Tentar novamente", onClick: load, variant: "hero" }}
+          secondaryAction={{ label: "Voltar para Minha Conta", to: "/conta" }}
+        />
       </div>
     );
   }
 
   if (!order) {
     return (
-      <div className="container-narrow py-20 text-center">
-        <Inbox className="mx-auto h-10 w-10 text-[var(--muted-foreground)] opacity-40 mb-3" />
-        <h1 className="text-2xl font-bold mb-2 text-[var(--coffee)]">Pedido não encontrado</h1>
-        <p className="text-sm text-[var(--muted-foreground)] mb-6">
-          Verifique se o link está correto ou volte para a lista de pedidos.
-        </p>
-        <Button asChild variant="soft">
-          <Link to="/conta">Voltar para Minha Conta</Link>
-        </Button>
+      <div className="container-narrow py-20">
+        <EmptyState
+          icon={Inbox}
+          title="Pedido não encontrado"
+          description="Verifique se o link está correto ou se o pedido foi removido."
+          primaryAction={{ label: "Voltar para Minha Conta", to: "/conta", variant: "hero" }}
+          secondaryAction={{ label: "Ir à loja", to: "/categorias" }}
+        />
       </div>
     );
   }
