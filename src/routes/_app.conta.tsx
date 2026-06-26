@@ -494,9 +494,13 @@ function AccountPage() {
               )}
             </div>
             {favorites.length === 0 ? (
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Sua lista de desejos está vazia.
-              </p>
+              <EmptyState
+                icon={Heart}
+                title="Lista de desejos vazia"
+                description="Salve produtos que você gosta para encontrá-los depois."
+                primaryAction={{ label: "Ver produtos", to: "/categorias", variant: "hero" }}
+                className="border-none bg-transparent p-0"
+              />
             ) : (
               <ul className="space-y-3">
                 {favorites.slice(0, 4).map((fav: any) => {
@@ -538,9 +542,13 @@ function AccountPage() {
               Lojas Seguidas
             </h3>
             {follows.length === 0 ? (
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Você ainda não segue nenhuma loja.
-              </p>
+              <EmptyState
+                icon={Store}
+                title="Você ainda não segue lojas"
+                description="Siga vendedores para acompanhar novidades e ofertas."
+                primaryAction={{ label: "Descobrir lojas", to: "/lojas", variant: "hero" }}
+                className="border-none bg-transparent p-0"
+              />
             ) : (
               <ul className="space-y-3">
                 {follows.map((f: any) => {
