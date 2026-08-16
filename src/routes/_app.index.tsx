@@ -95,6 +95,7 @@ function HomePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[var(--coffee)]/75 via-[var(--coffee)]/45 to-transparent" />
 
+
           <div className="absolute inset-0 flex items-center">
             <div className="w-full px-6 md:px-12">
               <div className="max-w-xl text-[var(--cream)]">
