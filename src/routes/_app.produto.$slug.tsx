@@ -345,131 +345,104 @@ function ProductPage() {
                 </ul>
               </div>
 
-                  {benefits.map((b, i) => (
-                    <li key={i} className="flex items-start gap-3 text-[var(--sertao)]">
-                      <div className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--clay)] shrink-0" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="space-y-4">
-                <h3 className="font-display text-xl font-semibold text-[var(--coffee)]">
-                  Especificações
+              <div className="space-y-6">
+                <h3 className="font-display text-xl font-semibold text-[var(--coffee)] flex items-center gap-2">
+                  <Store className="h-5 w-5 text-primary" /> Quem produz
                 </h3>
-                <dl className="space-y-3 text-sm">
-                  <div className="flex justify-between border-b border-[var(--border)] pb-2">
-                    <dt className="text-[var(--muted-foreground)]">Origem</dt>
-                    <dd className="font-medium text-[var(--coffee)]">{specs.origem}</dd>
+                <div className="rounded-2xl border border-[var(--border)] p-5 bg-white">
+                  <div className="font-bold text-[var(--coffee)]">{product.shop}</div>
+                  <div className="text-xs text-[var(--muted-foreground)] mt-1 uppercase tracking-wider">{product.region}</div>
+                  <p className="mt-3 text-sm text-[var(--sertao)]">Produtor parceiro do ecossistema Empório do Licuri.</p>
+                </div>
+                
+                <div className="rounded-2xl border border-[var(--border)] p-5 bg-white">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-3">Informações</h4>
+                  <div className="space-y-2">
+                    {Object.entries(specs).map(([k, v]) => (
+                      <div key={k} className="flex justify-between text-sm">
+                        <span className="text-[var(--muted-foreground)] capitalize">{k}:</span>
+                        <span className="font-medium text-[var(--coffee)]">{v}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex justify-between border-b border-[var(--border)] pb-2">
-                    <dt className="text-[var(--muted-foreground)]">Tipo</dt>
-                    <dd className="font-medium text-[var(--coffee)]">{specs.tipo}</dd>
-                  </div>
-                  <div className="flex justify-between border-b border-[var(--border)] pb-2">
-                    <dt className="text-[var(--muted-foreground)]">Validade</dt>
-                    <dd className="font-medium text-[var(--coffee)]">{specs.validade}</dd>
-                  </div>
-                </dl>
+                </div>
               </div>
             </div>
           </section>
 
-          {/* SIDEBAR: PRODUTOR E AVALIAÇÕES */}
+          {/* SIDEBAR DE AÇÕES/INFOS */}
           <aside className="space-y-8">
-            <div className="rounded-3xl bg-[var(--coffee)] p-6 text-white shadow-xl">
-              <h3 className="font-display text-lg font-semibold mb-3">Quem produziu</h3>
-              <p className="text-sm opacity-90 leading-relaxed mb-4">
-                Produzido pela cooperativa <strong>{product.shop}</strong>, unindo famílias do
-                sertão baiano para fortalecer o comércio justo e a preservação do Licurizal.
+            <div className="rounded-3xl border border-[var(--border)] bg-[var(--clay)]/5 p-8">
+              <h3 className="font-display text-xl font-bold text-[var(--coffee)] mb-4 italic">Selo Curadoria</h3>
+              <p className="text-sm text-[var(--sertao)] leading-relaxed">
+                Este produto passou pelo nosso sistema de curadoria, garantindo origem identificada, qualidade e responsabilidade ambiental.
               </p>
-              <Link
-                to="/sobre"
-                className="text-xs font-bold uppercase tracking-widest text-[var(--clay)] hover:underline"
-              >
-                Conheça nossa história →
-              </Link>
             </div>
-
+            
             <div className="rounded-3xl border border-[var(--border)] bg-white p-6 shadow-sm">
               <h3 className="font-display text-lg font-semibold text-[var(--coffee)] mb-4">
                 Avaliações
               </h3>
-              <div className="space-y-4">
-                <div className="border-b border-[var(--border)] pb-4">
-                  <div className="flex text-[var(--clay)] mb-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-sm font-medium text-[var(--coffee)] mb-1">
-                    "Qualidade excepcional!"
-                  </p>
-                  <p className="text-xs text-[var(--muted-foreground)]">Maria S. — Salvador, BA</p>
-                </div>
-                <div className="pb-2">
-                  <div className="flex text-[var(--clay)] mb-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-sm font-medium text-[var(--coffee)] mb-1">
-                    "O sabor é incomparável."
-                  </p>
-                  <p className="text-xs text-[var(--muted-foreground)]">
-                    João P. — Feira de Santana, BA
-                  </p>
-                </div>
+              <div className="flex items-center gap-1 text-[var(--clay)] mb-4">
+                <Star className="h-5 w-5 fill-current" />
+                <span className="font-display text-2xl font-bold text-[var(--coffee)]">{product.rating}</span>
+                <span className="text-sm text-[var(--muted-foreground)]">/ 5.0</span>
               </div>
+              <p className="text-xs text-[var(--muted-foreground)]">Baseado em {product.reviews} experiências reais.</p>
             </div>
           </aside>
         </div>
 
         {/* PRODUTOS RELACIONADOS */}
         {related.length > 0 && (
-          <section className="mt-24">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="font-display text-3xl font-semibold text-[var(--coffee)]">
-                Você também pode gostar
-              </h2>
+          <section className="mt-32">
+            <div className="mb-10 flex items-end justify-between">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--muted-foreground)] mb-2">
+                  Descubra mais
+                </p>
+                <h2 className="font-display text-3xl font-semibold text-[var(--coffee)] md:text-5xl">
+                  Também pode gostar
+                </h2>
+              </div>
               <Link
                 to="/categorias"
-                className="text-sm font-bold text-[var(--clay)] hover:underline"
+                search={{ cat: product.category }}
+                className="text-sm font-bold text-primary hover:underline"
               >
-                Ver todos
+                Ver tudo
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
               {related.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </section>
-        )}
+        </div>
       </div>
 
-      {/* STICKY BUY BUTTON MOBILE */}
+      {/* STICKY ADD TO CART */}
       <div
-        className={`fixed bottom-0 left-0 right-0 z-50 transform bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 md:hidden ${showSticky ? "translate-y-0" : "translate-y-full"}`}
+        className={`fixed bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-[var(--border)] p-4 backdrop-blur-md transition-transform duration-300 md:hidden ${
+          showSticky ? "translate-y-0" : "translate-y-full"
+        }`}
       >
         <div className="flex items-center gap-4">
           <div className="flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-              Total
-            </p>
-            <p className="font-display text-lg font-bold text-[var(--coffee)]">
-              {formatBRL(product.price)}
-            </p>
+            <h4 className="line-clamp-1 text-sm font-bold text-[var(--coffee)]">{product.name}</h4>
+            <p className="font-display text-lg font-bold text-[var(--clay)]">{formatBRL(product.price)}</p>
           </div>
           <Button
+            size="lg"
             variant="hero"
-            className="flex-[2] bg-[#C4682C] text-white"
+            className="px-8"
             onClick={() => {
               add(product, qty);
               toast.success("Adicionado ao carrinho");
             }}
           >
-            COMPRAR AGORA
+            Comprar
           </Button>
         </div>
       </div>
