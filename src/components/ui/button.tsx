@@ -16,9 +16,10 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        hero: "bg-[var(--clay)] text-[var(--clay-foreground)] shadow-[var(--shadow-warm)] hover:brightness-110 tracking-wide uppercase",
-        soft: "bg-[var(--cream)] text-[var(--sertao)] border border-[var(--border)] hover:bg-[var(--sand)] tracking-wide uppercase",
-        leaf: "bg-[var(--leaf)] text-[var(--clay-foreground)] hover:brightness-110",
+        hero: "bg-primary text-primary-foreground shadow-[var(--shadow-warm)] hover:brightness-110 tracking-wide uppercase",
+        soft: "bg-[var(--cream)] text-[var(--coffee)] border border-[var(--border)] hover:bg-[var(--sand)] tracking-wide uppercase",
+        leaf: "bg-primary text-primary-foreground hover:brightness-110",
+
       },
       size: {
         default: "h-9 px-4 py-2",

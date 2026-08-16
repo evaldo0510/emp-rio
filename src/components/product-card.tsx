@@ -26,11 +26,12 @@ export function ProductCard({ product }: { product: Product }) {
           {product.name}
         </h3>
         <div className="flex items-center justify-between pt-1">
-          <span className="font-display text-lg font-bold text-[var(--clay)]">
+          <span className="font-display text-lg font-bold text-primary">
             {formatBRL(product.price)}
           </span>
+
           <span className="flex items-center gap-1 text-xs text-[var(--muted-foreground)]">
-            <Star className="h-3.5 w-3.5 fill-[var(--clay)] text-[var(--clay)]" />
+            <Star className="h-3.5 w-3.5 fill-primary text-primary" />
             {product.rating} <span className="opacity-60">({product.reviews})</span>
           </span>
         </div>
