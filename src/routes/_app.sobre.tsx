@@ -34,19 +34,34 @@ function AboutPage() {
             Nossa Raiz
           </p>
           <div>
-            <h1 className="font-display text-4xl font-semibold text-[var(--coffee)] md:text-6xl">
-              O ecossistema que transforma o licuri em futuro.
+            <h1 className="font-display text-4xl font-semibold text-[var(--coffee)] md:text-6xl uppercase">
+              O licuri é nossa raiz. <br /> O futuro é nosso caminho.
             </h1>
-            <p className="mt-6 text-xl text-[var(--sertao)]">
-              O <strong>Empório do Licuri</strong> é um ecossistema especializado na valorização do licuri e de produtos ligados ao sertão brasileiro.
-              Conectamos produtores, marcas, consumidores, cultura, gastronomia e tecnologia em uma mesma plataforma.
+            <p className="mt-8 text-2xl font-display italic text-primary">
+              "Nós acreditamos no sertão."
+            </p>
+            <p className="mt-4 text-xl text-[var(--sertao)]">
+              Acreditamos nas mãos que plantam. Nas mãos que colhem. Nas mãos que transformam.
+              Acreditamos que tradição não precisa ficar presa ao passado. Ela pode virar inovação.
             </p>
             
             <div className="mt-12 space-y-12">
               <div>
-                <h2 className="font-display text-3xl font-bold text-[var(--coffee)]">O que somos</h2>
+                <h2 className="font-display text-3xl font-bold text-[var(--coffee)]">Manifesto de Marca</h2>
+                <div className="mt-6 space-y-4 text-[var(--sertao)] text-lg leading-relaxed">
+                  <p>Ela pode virar produto. Pode virar negócio. Pode virar renda. Pode atravessar fronteiras. E tudo isso pode começar com uma pequena amêndoa: <strong>O licuri</strong>.</p>
+                  <p>Por isso criamos o <strong>Empório do Licuri</strong>. Para conectar pessoas, produtos, histórias e oportunidades.</p>
+                  <p className="font-bold text-primary">Da raiz do sertão para o futuro.</p>
+                </div>
+              </div>
+              
+              <div>
+                <h2 className="font-display text-3xl font-bold text-[var(--coffee)]">O Grande Objetivo</h2>
                 <p className="mt-4 text-[var(--sertao)] text-lg leading-relaxed">
-                  Não somos apenas uma loja ou um marketplace. Somos a união de gastronomia, cultura, produtos naturais e inovação em torno de um símbolo: <strong>O LICURI</strong>.
+                  Não queremos apenas vender produtos de licuri. Nosso objetivo é <strong>CONSTRUIR A PRINCIPAL MARCA-ECOSSISTEMA DO LICURI NO BRASIL</strong>.
+                </p>
+                <p className="mt-2 text-[var(--sertao)]">
+                  A partir dela, desenvolvemos: marca própria + marketplace + produtores + Casa do Licuri + gastronomia + cultura + turismo + educação + inovação.
                 </p>
               </div>
 
@@ -105,8 +120,14 @@ function AboutPage() {
       </section>
 
       <section className="container-narrow py-24 text-center">
-        <div className="mx-auto max-w-2xl italic text-[var(--coffee)] text-2xl font-display">
-          "O sertão sempre teve riqueza. Nós acreditamos que aquilo que nasce no sertão pode chegar ao mundo sem perder sua identidade."
+        <div className="mx-auto max-w-4xl">
+          <h2 className="font-display text-4xl font-bold text-[var(--coffee)] md:text-5xl uppercase mb-8">
+            Não somos apenas uma loja. <br />
+            <span className="text-primary">Somos uma ponte entre o sertão e o futuro.</span>
+          </h2>
+          <div className="mx-auto max-w-2xl italic text-[var(--coffee)] text-2xl font-display">
+            "Transformar a biodiversidade e a cultura em desenvolvimento econômico sustentável."
+          </div>
         </div>
       </section>
 

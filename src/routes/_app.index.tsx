@@ -103,11 +103,11 @@ function HomePage() {
                 <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.22em] backdrop-blur">
                   <Sprout className="h-3.5 w-3.5" /> Ecossistema Licuri
                 </p>
-                <h1 className="font-display text-balance text-4xl font-semibold leading-tight md:text-6xl">
-                  Do Sertão para o Mundo.
+                <h1 className="font-display text-balance text-4xl font-semibold leading-tight md:text-6xl uppercase">
+                  Do sertão para o mundo.
                 </h1>
                 <p className="mt-5 max-w-md text-base text-[var(--cream)]/85 md:text-lg">
-                  Produtos, histórias e oportunidades que nascem do licuri.
+                  Onde a tradição encontra o futuro.
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Button asChild variant="hero" size="xl">
@@ -160,7 +160,8 @@ function HomePage() {
               O ecossistema que transforma o licuri em produtos, negócios e oportunidades.
             </h2>
             <p className="mt-6 text-lg text-[var(--sertao)]">
-              O **Empório do Licuri** é um ecossistema especializado na valorização do licuri e de produtos ligados ao sertão brasileiro. Conectamos **produtores, marcas, consumidores, cultura, gastronomia e tecnologia** em uma mesma plataforma.
+              Não queremos competir apenas por preço. Queremos criar <strong>VALOR PERCEBIDO</strong>. 
+              No Empório do Licuri, você não compra apenas um produto; você leva <strong>origem, história, experiência e identidade</strong>.
             </p>
 
           </div>
@@ -267,12 +268,15 @@ function HomePage() {
               <p className="text-[10px] uppercase tracking-[0.22em] opacity-70">
                 O Futuro Espaço Físico na Bahia
               </p>
-              <h2 className="mt-4 font-display text-4xl font-semibold md:text-5xl">
+              <h2 className="mt-4 font-display text-4xl font-semibold md:text-5xl uppercase">
                 Casa do Licuri
               </h2>
               <p className="mt-6 text-lg opacity-85">
-                Um espaço físico que combina Empório, Cafeteria, Espaço Cultural e Loja de Produtos Naturais. 
-                Onde você poderá comprar, experimentar e conhecer a cultura do Sertão presencialmente.
+                Entre. Experimente. Conheça o sertão.
+              </p>
+              <p className="mt-2 text-base opacity-70">
+                Um espaço físico que combina Empório, Cafeteria, Espaço Cultural e Experiência. 
+                Onde a tradição encontra o futuro.
               </p>
               <div className="mt-8">
                 <Button asChild variant="hero" size="lg">
@@ -318,12 +322,12 @@ function HomePage() {
 
       <section className="container-narrow mt-24 py-12 text-center">
         <div className="mx-auto max-w-4xl">
-          <h3 className="font-display text-4xl font-bold text-[var(--coffee)] md:text-6xl">
-            O LICURI É A NOSSA RAIZ. <br />
-            <span className="text-primary uppercase">O Ecossistema é o nosso futuro.</span>
+          <h3 className="font-display text-4xl font-bold text-[var(--coffee)] md:text-6xl uppercase">
+            O licuri é nossa raiz. <br />
+            <span className="text-primary">O futuro é nosso caminho.</span>
           </h3>
           <p className="mt-8 text-lg text-[var(--sertao)]">
-            Descobrir produtos autênticos, conhecer suas histórias e levar um pedaço do sertão para casa.
+            Descubra produtos que carregam histórias.
           </p>
 
         </div>
@@ -342,8 +346,11 @@ function HomePage() {
 
           </div>
           <div className="flex flex-col items-start justify-center gap-4">
+            <p className="text-[var(--sertao)] text-lg font-medium">
+              Seu produto tem uma história. Nós ajudamos o mundo a conhecê-la.
+            </p>
             <p className="text-[var(--sertao)]">
-              Você tem um produto feito com licuri ou relacionado à cultura e à biodiversidade do sertão? O Empório do Licuri pode ser a sua vitrine para novos consumidores.
+              Você tem um produto feito com licuri ou relacionado à cultura e à biodiversidade do sertão? O Empório do Licuri pode ser a sua vitrine.
             </p>
             <Button asChild variant="hero" size="lg">
               <Link to="/vendedor">QUERO SER UM PRODUTOR PARCEIRO</Link>
