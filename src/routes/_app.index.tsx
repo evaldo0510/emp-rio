@@ -259,28 +259,71 @@ function HomePage() {
         </div>
       </section>
 
-      {/* CALL */}
+      {/* CASA DO LICURI */}
       <section className="container-narrow mt-24">
-        <div className="grid gap-8 rounded-3xl border border-[var(--border)] bg-[var(--coffee)] p-10 text-[var(--cream)] md:grid-cols-2 md:p-14">
+        <div className="relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--coffee)] text-[var(--cream)]">
+          <div className="grid gap-10 p-10 md:grid-cols-2 md:p-16">
+            <div className="flex flex-col justify-center">
+              <p className="text-[10px] uppercase tracking-[0.22em] opacity-70">
+                O Futuro Espaço Físico na Bahia
+              </p>
+              <h2 className="mt-4 font-display text-4xl font-semibold md:text-5xl">
+                Casa do Licuri
+              </h2>
+              <p className="mt-6 text-lg opacity-85">
+                Um espaço físico que combina Empório, Cafeteria, Espaço Cultural e Loja de Produtos Naturais. 
+                Onde você poderá comprar, experimentar e conhecer a cultura do Sertão presencialmente.
+              </p>
+              <div className="mt-8">
+                <Button asChild variant="hero" size="lg">
+                  <Link to="/sobre">Conhecer a visão</Link>
+                </Button>
+              </div>
+            </div>
+            <div className="flex items-center justify-center">
+              <div className="text-center font-display text-2xl font-bold italic opacity-40 md:text-4xl">
+                PRODUTOS • HISTÓRIAS <br /> EXPERIÊNCIAS • CULTURA
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PROPÓSITO IMPACTO */}
+      <section className="container-narrow mt-24 py-12 text-center">
+        <div className="mx-auto max-w-4xl">
+          <h3 className="font-display text-4xl font-bold text-[var(--coffee)] md:text-6xl">
+            O LICURI É A NOSSA RAIZ. <br />
+            <span className="text-primary">O ECOSSISTEMA É O NOSSO FUTURO.</span>
+          </h3>
+          <p className="mt-8 text-lg text-[var(--sertao)]">
+            Uma plataforma brasileira de valorização do licuri, do sertão e das pessoas que transformam recursos naturais em produtos, histórias e oportunidades.
+          </p>
+        </div>
+      </section>
+
+      {/* CALL VENDEDORES */}
+      <section className="container-narrow mt-16 mb-24">
+        <div className="grid gap-8 rounded-3xl border border-[var(--border)] bg-[var(--cream)] p-10 text-[var(--coffee)] md:grid-cols-2 md:p-14">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.22em] opacity-70">
-              Vendedores parceiros
+            <p className="text-[10px] uppercase tracking-[0.22em] text-primary">
+              Para Produtores
             </p>
             <h3 className="mt-2 font-display text-3xl font-semibold md:text-4xl">
-              Leve seu produto do licuri para o Brasil inteiro.
+              Coloque seu produto no mapa e alcance o Brasil inteiro.
             </h3>
           </div>
           <div className="flex flex-col items-start justify-center gap-4">
-            <p className="opacity-80">
-              Cooperativas e famílias produtoras: cadastre sua loja, gerencie pedidos e acompanhe
-              vendas pelo painel.
+            <p className="text-[var(--sertao)]">
+              Sua história também pode fazer parte desse ecossistema. Cadastre sua loja, gerencie pedidos e acompanhe vendas pelo painel digital.
             </p>
             <Button asChild variant="hero" size="lg">
-              <Link to="/vendedor">Acessar painel do vendedor</Link>
+              <Link to="/vendedor">Quero vender no Empório</Link>
             </Button>
           </div>
         </div>
       </section>
+
     </>
   );
 }
