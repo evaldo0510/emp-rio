@@ -11,7 +11,15 @@ import {
   Truck,
   Zap,
   ShoppingCart,
+  Info,
+  BookOpen,
+  ChefHat,
+  History,
+  CheckCircle2,
+  MapPin,
+  Store
 } from "lucide-react";
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
@@ -277,27 +285,66 @@ function ProductPage() {
           </div>
         </div>
 
-        {/* DETALHES ADICIONAIS */}
+        {/* DETALHES ESTRATÉGICOS */}
         <div className="mt-20 grid gap-12 md:grid-cols-3">
           <section className="md:col-span-2 space-y-12">
-            {/* HISTÓRIA */}
+            
+            {/* SOBRE O PRODUTO */}
             <div className="rounded-3xl bg-white p-8 shadow-sm border border-[var(--border)]">
               <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-4">
-                <Sparkles className="h-4 w-4 text-[var(--clay)]" /> História do produto
+                <Info className="h-4 w-4 text-[var(--clay)]" /> Sobre o produto
               </div>
               <h2 className="font-display text-2xl font-semibold text-[var(--coffee)] mb-4">
-                Tradição que atravessa gerações
+                O que é e como é feito?
               </h2>
-              <p className="text-lg leading-relaxed text-[var(--sertao)]">{story}</p>
+              <p className="text-lg leading-relaxed text-[var(--sertao)]">
+                {product.description || product.short}
+              </p>
             </div>
 
-            {/* BENEFÍCIOS E ESPECIFICAÇÕES */}
+            {/* HISTÓRIA E ORIGEM */}
+            <div className="grid gap-8 sm:grid-cols-2">
+              <div className="rounded-2xl bg-[var(--sand)]/20 p-6 border border-[var(--border)]">
+                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-3">
+                  <History className="h-4 w-4 text-[var(--clay)]" /> História
+                </div>
+                <h3 className="font-display text-xl font-semibold text-[var(--coffee)] mb-3">
+                  A jornada deste produto
+                </h3>
+                <p className="text-sm leading-relaxed text-[var(--sertao)]">
+                  {story}
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-[var(--sand)]/20 p-6 border border-[var(--border)]">
+                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-3">
+                  <MapPin className="h-4 w-4 text-[var(--clay)]" /> Origem
+                </div>
+                <h3 className="font-display text-xl font-semibold text-[var(--coffee)] mb-3">
+                  Produzido no Sertão
+                </h3>
+                <p className="text-sm text-[var(--sertao)] mb-2"><strong>Região:</strong> {specs.origem}</p>
+                <p className="text-sm text-[var(--sertao)]">Este produto carrega a identidade e a força do território onde o licuri é rei.</p>
+              </div>
+            </div>
+
+            {/* COMO USAR E BENEFÍCIOS */}
             <div className="grid gap-8 sm:grid-cols-2">
               <div className="space-y-4">
-                <h3 className="font-display text-xl font-semibold text-[var(--coffee)]">
-                  Benefícios
+                <h3 className="font-display text-xl font-semibold text-[var(--coffee)] flex items-center gap-2">
+                  <ChefHat className="h-5 w-5 text-primary" /> Como usar
                 </h3>
+                <p className="text-sm text-[var(--muted-foreground)]">Receitas e sugestões de uso variam conforme o produto, garantindo o melhor aproveitamento do licuri.</p>
                 <ul className="space-y-3">
+                  {benefits.map((b, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-[var(--sertao)]">
+                      <CheckCircle2 className="h-4 w-4 mt-0.5 text-[var(--leaf)] shrink-0" />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
                   {benefits.map((b, i) => (
                     <li key={i} className="flex items-start gap-3 text-[var(--sertao)]">
                       <div className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--clay)] shrink-0" />
