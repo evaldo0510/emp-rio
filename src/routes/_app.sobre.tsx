@@ -5,7 +5,7 @@ import hero from "@/assets/hero-licuri.jpg";
 export const Route = createFileRoute("/_app/sobre")({
   head: () => ({
     meta: [
-      { title: "Sobre o Licuri — Licuri Hub" },
+      { title: "Sobre o Empório do Licuri — Ecossistema Sertanejo" },
       {
         name: "description",
         content:
