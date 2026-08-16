@@ -1,11 +1,15 @@
 import { supabase } from "./supabase";
 
 export type Category =
+  | "produtos-licuri"
   | "alimentos"
-  | "oleos-extratos"
   | "cosmeticos"
-  | "artesanato"
-  | "kits-presentes";
+  | "naturais"
+  | "presentes"
+  | "produtos-regionais"
+  | "gastronomia"
+  | "artesanato";
+
 
 export type Product = {
   id: string;
