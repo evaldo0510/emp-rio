@@ -32,12 +32,16 @@ export type Product = {
 const img = (slug: string) => `/products/${slug}.jpg`;
 
 export const categories: { id: Category; label: string; image: string; count: number }[] = [
+  { id: "produtos-licuri", label: "Produtos de Licuri", image: img("oleo-de-licuri-extra-virgem-200ml"), count: 42 },
   { id: "alimentos", label: "Alimentos", image: img("farinha-de-licuri-artesanal-500g"), count: 32 },
-  { id: "oleos-extratos", label: "Óleos e Extratos", image: img("oleo-de-licuri-extra-virgem-200ml"), count: 18 },
   { id: "cosmeticos", label: "Cosméticos", image: img("manteiga-corporal-de-licuri"), count: 24 },
   { id: "artesanato", label: "Artesanato", image: img("cesto-artesanal-palha-de-licuri"), count: 15 },
-  { id: "kits-presentes", label: "Kits e Presentes", image: img("kit-presente-raizes-do-nordeste"), count: 12 },
+  { id: "presentes", label: "Presentes", image: img("kit-presente-raizes-do-nordeste"), count: 12 },
+  { id: "naturais", label: "Naturais", image: img("licuri-desidratado-premium"), count: 28 },
+  { id: "produtos-regionais", label: "Produtos Regionais", image: img("doce-de-licuri-tradicional"), count: 20 },
+  { id: "gastronomia", label: "Gastronomia", image: img("granola-de-licuri-artesanal"), count: 16 },
 ];
+
 
 // Catálogo demo síncrono — espelha os mesmos slugs que existem no banco (seed via migration).
 // Para uso transacional (favoritos, reviews) sempre buscar o UUID real via getProductBySlug.
