@@ -28,11 +28,12 @@ export const Route = createFileRoute("/_app/")({
 });
 
 const pillars = [
-  { icon: Leaf, title: "Produtos naturais", text: "e artesanais" },
-  { icon: Sprout, title: "Produtores", text: "do Nordeste" },
-  { icon: Sun, title: "Comércio justo", text: "e sustentável" },
-  { icon: Truck, title: "Entrega", text: "para todo o Brasil" },
+  { icon: Sprout, title: "Origem", text: "Tradição sertaneja" },
+  { icon: Leaf, title: "Sustentável", text: "Preserva a Caatinga" },
+  { icon: Sun, title: "Inovação", text: "Futuro do licuri" },
+  { icon: Truck, title: "Conexão", text: "Sertão para o Brasil" },
 ];
+
 
 function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -100,24 +101,25 @@ function HomePage() {
             <div className="w-full px-6 md:px-12">
               <div className="max-w-xl text-[var(--cream)]">
                 <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.22em] backdrop-blur">
-                  <Sprout className="h-3.5 w-3.5" /> Origem Licuri certificada
+                  <Sprout className="h-3.5 w-3.5" /> Ecossistema Licuri
                 </p>
                 <h1 className="font-display text-balance text-4xl font-semibold leading-tight md:text-6xl">
-                  Do coração do Nordeste para sua casa
+                  Do Sertão para o Mundo.
                 </h1>
                 <p className="mt-5 max-w-md text-base text-[var(--cream)]/85 md:text-lg">
-                  Produtos feitos a partir do licuri, com amor, tradição e sustentabilidade.
+                  Produtos, histórias e oportunidades que nascem do licuri.
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Button asChild variant="hero" size="xl">
                     <Link to="/categorias">
-                      Comprar agora <ArrowRight className="h-4 w-4" />
+                      Explorar o Empório <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
                   <Button asChild variant="soft" size="xl">
-                    <Link to="/sobre">Conhecer história</Link>
+                    <Link to="/vendedor">Quero vender no Empório</Link>
                   </Button>
                 </div>
+
               </div>
             </div>
           </div>
@@ -146,6 +148,39 @@ function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* ECOSSISTEMA */}
+      <section className="container-narrow mt-20">
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--cream)] p-8 md:p-16">
+          <div className="max-w-3xl">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-primary">
+              Muito mais que uma loja
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-semibold text-[var(--coffee)] md:text-5xl">
+              O ecossistema que transforma o licuri em produtos, negócios e oportunidades.
+            </h2>
+            <p className="mt-6 text-lg text-[var(--sertao)]">
+              O Empório do Licuri nasce do encontro entre natureza, tradição, tecnologia e empreendedorismo.
+              Somos uma plataforma criada para valorizar o licuri, seus derivados, os produtores e toda a cadeia econômica que pode nascer dessa riqueza do sertão.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            {[
+              { title: "Cultura", desc: "Sertão, Caatinga e histórias que inspiram.", icon: Sprout },
+              { title: "Tecnologia", desc: "IA e catálogo digital para facilitar vendas.", icon: Sun },
+              { title: "Negócios", desc: "Conexão entre marcas, produtores e inovação.", icon: Leaf },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl border border-[var(--border)]/50 bg-white/50 p-6">
+                <item.icon className="h-6 w-6 text-primary" />
+                <h3 className="mt-4 font-display text-xl font-semibold">{item.title}</h3>
+                <p className="mt-2 text-sm text-[var(--muted-foreground)]">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* CATEGORIAS */}
       <section className="container-narrow mt-20">
@@ -224,28 +259,95 @@ function HomePage() {
         </div>
       </section>
 
-      {/* CALL */}
+      {/* CASA DO LICURI */}
       <section className="container-narrow mt-24">
-        <div className="grid gap-8 rounded-3xl border border-[var(--border)] bg-[var(--coffee)] p-10 text-[var(--cream)] md:grid-cols-2 md:p-14">
+        <div className="relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--coffee)] text-[var(--cream)]">
+          <div className="grid gap-10 p-10 md:grid-cols-2 md:p-16">
+            <div className="flex flex-col justify-center">
+              <p className="text-[10px] uppercase tracking-[0.22em] opacity-70">
+                O Futuro Espaço Físico na Bahia
+              </p>
+              <h2 className="mt-4 font-display text-4xl font-semibold md:text-5xl">
+                Casa do Licuri
+              </h2>
+              <p className="mt-6 text-lg opacity-85">
+                Um espaço físico que combina Empório, Cafeteria, Espaço Cultural e Loja de Produtos Naturais. 
+                Onde você poderá comprar, experimentar e conhecer a cultura do Sertão presencialmente.
+              </p>
+              <div className="mt-8">
+                <Button asChild variant="hero" size="lg">
+                  <Link to="/sobre">Conhecer a visão</Link>
+                </Button>
+              </div>
+            </div>
+            <div className="flex items-center justify-center">
+              <div className="text-center font-display text-2xl font-bold italic opacity-40 md:text-4xl">
+                PRODUTOS • HISTÓRIAS <br /> EXPERIÊNCIAS • CULTURA
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HISTÓRIAS DO SERTÃO */}
+      <section className="bg-[var(--cream)] py-20 mt-20">
+        <div className="container-narrow">
+          <div className="mb-10 text-center">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-primary">Conheça o Licuri</p>
+            <h2 className="mt-2 font-display text-3xl font-bold text-[var(--coffee)] md:text-5xl">Histórias do Sertão</h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              { title: "Tradição das Quebradeiras", desc: "O saber ancestral de quem transforma o fruto em vida." },
+              { title: "Gastronomia Sertaneja", desc: "Doce, paçoca e receitas que atravessam gerações." },
+              { title: "Preservação da Caatinga", desc: "Como o licuri protege o bioma e a biodiversidade." },
+            ].map((h) => (
+              <div key={h.title} className="group cursor-pointer rounded-2xl border border-[var(--border)] bg-white p-6 transition-all hover:shadow-md">
+                <h3 className="font-display text-xl font-bold text-[var(--coffee)] group-hover:text-primary transition-colors">{h.title}</h3>
+                <p className="mt-3 text-sm text-[var(--muted-foreground)]">{h.desc}</p>
+                <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-primary">Ler história →</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PROPÓSITO IMPACTO */}
+
+      <section className="container-narrow mt-24 py-12 text-center">
+        <div className="mx-auto max-w-4xl">
+          <h3 className="font-display text-4xl font-bold text-[var(--coffee)] md:text-6xl">
+            O LICURI É A NOSSA RAIZ. <br />
+            <span className="text-primary">O ECOSSISTEMA É O NOSSO FUTURO.</span>
+          </h3>
+          <p className="mt-8 text-lg text-[var(--sertao)]">
+            Uma plataforma brasileira de valorização do licuri, do sertão e das pessoas que transformam recursos naturais em produtos, histórias e oportunidades.
+          </p>
+        </div>
+      </section>
+
+      {/* CALL VENDEDORES */}
+      <section className="container-narrow mt-16 mb-24">
+        <div className="grid gap-8 rounded-3xl border border-[var(--border)] bg-[var(--cream)] p-10 text-[var(--coffee)] md:grid-cols-2 md:p-14">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.22em] opacity-70">
-              Vendedores parceiros
+            <p className="text-[10px] uppercase tracking-[0.22em] text-primary">
+              Para Produtores
             </p>
             <h3 className="mt-2 font-display text-3xl font-semibold md:text-4xl">
-              Leve seu produto do licuri para o Brasil inteiro.
+              Coloque seu produto no mapa e alcance o Brasil inteiro.
             </h3>
           </div>
           <div className="flex flex-col items-start justify-center gap-4">
-            <p className="opacity-80">
-              Cooperativas e famílias produtoras: cadastre sua loja, gerencie pedidos e acompanhe
-              vendas pelo painel.
+            <p className="text-[var(--sertao)]">
+              Sua história também pode fazer parte desse ecossistema. Cadastre sua loja, gerencie pedidos e acompanhe vendas pelo painel digital.
             </p>
             <Button asChild variant="hero" size="lg">
-              <Link to="/vendedor">Acessar painel do vendedor</Link>
+              <Link to="/vendedor">Quero vender no Empório</Link>
             </Button>
           </div>
         </div>
       </section>
+
     </>
   );
 }

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app/blog")({
-  head: () => ({ meta: [{ title: "Blog — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Blog — Empório do Licuri" }] }),
   component: BlogPage,
 });
 

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_app/lojas")({
-  head: () => ({ meta: [{ title: "Lojas parceiras — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Lojas parceiras — Empório do Licuri" }] }),
   component: ShopsPage,
 });
 

@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/vendedor/importar/processando")({
-  head: () => ({ meta: [{ title: "Processando com IA — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Processando com IA — Empório do Licuri" }] }),
   component: ProcessingPage,
 });
 

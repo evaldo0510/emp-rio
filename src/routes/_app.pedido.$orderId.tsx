@@ -23,7 +23,7 @@ import { format, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/_app/pedido/$orderId")({
-  head: () => ({ meta: [{ title: "Detalhes do Pedido — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Detalhes do Pedido — Empório do Licuri" }] }),
   component: OrderDetailsPage,
 });
 

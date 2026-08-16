@@ -1,11 +1,15 @@
 import { supabase } from "./supabase";
 
 export type Category =
+  | "produtos-licuri"
   | "alimentos"
-  | "oleos-extratos"
   | "cosmeticos"
-  | "artesanato"
-  | "kits-presentes";
+  | "naturais"
+  | "presentes"
+  | "produtos-regionais"
+  | "gastronomia"
+  | "artesanato";
+
 
 export type Product = {
   id: string;
@@ -28,12 +32,16 @@ export type Product = {
 const img = (slug: string) => `/products/${slug}.jpg`;
 
 export const categories: { id: Category; label: string; image: string; count: number }[] = [
+  { id: "produtos-licuri", label: "Produtos de Licuri", image: img("oleo-de-licuri-extra-virgem-200ml"), count: 42 },
   { id: "alimentos", label: "Alimentos", image: img("farinha-de-licuri-artesanal-500g"), count: 32 },
-  { id: "oleos-extratos", label: "Óleos e Extratos", image: img("oleo-de-licuri-extra-virgem-200ml"), count: 18 },
   { id: "cosmeticos", label: "Cosméticos", image: img("manteiga-corporal-de-licuri"), count: 24 },
   { id: "artesanato", label: "Artesanato", image: img("cesto-artesanal-palha-de-licuri"), count: 15 },
-  { id: "kits-presentes", label: "Kits e Presentes", image: img("kit-presente-raizes-do-nordeste"), count: 12 },
+  { id: "presentes", label: "Presentes", image: img("kit-presente-raizes-do-nordeste"), count: 12 },
+  { id: "naturais", label: "Naturais", image: img("licuri-desidratado-premium"), count: 28 },
+  { id: "produtos-regionais", label: "Produtos Regionais", image: img("doce-de-licuri-tradicional"), count: 20 },
+  { id: "gastronomia", label: "Gastronomia", image: img("granola-de-licuri-artesanal"), count: 16 },
 ];
+
 
 // Catálogo demo síncrono — espelha os mesmos slugs que existem no banco (seed via migration).
 // Para uso transacional (favoritos, reviews) sempre buscar o UUID real via getProductBySlug.
@@ -42,7 +50,7 @@ export const products: Product[] = [
     id: "p1",
     slug: "oleo-de-licuri-extra-virgem-200ml",
     name: "Óleo de Licuri Extra Virgem 200ml",
-    category: "oleos-extratos",
+    category: "produtos-licuri",
     price: 49.9, rating: 4.9, reviews: 78,
     shop: "Sertão Natural", region: "Bahia",
     image: img("oleo-de-licuri-extra-virgem-200ml"),
@@ -146,9 +154,9 @@ export const products: Product[] = [
     id: "p9",
     slug: "kit-presente-raizes-do-nordeste",
     name: "Kit Presente Raízes do Nordeste",
-    category: "kits-presentes",
+    category: "presentes",
     price: 159.9, rating: 4.9, reviews: 9,
-    shop: "Licuri Hub", region: "Bahia",
+    shop: "Empório do Licuri", region: "Bahia",
     image: img("kit-presente-raizes-do-nordeste"),
     short: "Óleo, doce e paçoca em embalagem especial.",
     description:
@@ -182,7 +190,7 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
       price: Number(data.price),
       rating: Number(data.rating ?? 0),
       reviews: data.reviews ?? 0,
-      shop: data.shop ?? "Licuri Hub",
+      shop: data.shop ?? "Empório do Licuri",
       region: data.region ?? "Bahia",
       image: data.image_url || img(slug),
       short: data.short_description ?? "",
