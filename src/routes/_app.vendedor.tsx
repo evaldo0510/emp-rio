@@ -400,7 +400,7 @@ export function VendorDashboard() {
       </header>
 
       {!sellerProfile && (
-        <div className="mt-8 rounded-2xl border border-[var(--clay)]/20 bg-[var(--sand)]/10 p-10 text-center">
+        <div id="registro" className="mt-8 rounded-2xl border border-[var(--clay)]/20 bg-[var(--sand)]/10 p-10 text-center scroll-mt-24">
           <h2 className="font-display text-2xl font-semibold text-[var(--coffee)] mb-2">
             Torne-se um Vendedor
           </h2>
