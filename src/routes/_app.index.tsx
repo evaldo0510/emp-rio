@@ -289,7 +289,31 @@ function HomePage() {
         </div>
       </section>
 
+      {/* HISTÓRIAS DO SERTÃO */}
+      <section className="bg-[var(--cream)] py-20 mt-20">
+        <div className="container-narrow">
+          <div className="mb-10 text-center">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-primary">Conheça o Licuri</p>
+            <h2 className="mt-2 font-display text-3xl font-bold text-[var(--coffee)] md:text-5xl">Histórias do Sertão</h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              { title: "Tradição das Quebradeiras", desc: "O saber ancestral de quem transforma o fruto em vida." },
+              { title: "Gastronomia Sertaneja", desc: "Doce, paçoca e receitas que atravessam gerações." },
+              { title: "Preservação da Caatinga", desc: "Como o licuri protege o bioma e a biodiversidade." },
+            ].map((h) => (
+              <div key={h.title} className="group cursor-pointer rounded-2xl border border-[var(--border)] bg-white p-6 transition-all hover:shadow-md">
+                <h3 className="font-display text-xl font-bold text-[var(--coffee)] group-hover:text-primary transition-colors">{h.title}</h3>
+                <p className="mt-3 text-sm text-[var(--muted-foreground)]">{h.desc}</p>
+                <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-primary">Ler história →</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* PROPÓSITO IMPACTO */}
+
       <section className="container-narrow mt-24 py-12 text-center">
         <div className="mx-auto max-w-4xl">
           <h3 className="font-display text-4xl font-bold text-[var(--coffee)] md:text-6xl">
