@@ -137,7 +137,7 @@ function HomePage() {
         <div className="mt-6 grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--cream)] p-4 md:grid-cols-4 md:p-6">
           {pillars.map((p) => (
             <div key={p.title} className="flex items-center gap-3">
-              <p.icon className="h-5 w-5 text-[var(--leaf)]" />
+              <p.icon className="h-5 w-5 text-primary" />
               <div className="text-xs uppercase tracking-[0.16em] text-[var(--sertao)]">
                 <div className="font-semibold">{p.title}</div>
                 <div className="opacity-70">{p.text}</div>
@@ -155,7 +155,8 @@ function HomePage() {
           </h2>
           <Link
             to="/categorias"
-            className="hidden items-center gap-1 text-sm text-[var(--clay)] hover:underline md:inline-flex"
+            className="hidden items-center gap-1 text-sm text-primary hover:underline md:inline-flex"
+
           >
             Ver todas <ArrowRight className="h-4 w-4" />
           </Link>
@@ -185,7 +186,7 @@ function HomePage() {
                     {c.count} produtos
                   </div>
                 </div>
-                <ArrowRight className="h-4 w-4 text-[var(--clay)]" />
+                <ArrowRight className="h-4 w-4 text-primary" />
               </div>
             </Link>
           ))}
@@ -205,7 +206,7 @@ function HomePage() {
           </div>
           <Link
             to="/categorias"
-            className="hidden items-center gap-1 text-sm text-[var(--clay)] hover:underline md:inline-flex"
+            className="hidden items-center gap-1 text-sm text-primary hover:underline md:inline-flex"
           >
             Ver tudo <ArrowRight className="h-4 w-4" />
           </Link>
@@ -213,7 +214,7 @@ function HomePage() {
         <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
           {isLoading ? (
             <div className="col-span-full flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-[var(--clay)]" />
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
             featured.map((p) => (
