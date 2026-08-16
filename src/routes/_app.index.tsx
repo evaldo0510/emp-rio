@@ -10,13 +10,13 @@ import hero from "@/assets/hero-licuri.jpg";
 export const Route = createFileRoute("/_app/")({
   head: () => ({
     meta: [
-      { title: "Licuri Hub — Do coração do Nordeste para sua casa" },
+      { title: "Empório do Licuri — Natural • Tradição • Energia" },
       {
         name: "description",
         content:
           "Produtos artesanais do licuri: alimentos, óleos, cosméticos e artesanato direto do Sertão.",
       },
-      { property: "og:title", content: "Licuri Hub — Do coração do Nordeste para sua casa" },
+      { property: "og:title", content: "Empório do Licuri — Natural • Tradição • Energia" },
       {
         property: "og:description",
         content: "Marketplace do licuri, produzido por famílias do Sertão.",

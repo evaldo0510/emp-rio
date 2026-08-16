@@ -126,7 +126,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-[var(--border)]">
         <div className="container-narrow flex flex-col items-center justify-between gap-2 py-5 text-xs text-[var(--muted-foreground)] md:flex-row">
-          <p>© {new Date().getFullYear()} Licuri Hub — Raízes que alimentam.</p>
+          <p>© {new Date().getFullYear()} Empório do Licuri — Do Sertão para sua vida.</p>
           <p>Feito com cuidado no Sertão.</p>
         </div>
       </div>
