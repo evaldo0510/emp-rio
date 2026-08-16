@@ -149,6 +149,39 @@ function HomePage() {
         </div>
       </section>
 
+      {/* ECOSSISTEMA */}
+      <section className="container-narrow mt-20">
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--cream)] p-8 md:p-16">
+          <div className="max-w-3xl">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-primary">
+              Muito mais que uma loja
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-semibold text-[var(--coffee)] md:text-5xl">
+              O ecossistema que transforma o licuri em produtos, negócios e oportunidades.
+            </h2>
+            <p className="mt-6 text-lg text-[var(--sertao)]">
+              O Empório do Licuri nasce do encontro entre natureza, tradição, tecnologia e empreendedorismo.
+              Somos uma plataforma criada para valorizar o licuri, seus derivados, os produtores e toda a cadeia econômica que pode nascer dessa riqueza do sertão.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            {[
+              { title: "Cultura", desc: "Sertão, Caatinga e histórias que inspiram.", icon: Sprout },
+              { title: "Tecnologia", desc: "IA e catálogo digital para facilitar vendas.", icon: Sun },
+              { title: "Negócios", desc: "Conexão entre marcas, produtores e inovação.", icon: Leaf },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl border border-[var(--border)]/50 bg-white/50 p-6">
+                <item.icon className="h-6 w-6 text-primary" />
+                <h3 className="mt-4 font-display text-xl font-semibold">{item.title}</h3>
+                <p className="mt-2 text-sm text-[var(--muted-foreground)]">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
       {/* CATEGORIAS */}
       <section className="container-narrow mt-20">
         <div className="mb-6 flex items-end justify-between">
