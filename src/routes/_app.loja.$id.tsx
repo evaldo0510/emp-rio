@@ -7,7 +7,7 @@ import { formatBRL } from "@/lib/products";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/loja/$id")({
-  head: () => ({ meta: [{ title: "Loja — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Loja — Empório do Licuri" }] }),
   component: StorePage,
 });
 

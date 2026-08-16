@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/favoritos")({
-  head: () => ({ meta: [{ title: "Favoritos — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Favoritos — Empório do Licuri" }] }),
   component: () => (
     <div className="container-narrow py-20 text-center">
       <Heart className="mx-auto h-10 w-10 text-[var(--clay)]" />

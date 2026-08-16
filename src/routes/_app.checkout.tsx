@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { createOrder, supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_app/checkout")({
-  head: () => ({ meta: [{ title: "Checkout — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Checkout — Empório do Licuri" }] }),
   component: CheckoutPage,
 });
 

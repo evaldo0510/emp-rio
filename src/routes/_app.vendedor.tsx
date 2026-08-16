@@ -55,7 +55,7 @@ export const Route = createFileRoute("/_app/vendedor")({
     }
     return { period: undefined };
   },
-  head: () => ({ meta: [{ title: "Painel do Vendedor — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Painel do Vendedor — Empório do Licuri" }] }),
   component: VendorDashboard,
 });
 
@@ -405,7 +405,7 @@ export function VendorDashboard() {
             Torne-se um Vendedor
           </h2>
           <p className="text-[var(--muted-foreground)] mb-8">
-            Cadastre sua loja, associação ou cooperativa para começar a vender no Licuri Hub.
+            Cadastre sua loja, associação ou cooperativa para começar a vender no Empório do Licuri.
           </p>
           <form onSubmit={handleRegisterSeller} className="max-w-md mx-auto space-y-4 text-left">
             <div className="space-y-1">

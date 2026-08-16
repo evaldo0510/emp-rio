@@ -43,7 +43,7 @@ export const Route = createFileRoute("/_app/admin/extrato")({
     }
     return extratoSearchSchema.parse(safe);
   },
-  head: () => ({ meta: [{ title: "Extrato Financeiro — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Extrato Financeiro — Empório do Licuri" }] }),
   component: AdminExtratoPage,
 });
 

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_app/categorias")({
   }),
   head: () => ({
     meta: [
-      { title: "Catálogo — Licuri Hub" },
+      { title: "Catálogo — Empório do Licuri" },
       {
         name: "description",
         content: "Explore alimentos, óleos, cosméticos e artesanato feitos a partir do licuri.",

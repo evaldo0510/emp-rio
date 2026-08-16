@@ -52,7 +52,7 @@ const STATUS_RANK: Record<string, number> = {
 };
 
 export const Route = createFileRoute("/_app/conta")({
-  head: () => ({ meta: [{ title: "Minha Conta — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Minha Conta — Empório do Licuri" }] }),
   component: AccountPage,
 });
 

@@ -35,7 +35,7 @@ export const Route = createRootRoute({
         content:
           "Marketplace de produtos do licuri feitos por famílias e cooperativas do Nordeste brasileiro. Alimentos, óleos, cosméticos e artesanato.",
       },
-      { name: "author", content: "Licuri Hub" },
+      { name: "author", content: "Empório do Licuri" },
       { property: "og:title", content: "Empório do Licuri — Natural, Tradição e Energia" },
       {
         property: "og:description",

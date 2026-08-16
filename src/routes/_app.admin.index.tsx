@@ -55,7 +55,7 @@ export const Route = createFileRoute("/_app/admin/")({
     }
     return { period: undefined };
   },
-  head: () => ({ meta: [{ title: "Painel Admin — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Painel Admin — Empório do Licuri" }] }),
   component: AdminPage,
 });
 
@@ -333,7 +333,7 @@ function AdminPage() {
 
       const doc = new jsPDF();
       doc.setFontSize(20);
-      doc.text("Relatório Mensal - Licuri Hub", 14, 22);
+      doc.text("Relatório Mensal - Empório do Licuri", 14, 22);
 
       doc.setFontSize(12);
       doc.text(`Data de geração: ${new Date().toLocaleDateString()}`, 14, 30);
@@ -402,7 +402,7 @@ function AdminPage() {
           <h1 className="font-display text-3xl font-semibold text-[var(--coffee)]">Visão geral</h1>
         </div>
         <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
-          Licuri Hub · Admin
+          Empório do Licuri · Admin
         </span>
         <div className="flex gap-2">
           <Link to="/admin/extrato" search={{ period }}>

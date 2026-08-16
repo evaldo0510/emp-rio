@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/vendedor/importar")({
-  head: () => ({ meta: [{ title: "Importar produtos com IA — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Importar produtos com IA — Empório do Licuri" }] }),
   component: ImportarProdutos,
 });
 

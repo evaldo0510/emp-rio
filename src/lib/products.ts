@@ -148,7 +148,7 @@ export const products: Product[] = [
     name: "Kit Presente Raízes do Nordeste",
     category: "kits-presentes",
     price: 159.9, rating: 4.9, reviews: 9,
-    shop: "Licuri Hub", region: "Bahia",
+    shop: "Empório do Licuri", region: "Bahia",
     image: img("kit-presente-raizes-do-nordeste"),
     short: "Óleo, doce e paçoca em embalagem especial.",
     description:
@@ -182,7 +182,7 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
       price: Number(data.price),
       rating: Number(data.rating ?? 0),
       reviews: data.reviews ?? 0,
-      shop: data.shop ?? "Licuri Hub",
+      shop: data.shop ?? "Empório do Licuri",
       region: data.region ?? "Bahia",
       image: data.image_url || img(slug),
       short: data.short_description ?? "",

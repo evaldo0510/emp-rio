@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_app/produto/$slug")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.name} — Licuri Hub` },
+          { title: `${loaderData.name} — Empório do Licuri` },
           { name: "description", content: loaderData.description },
           { property: "og:title", content: loaderData.name },
           { property: "og:description", content: loaderData.short },

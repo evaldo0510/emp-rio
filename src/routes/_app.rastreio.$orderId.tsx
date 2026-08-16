@@ -16,7 +16,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/_app/rastreio/$orderId")({
-  head: () => ({ meta: [{ title: "Rastreamento do Pedido — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Rastreamento do Pedido — Empório do Licuri" }] }),
   component: TrackingPage,
 });
 

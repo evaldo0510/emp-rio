@@ -8,7 +8,7 @@ import { supabase, syncCartToDB } from "@/lib/supabase";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/carrinho")({
-  head: () => ({ meta: [{ title: "Carrinho — Licuri Hub" }] }),
+  head: () => ({ meta: [{ title: "Carrinho — Empório do Licuri" }] }),
   component: CartPage,
 });
 
