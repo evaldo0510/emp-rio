@@ -400,55 +400,73 @@ export function VendorDashboard() {
       </header>
 
       {!sellerProfile && (
-        <div id="registro" className="mt-8 rounded-2xl border border-[var(--clay)]/20 bg-[var(--sand)]/10 p-10 text-center scroll-mt-24">
-          <h2 className="font-display text-2xl font-semibold text-[var(--coffee)] mb-2">
-            Torne-se um Vendedor
-          </h2>
-          <p className="text-[var(--muted-foreground)] mb-8">
-            Cadastre sua loja, associação ou cooperativa para começar a vender no Empório do Licuri.
-          </p>
-          <form onSubmit={handleRegisterSeller} className="max-w-md mx-auto space-y-4 text-left">
-            <div className="space-y-1">
-              <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                Tipo de Empreendimento
-              </label>
-              <select
-                name="seller_type"
-                required
-                className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)] text-sm"
-              >
-                <option value="store">Loja / Comércio</option>
-                <option value="association">Associação</option>
-                <option value="cooperative">Cooperativa</option>
-                <option value="individual">Produtor Individual</option>
-              </select>
+        <div className="mt-8 space-y-12">
+          {/* Seção de Login para quem já é vendedor */}
+          <div className="rounded-2xl border border-[var(--border)] bg-white p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex-1">
+              <h2 className="font-display text-xl font-semibold text-[var(--coffee)] mb-2">
+                Já possui uma loja?
+              </h2>
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Acesse seu painel para gerenciar seus produtos, pedidos e finanças.
+              </p>
             </div>
-            <div className="space-y-1">
-              <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                Nome do Empreendimento
-              </label>
-              <input
-                name="store_name"
-                required
-                className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)]"
-                placeholder="Ex: Cooperativa Sertão Vivo"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                Descrição / História
-              </label>
-              <textarea
-                name="description"
-                required
-                className="w-full h-24 rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)]"
-                placeholder="Conte um pouco sobre sua produção..."
-              />
-            </div>
-            <Button type="submit" variant="hero" className="w-full">
-              Enviar para Avaliação
+            <Button asChild variant="soft" className="shrink-0">
+              <Link to="/vendedor/login">Acessar Painel do Vendedor</Link>
             </Button>
-          </form>
+          </div>
+
+          {/* Formulário de Registro */}
+          <div id="registro" className="rounded-2xl border border-[var(--clay)]/20 bg-[var(--sand)]/10 p-10 text-center scroll-mt-24">
+            <h2 className="font-display text-2xl font-semibold text-[var(--coffee)] mb-2">
+              Torne-se um Vendedor
+            </h2>
+            <p className="text-[var(--muted-foreground)] mb-8">
+              Cadastre sua loja, associação ou cooperativa para começar a vender no Empório do Licuri.
+            </p>
+            <form onSubmit={handleRegisterSeller} className="max-w-md mx-auto space-y-4 text-left">
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+                  Tipo de Empreendimento
+                </label>
+                <select
+                  name="seller_type"
+                  required
+                  className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)] text-sm"
+                >
+                  <option value="store">Loja / Comércio</option>
+                  <option value="association">Associação</option>
+                  <option value="cooperative">Cooperativa</option>
+                  <option value="individual">Produtor Individual</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+                  Nome do Empreendimento
+                </label>
+                <input
+                  name="store_name"
+                  required
+                  className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)]"
+                  placeholder="Ex: Cooperativa Sertão Vivo"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+                  Descrição / História
+                </label>
+                <textarea
+                  name="description"
+                  required
+                  className="w-full h-24 rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)]"
+                  placeholder="Conte um pouco sobre sua produção..."
+                />
+              </div>
+              <Button type="submit" variant="hero" className="w-full">
+                Enviar para Avaliação
+              </Button>
+            </form>
+          </div>
         </div>
       )}
 
