@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link, Outlet } from "@tanstack/react-router";
 import { z } from "zod";
 import {
   Package,
@@ -372,6 +372,7 @@ export function VendorDashboard() {
 
   return (
     <div className="container-narrow py-10">
+      <Outlet />
       <header className="flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
