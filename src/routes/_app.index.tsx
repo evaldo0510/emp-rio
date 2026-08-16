@@ -160,9 +160,9 @@ function HomePage() {
               O ecossistema que transforma o licuri em produtos, negócios e oportunidades.
             </h2>
             <p className="mt-6 text-lg text-[var(--sertao)]">
-              O Empório do Licuri nasce do encontro entre natureza, tradição, tecnologia e empreendedorismo.
-              Somos uma plataforma criada para valorizar o licuri, seus derivados, os produtores e toda a cadeia econômica que pode nascer dessa riqueza do sertão.
+              O **Empório do Licuri** é um ecossistema especializado na valorização do licuri e de produtos ligados ao sertão brasileiro. Conectamos **produtores, marcas, consumidores, cultura, gastronomia e tecnologia** em uma mesma plataforma.
             </p>
+
           </div>
 
           <div className="mt-12 grid gap-8 md:grid-cols-3">
