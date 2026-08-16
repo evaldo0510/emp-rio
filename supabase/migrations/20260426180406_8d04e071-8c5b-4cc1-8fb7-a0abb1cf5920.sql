@@ -1,1 +1,0 @@
-ALTER FUNCTION public.log_commission_change() SET search_path = public;
