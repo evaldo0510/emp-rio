@@ -18,6 +18,7 @@ import { Route as AppVendedorRouteImport } from './routes/_app.vendedor'
 import { Route as AppSobreRouteImport } from './routes/_app.sobre'
 import { Route as AppLojasRouteImport } from './routes/_app.lojas'
 import { Route as AppFavoritosRouteImport } from './routes/_app.favoritos'
+import { Route as AppCuradoriaRouteImport } from './routes/_app.curadoria'
 import { Route as AppContaRouteImport } from './routes/_app.conta'
 import { Route as AppCheckoutRouteImport } from './routes/_app.checkout'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
@@ -76,6 +77,11 @@ const AppLojasRoute = AppLojasRouteImport.update({
 const AppFavoritosRoute = AppFavoritosRouteImport.update({
   id: '/favoritos',
   path: '/favoritos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCuradoriaRoute = AppCuradoriaRouteImport.update({
+  id: '/curadoria',
+  path: '/curadoria',
   getParentRoute: () => AppRoute,
 } as any)
 const AppContaRoute = AppContaRouteImport.update({
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/categorias': typeof AppCategoriasRoute
   '/checkout': typeof AppCheckoutRoute
   '/conta': typeof AppContaRoute
+  '/curadoria': typeof AppCuradoriaRoute
   '/favoritos': typeof AppFavoritosRoute
   '/lojas': typeof AppLojasRoute
   '/sobre': typeof AppSobreRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/categorias': typeof AppCategoriasRoute
   '/checkout': typeof AppCheckoutRoute
   '/conta': typeof AppContaRoute
+  '/curadoria': typeof AppCuradoriaRoute
   '/favoritos': typeof AppFavoritosRoute
   '/lojas': typeof AppLojasRoute
   '/sobre': typeof AppSobreRoute
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/checkout': typeof AppCheckoutRoute
   '/_app/conta': typeof AppContaRoute
+  '/_app/curadoria': typeof AppCuradoriaRoute
   '/_app/favoritos': typeof AppFavoritosRoute
   '/_app/lojas': typeof AppLojasRoute
   '/_app/sobre': typeof AppSobreRoute
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
     | '/categorias'
     | '/checkout'
     | '/conta'
+    | '/curadoria'
     | '/favoritos'
     | '/lojas'
     | '/sobre'
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/categorias'
     | '/checkout'
     | '/conta'
+    | '/curadoria'
     | '/favoritos'
     | '/lojas'
     | '/sobre'
@@ -291,6 +302,7 @@ export interface FileRouteTypes {
     | '/_app/categorias'
     | '/_app/checkout'
     | '/_app/conta'
+    | '/_app/curadoria'
     | '/_app/favoritos'
     | '/_app/lojas'
     | '/_app/sobre'
@@ -379,6 +391,13 @@ declare module '@tanstack/react-router' {
       path: '/favoritos'
       fullPath: '/favoritos'
       preLoaderRoute: typeof AppFavoritosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/curadoria': {
+      id: '/_app/curadoria'
+      path: '/curadoria'
+      fullPath: '/curadoria'
+      preLoaderRoute: typeof AppCuradoriaRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/conta': {
@@ -534,6 +553,7 @@ interface AppRouteChildren {
   AppCategoriasRoute: typeof AppCategoriasRoute
   AppCheckoutRoute: typeof AppCheckoutRoute
   AppContaRoute: typeof AppContaRoute
+  AppCuradoriaRoute: typeof AppCuradoriaRoute
   AppFavoritosRoute: typeof AppFavoritosRoute
   AppLojasRoute: typeof AppLojasRoute
   AppSobreRoute: typeof AppSobreRoute
@@ -553,6 +573,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriasRoute: AppCategoriasRoute,
   AppCheckoutRoute: AppCheckoutRoute,
   AppContaRoute: AppContaRoute,
+  AppCuradoriaRoute: AppCuradoriaRoute,
   AppFavoritosRoute: AppFavoritosRoute,
   AppLojasRoute: AppLojasRoute,
   AppSobreRoute: AppSobreRoute,

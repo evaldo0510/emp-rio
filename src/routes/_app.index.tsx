@@ -116,7 +116,7 @@ function HomePage() {
                     </Link>
                   </Button>
                   <Button asChild variant="soft" size="xl">
-                    <Link to="/vendedor">Quero vender no Empório</Link>
+                    <Link to="/vendedor" hash="registro">Quero vender no Empório</Link>
                   </Button>
                 </div>
 
@@ -125,14 +125,17 @@ function HomePage() {
           </div>
 
           {/* selo */}
-          <div className="absolute right-6 top-6 hidden h-28 w-28 place-items-center rounded-full border border-[var(--cream)]/40 bg-[var(--cream)]/15 text-center text-[10px] uppercase tracking-[0.18em] text-[var(--cream)] backdrop-blur md:grid">
+          <Link 
+            to="/curadoria"
+            className="absolute right-6 top-6 hidden h-28 w-28 place-items-center rounded-full border border-[var(--cream)]/40 bg-[var(--cream)]/15 text-center text-[10px] uppercase tracking-[0.18em] text-[var(--cream)] backdrop-blur transition-transform hover:scale-105 md:grid"
+          >
             <div>
               <Sprout className="mx-auto mb-1 h-5 w-5" />
               Origem Licuri
               <br />
               certificada
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Pilares */}
@@ -353,7 +356,7 @@ function HomePage() {
               Você tem um produto feito com licuri ou relacionado à cultura e à biodiversidade do sertão? O Empório do Licuri pode ser a sua vitrine.
             </p>
             <Button asChild variant="hero" size="lg">
-              <Link to="/vendedor">QUERO SER UM PRODUTOR PARCEIRO</Link>
+              <Link to="/vendedor" hash="registro">QUERO SER UM PRODUTOR PARCEIRO</Link>
             </Button>
 
           </div>
