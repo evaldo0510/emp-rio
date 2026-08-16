@@ -28,11 +28,12 @@ export const Route = createFileRoute("/_app/")({
 });
 
 const pillars = [
-  { icon: Leaf, title: "Produtos naturais", text: "e artesanais" },
-  { icon: Sprout, title: "Produtores", text: "do Nordeste" },
-  { icon: Sun, title: "Comércio justo", text: "e sustentável" },
-  { icon: Truck, title: "Entrega", text: "para todo o Brasil" },
+  { icon: Sprout, title: "Origem", text: "Tradição sertaneja" },
+  { icon: Leaf, title: "Sustentável", text: "Preserva a Caatinga" },
+  { icon: Sun, title: "Inovação", text: "Futuro do licuri" },
+  { icon: Truck, title: "Conexão", text: "Sertão para o Brasil" },
 ];
+
 
 function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
