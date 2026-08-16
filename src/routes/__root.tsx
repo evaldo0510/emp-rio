@@ -29,21 +29,21 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Licuri Hub — Raízes que alimentam | Marketplace do Nordeste" },
+      { title: "Empório do Licuri — Natural, Tradição e Energia" },
       {
         name: "description",
         content:
           "Marketplace de produtos do licuri feitos por famílias e cooperativas do Nordeste brasileiro. Alimentos, óleos, cosméticos e artesanato.",
       },
       { name: "author", content: "Licuri Hub" },
-      { property: "og:title", content: "Licuri Hub — Raízes que alimentam | Marketplace do Nordeste" },
+      { property: "og:title", content: "Empório do Licuri — Natural, Tradição e Energia" },
       {
         property: "og:description",
         content: "Produtos artesanais do licuri direto do Sertão para sua casa.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Licuri Hub — Raízes que alimentam | Marketplace do Nordeste" },
+      { name: "twitter:title", content: "Empório do Licuri — Natural, Tradição e Energia" },
       { name: "description", content: "A multi-vendor marketplace application enabling sellers to list products, manage orders, and track finances." },
       { property: "og:description", content: "A multi-vendor marketplace application enabling sellers to list products, manage orders, and track finances." },
       { name: "twitter:description", content: "A multi-vendor marketplace application enabling sellers to list products, manage orders, and track finances." },
@@ -58,8 +58,10 @@ export const Route = createRootRoute({
         href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap",
       },
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "manifest", href: "/manifest.json" },
     ],
+
 
   }),
   shellComponent: RootShell,
