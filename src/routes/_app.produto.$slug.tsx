@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useLoaderData } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useLoaderData, useNavigate } from "@tanstack/react-router";
 import {
   ChevronRight,
   Heart,
