@@ -28,34 +28,62 @@ function AboutPage() {
           <img src={hero} alt="Coqueiral de licuri" className="h-[40vh] w-full object-cover" />
         </div>
       </section>
-      <section className="container-narrow grid gap-10 py-16 md:grid-cols-[1fr_2fr]">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-primary">
-          Nossa Raiz
-        </p>
-        <div>
-          <h1 className="font-display text-4xl font-semibold text-[var(--coffee)] md:text-6xl">
-            O ecossistema que transforma o licuri em futuro.
-          </h1>
-          <p className="mt-6 text-xl text-[var(--sertao)]">
-            O Empório do Licuri nasce do encontro entre <strong>natureza, tradição, tecnologia e empreendedorismo</strong>. 
-            Somos uma plataforma brasileira de valorização do licuri, do sertão e das pessoas que transformam recursos naturais em produtos, histórias e oportunidades.
+      <section className="container-narrow py-16">
+        <div className="grid gap-10 md:grid-cols-[1fr_2fr]">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-primary">
+            Nossa Raiz
           </p>
-          <div className="mt-12 space-y-8">
-            <div>
-              <h2 className="font-display text-2xl font-bold text-[var(--coffee)]">Propósito</h2>
-              <p className="mt-2 text-[var(--sertao)] text-lg">Transformar a riqueza do licuri em oportunidades para pessoas, comunidades e negócios.</p>
-            </div>
-            <div>
-              <h2 className="font-display text-2xl font-bold text-[var(--coffee)]">Missão</h2>
-              <p className="mt-2 text-[var(--sertao)]">Criar, conectar e comercializar produtos, marcas e experiências que valorizem o licuri e o potencial econômico do sertão.</p>
-            </div>
-            <div>
-              <h2 className="font-display text-2xl font-bold text-[var(--coffee)]">Visão</h2>
-              <p className="mt-2 text-[var(--sertao)]">Ser a principal referência brasileira em produtos, negócios e experiências relacionados ao licuri.</p>
+          <div>
+            <h1 className="font-display text-4xl font-semibold text-[var(--coffee)] md:text-6xl">
+              O ecossistema que transforma o licuri em futuro.
+            </h1>
+            <p className="mt-6 text-xl text-[var(--sertao)]">
+              O <strong>Empório do Licuri</strong> é um ecossistema especializado na valorização do licuri e de produtos ligados ao sertão brasileiro.
+              Conectamos produtores, marcas, consumidores, cultura, gastronomia e tecnologia em uma mesma plataforma.
+            </p>
+            
+            <div className="mt-12 space-y-12">
+              <div>
+                <h2 className="font-display text-3xl font-bold text-[var(--coffee)]">O que somos</h2>
+                <p className="mt-4 text-[var(--sertao)] text-lg leading-relaxed">
+                  Não somos apenas uma loja ou um marketplace. Somos a união de gastronomia, cultura, produtos naturais e inovação em torno de um símbolo: <strong>O LICURI</strong>.
+                </p>
+              </div>
+
+              <div className="grid gap-8 md:grid-cols-2">
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-[var(--coffee)]">Diferencial</h2>
+                  <p className="mt-2 text-[var(--sertao)]">
+                    Focamos em <strong>curadoria, origem e território</strong>. Aqui, o consumidor não encontra apenas um produto, mas a história de quem produz e a alma do sertão.
+                  </p>
+                </div>
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-[var(--coffee)]">Promessa</h2>
+                  <p className="mt-2 text-[var(--sertao)]">
+                    Para o consumidor: produtos autênticos. Para o produtor: oportunidade de mercado. Para o território: desenvolvimento sustentável.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-8 md:grid-cols-3 border-t border-[var(--border)] pt-12">
+                <div>
+                  <h3 className="font-display text-xl font-bold text-[var(--coffee)]">Propósito</h3>
+                  <p className="mt-2 text-sm text-[var(--muted-foreground)]">Transformar a riqueza do licuri em oportunidades para pessoas e comunidades.</p>
+                </div>
+                <div>
+                  <h3 className="font-display text-xl font-bold text-[var(--coffee)]">Missão</h3>
+                  <p className="mt-2 text-sm text-[var(--muted-foreground)]">Conectar produtos e experiências que valorizem o potencial econômico do sertão.</p>
+                </div>
+                <div>
+                  <h3 className="font-display text-xl font-bold text-[var(--coffee)]">Visão</h3>
+                  <p className="mt-2 text-sm text-[var(--muted-foreground)]">Ser a principal referência brasileira em negócios e experiências ligados ao licuri.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
 
       <section className="bg-[var(--cream)] py-20">
         <div className="container-narrow">

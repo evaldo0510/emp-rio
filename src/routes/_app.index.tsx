@@ -160,9 +160,9 @@ function HomePage() {
               O ecossistema que transforma o licuri em produtos, negócios e oportunidades.
             </h2>
             <p className="mt-6 text-lg text-[var(--sertao)]">
-              O Empório do Licuri nasce do encontro entre natureza, tradição, tecnologia e empreendedorismo.
-              Somos uma plataforma criada para valorizar o licuri, seus derivados, os produtores e toda a cadeia econômica que pode nascer dessa riqueza do sertão.
+              O **Empório do Licuri** é um ecossistema especializado na valorização do licuri e de produtos ligados ao sertão brasileiro. Conectamos **produtores, marcas, consumidores, cultura, gastronomia e tecnologia** em uma mesma plataforma.
             </p>
+
           </div>
 
           <div className="mt-12 grid gap-8 md:grid-cols-3">
@@ -289,28 +289,30 @@ function HomePage() {
         </div>
       </section>
 
-      {/* HISTÓRIAS DO SERTÃO */}
-      <section className="bg-[var(--cream)] py-20 mt-20">
-        <div className="container-narrow">
-          <div className="mb-10 text-center">
-            <p className="text-[10px] uppercase tracking-[0.22em] text-primary">Conheça o Licuri</p>
-            <h2 className="mt-2 font-display text-3xl font-bold text-[var(--coffee)] md:text-5xl">Histórias do Sertão</h2>
+      {/* NARRATIVA CENTRAL */}
+      <section className="container-narrow mt-24 py-16 border-y border-[var(--border)]">
+        <div className="grid gap-12 md:grid-cols-2 items-center">
+          <div>
+            <h3 className="font-display text-3xl font-bold text-[var(--coffee)] md:text-5xl">
+              Uma palmeira que conecta o sertão ao mundo.
+            </h3>
+            <div className="mt-8 space-y-4 text-[var(--sertao)] text-lg">
+              <p>Alimenta pessoas e animais. Gera matéria-prima e inspira receitas.</p>
+              <p>Sustenta tradições e gera renda.</p>
+              <p className="font-bold text-primary text-xl">Essa palmeira é o licuri.</p>
+            </div>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              { title: "Tradição das Quebradeiras", desc: "O saber ancestral de quem transforma o fruto em vida." },
-              { title: "Gastronomia Sertaneja", desc: "Doce, paçoca e receitas que atravessam gerações." },
-              { title: "Preservação da Caatinga", desc: "Como o licuri protege o bioma e a biodiversidade." },
-            ].map((h) => (
-              <div key={h.title} className="group cursor-pointer rounded-2xl border border-[var(--border)] bg-white p-6 transition-all hover:shadow-md">
-                <h3 className="font-display text-xl font-bold text-[var(--coffee)] group-hover:text-primary transition-colors">{h.title}</h3>
-                <p className="mt-3 text-sm text-[var(--muted-foreground)]">{h.desc}</p>
-                <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-primary">Ler história →</div>
-              </div>
-            ))}
+          <div className="rounded-3xl bg-[var(--coffee)] p-10 text-[var(--cream)] flex items-center justify-center">
+             <div className="text-center">
+                <p className="text-[10px] uppercase tracking-[0.22em] opacity-70 mb-4">A Promessa</p>
+                <p className="font-display text-2xl italic">"Transformar a biodiversidade e a cultura em desenvolvimento econômico sustentável."</p>
+             </div>
           </div>
         </div>
       </section>
+
+      {/* HISTÓRIAS DO SERTÃO */}
+
 
       {/* PROPÓSITO IMPACTO */}
 
@@ -318,11 +320,12 @@ function HomePage() {
         <div className="mx-auto max-w-4xl">
           <h3 className="font-display text-4xl font-bold text-[var(--coffee)] md:text-6xl">
             O LICURI É A NOSSA RAIZ. <br />
-            <span className="text-primary">O ECOSSISTEMA É O NOSSO FUTURO.</span>
+            <span className="text-primary uppercase">O Ecossistema é o nosso futuro.</span>
           </h3>
           <p className="mt-8 text-lg text-[var(--sertao)]">
-            Uma plataforma brasileira de valorização do licuri, do sertão e das pessoas que transformam recursos naturais em produtos, histórias e oportunidades.
+            Descobrir produtos autênticos, conhecer suas histórias e levar um pedaço do sertão para casa.
           </p>
+
         </div>
       </section>
 
@@ -333,17 +336,19 @@ function HomePage() {
             <p className="text-[10px] uppercase tracking-[0.22em] text-primary">
               Para Produtores
             </p>
-            <h3 className="mt-2 font-display text-3xl font-semibold md:text-4xl">
-              Coloque seu produto no mapa e alcance o Brasil inteiro.
+            <h3 className="mt-2 font-display text-3xl font-semibold md:text-4xl uppercase">
+              VOCÊ PRODUZ? VENDA NO EMPÓRIO.
             </h3>
+
           </div>
           <div className="flex flex-col items-start justify-center gap-4">
             <p className="text-[var(--sertao)]">
-              Sua história também pode fazer parte desse ecossistema. Cadastre sua loja, gerencie pedidos e acompanhe vendas pelo painel digital.
+              Você tem um produto feito com licuri ou relacionado à cultura e à biodiversidade do sertão? O Empório do Licuri pode ser a sua vitrine para novos consumidores.
             </p>
             <Button asChild variant="hero" size="lg">
-              <Link to="/vendedor">Quero vender no Empório</Link>
+              <Link to="/vendedor">QUERO SER UM PRODUTOR PARCEIRO</Link>
             </Button>
+
           </div>
         </div>
       </section>
