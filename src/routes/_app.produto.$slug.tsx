@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useLoaderData } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useLoaderData, useNavigate } from "@tanstack/react-router";
 import {
   ChevronRight,
   Heart,
@@ -57,6 +57,7 @@ export const Route = createFileRoute("/_app/produto/$slug")({
 
 function ProductPage() {
   const product = useLoaderData({ from: "/_app/produto/$slug" });
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(product.image);
   const [qty, setQty] = useState(1);
   const [showSticky, setShowSticky] = useState(false);
@@ -228,7 +229,8 @@ function ProductPage() {
                         className="w-full bg-[#C4682C] hover:bg-[#A35624] text-white shadow-lg shadow-[#C4682C]/20"
                         onClick={() => {
                           add(product, qty);
-                          toast.success("Adicionado ao carrinho", { description: product.name });
+                          toast.success("Produto pronto!", { description: "Redirecionando para o checkout..." });
+                          navigate({ to: "/checkout" });
                         }}
                       >
                         <Zap className="mr-2 h-5 w-5 fill-current" />
