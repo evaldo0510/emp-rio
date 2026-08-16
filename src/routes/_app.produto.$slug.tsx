@@ -419,8 +419,9 @@ function ProductPage() {
               ))}
             </div>
           </section>
-        </div>
+        )}
       </div>
+
 
       {/* STICKY ADD TO CART */}
       <div
