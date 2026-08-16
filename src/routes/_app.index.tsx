@@ -289,28 +289,30 @@ function HomePage() {
         </div>
       </section>
 
-      {/* HISTÓRIAS DO SERTÃO */}
-      <section className="bg-[var(--cream)] py-20 mt-20">
-        <div className="container-narrow">
-          <div className="mb-10 text-center">
-            <p className="text-[10px] uppercase tracking-[0.22em] text-primary">Conheça o Licuri</p>
-            <h2 className="mt-2 font-display text-3xl font-bold text-[var(--coffee)] md:text-5xl">Histórias do Sertão</h2>
+      {/* NARRATIVA CENTRAL */}
+      <section className="container-narrow mt-24 py-16 border-y border-[var(--border)]">
+        <div className="grid gap-12 md:grid-cols-2 items-center">
+          <div>
+            <h3 className="font-display text-3xl font-bold text-[var(--coffee)] md:text-5xl">
+              Uma palmeira que conecta o sertão ao mundo.
+            </h3>
+            <div className="mt-8 space-y-4 text-[var(--sertao)] text-lg">
+              <p>Alimenta pessoas e animais. Gera matéria-prima e inspira receitas.</p>
+              <p>Sustenta tradições e gera renda.</p>
+              <p className="font-bold text-primary text-xl">Essa palmeira é o licuri.</p>
+            </div>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              { title: "Tradição das Quebradeiras", desc: "O saber ancestral de quem transforma o fruto em vida." },
-              { title: "Gastronomia Sertaneja", desc: "Doce, paçoca e receitas que atravessam gerações." },
-              { title: "Preservação da Caatinga", desc: "Como o licuri protege o bioma e a biodiversidade." },
-            ].map((h) => (
-              <div key={h.title} className="group cursor-pointer rounded-2xl border border-[var(--border)] bg-white p-6 transition-all hover:shadow-md">
-                <h3 className="font-display text-xl font-bold text-[var(--coffee)] group-hover:text-primary transition-colors">{h.title}</h3>
-                <p className="mt-3 text-sm text-[var(--muted-foreground)]">{h.desc}</p>
-                <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-primary">Ler história →</div>
-              </div>
-            ))}
+          <div className="rounded-3xl bg-[var(--coffee)] p-10 text-[var(--cream)] flex items-center justify-center">
+             <div className="text-center">
+                <p className="text-[10px] uppercase tracking-[0.22em] opacity-70 mb-4">A Promessa</p>
+                <p className="font-display text-2xl italic">"Transformar a biodiversidade e a cultura em desenvolvimento econômico sustentável."</p>
+             </div>
           </div>
         </div>
       </section>
+
+      {/* HISTÓRIAS DO SERTÃO */}
+
 
       {/* PROPÓSITO IMPACTO */}
 
