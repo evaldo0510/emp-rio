@@ -63,7 +63,7 @@
   --popover: oklch(0.985 0.012 85);
   --popover-foreground: oklch(0.22 0.045 50);
 
-  --primary: oklch(0.62 0.16 47); /* terracota / clay */
+  --primary: oklch(0.35 0.08 135); /* Verde oliva escuro da logo */
   --primary-foreground: oklch(0.985 0.012 85);
 
   --secondary: oklch(0.93 0.03 85); /* cream */
@@ -72,7 +72,7 @@
   --muted: oklch(0.94 0.018 80);
   --muted-foreground: oklch(0.48 0.04 55);
 
-  --accent: oklch(0.55 0.09 135); /* verde folha sutil */
+  --accent: oklch(0.65 0.12 75); /* Dourado/Areia da logo */
   --accent-foreground: oklch(0.985 0.012 85);
 
   --destructive: oklch(0.55 0.21 27);
