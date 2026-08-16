@@ -57,6 +57,7 @@ export const Route = createFileRoute("/_app/produto/$slug")({
 
 function ProductPage() {
   const product = useLoaderData({ from: "/_app/produto/$slug" });
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(product.image);
   const [qty, setQty] = useState(1);
   const [showSticky, setShowSticky] = useState(false);
