@@ -53,49 +53,49 @@
 :root {
   --radius: 0.5rem;
 
-  /* Paleta Licuri Hub (clara) */
-  --background: oklch(0.97 0.018 80); /* areia clarinha */
-  --foreground: oklch(0.22 0.045 50); /* marrom muito escuro */
+  /* Paleta Empório do Licuri (clara) */
+  --background: oklch(0.96 0.02 85); /* Creme Natural - fundo inspirado em papel */
+  --foreground: oklch(0.25 0.04 45); /* Marrom Licuri - terroso para textos */
 
-  --card: oklch(0.985 0.012 85);
-  --card-foreground: oklch(0.22 0.045 50);
+  --card: oklch(0.98 0.015 85);
+  --card-foreground: oklch(0.25 0.04 45);
 
-  --popover: oklch(0.985 0.012 85);
-  --popover-foreground: oklch(0.22 0.045 50);
+  --popover: oklch(0.98 0.015 85);
+  --popover-foreground: oklch(0.25 0.04 45);
 
-  --primary: oklch(0.35 0.08 135); /* Verde oliva escuro da logo */
-  --primary-foreground: oklch(0.985 0.012 85);
+  --primary: oklch(0.35 0.08 135); /* Verde Licuri - principal profundo/natural */
+  --primary-foreground: oklch(0.98 0.015 85);
 
-  --secondary: oklch(0.93 0.03 85); /* cream */
-  --secondary-foreground: oklch(0.32 0.06 55);
+  --secondary: oklch(0.88 0.04 135); /* Verde claro natural - apoio */
+  --secondary-foreground: oklch(0.35 0.08 135);
 
-  --muted: oklch(0.94 0.018 80);
-  --muted-foreground: oklch(0.48 0.04 55);
+  --muted: oklch(0.92 0.03 85);
+  --muted-foreground: oklch(0.45 0.05 45);
 
-  --accent: oklch(0.65 0.12 75); /* Dourado/Areia da logo */
-  --accent-foreground: oklch(0.985 0.012 85);
+  --accent: oklch(0.65 0.12 75); /* Dourado Licuri - destaque sofisticado */
+  --accent-foreground: oklch(0.98 0.015 85);
 
   --destructive: oklch(0.55 0.21 27);
-  --destructive-foreground: oklch(0.985 0.012 85);
+  --destructive-foreground: oklch(0.98 0.015 85);
 
-  --border: oklch(0.88 0.02 75);
-  --input: oklch(0.9 0.018 75);
-  --ring: oklch(0.62 0.16 47);
+  --border: oklch(0.85 0.05 75);
+  --input: oklch(0.9 0.03 85);
+  --ring: oklch(0.35 0.08 135);
 
   /* Brand tokens */
-  --clay: oklch(0.62 0.16 47);
-  --clay-foreground: oklch(0.985 0.012 85);
-  --sand: oklch(0.92 0.035 82);
+  --clay: oklch(0.35 0.08 135); /* Verde Licuri */
+  --sand: oklch(0.92 0.03 85);
   --cream: oklch(0.96 0.02 85);
-  --sertao: oklch(0.32 0.06 55);
-  --leaf: oklch(0.5 0.09 135);
-  --coffee: oklch(0.25 0.04 45);
+  --sertao: oklch(0.25 0.04 45); /* Marrom Licuri */
+  --leaf: oklch(0.35 0.08 135); /* Verde Licuri */
+  --coffee: oklch(0.25 0.04 45); /* Marrom Licuri */
 
-  --chart-1: oklch(0.62 0.16 47);
-  --chart-2: oklch(0.5 0.09 135);
-  --chart-3: oklch(0.78 0.13 78);
-  --chart-4: oklch(0.32 0.06 55);
+  --chart-1: oklch(0.35 0.08 135);
+  --chart-2: oklch(0.65 0.12 75);
+  --chart-3: oklch(0.25 0.04 45);
+  --chart-4: oklch(0.88 0.04 135);
   --chart-5: oklch(0.55 0.12 35);
+
 
   --sidebar: oklch(0.96 0.02 82);
   --sidebar-foreground: oklch(0.22 0.045 50);
