@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Leaf, Sprout, Sun } from "lucide-react";
 import hero from "@/assets/hero-licuri.jpg";
+import { Button } from "@/components/ui/button";
+
 
 export const Route = createFileRoute("/_app/sobre")({
   head: () => ({
