@@ -228,7 +228,8 @@ function ProductPage() {
                         className="w-full bg-[#C4682C] hover:bg-[#A35624] text-white shadow-lg shadow-[#C4682C]/20"
                         onClick={() => {
                           add(product, qty);
-                          toast.success("Adicionado ao carrinho", { description: product.name });
+                          toast.success("Produto pronto!", { description: "Redirecionando para o checkout..." });
+                          navigate({ to: "/checkout" });
                         }}
                       >
                         <Zap className="mr-2 h-5 w-5 fill-current" />

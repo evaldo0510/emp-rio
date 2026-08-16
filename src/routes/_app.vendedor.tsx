@@ -392,9 +392,14 @@ export function VendorDashboard() {
               {sellerProfile?.store_name || "Vendedor não cadastrado"}
             </span>
             {sellerProfile && !sellerProfile.approved && (
-              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                Aguardando Aprovação
-              </span>
+              <div className="flex flex-col items-end gap-1">
+                <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                  Aguardando Aprovação
+                </span>
+                <span className="text-[9px] text-amber-700 max-w-[150px] text-right leading-tight">
+                  Seu perfil está em análise. O marketplace e o selo de curadoria serão liberados após a aprovação.
+                </span>
+              </div>
             )}
           </div>
         </div>
