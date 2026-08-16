@@ -154,7 +154,7 @@ export const products: Product[] = [
     id: "p9",
     slug: "kit-presente-raizes-do-nordeste",
     name: "Kit Presente Raízes do Nordeste",
-    category: "kits-presentes",
+    category: "presentes",
     price: 159.9, rating: 4.9, reviews: 9,
     shop: "Empório do Licuri", region: "Bahia",
     image: img("kit-presente-raizes-do-nordeste"),
