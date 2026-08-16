@@ -10,13 +10,13 @@ import hero from "@/assets/hero-licuri.jpg";
 export const Route = createFileRoute("/_app/")({
   head: () => ({
     meta: [
-      { title: "Licuri Hub — Do coração do Nordeste para sua casa" },
+      { title: "Empório do Licuri — Natural • Tradição • Energia" },
       {
         name: "description",
         content:
           "Produtos artesanais do licuri: alimentos, óleos, cosméticos e artesanato direto do Sertão.",
       },
-      { property: "og:title", content: "Licuri Hub — Do coração do Nordeste para sua casa" },
+      { property: "og:title", content: "Empório do Licuri — Natural • Tradição • Energia" },
       {
         property: "og:description",
         content: "Marketplace do licuri, produzido por famílias do Sertão.",
@@ -95,6 +95,7 @@ function HomePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[var(--coffee)]/75 via-[var(--coffee)]/45 to-transparent" />
 
+
           <div className="absolute inset-0 flex items-center">
             <div className="w-full px-6 md:px-12">
               <div className="max-w-xl text-[var(--cream)]">
@@ -136,7 +137,7 @@ function HomePage() {
         <div className="mt-6 grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--cream)] p-4 md:grid-cols-4 md:p-6">
           {pillars.map((p) => (
             <div key={p.title} className="flex items-center gap-3">
-              <p.icon className="h-5 w-5 text-[var(--leaf)]" />
+              <p.icon className="h-5 w-5 text-primary" />
               <div className="text-xs uppercase tracking-[0.16em] text-[var(--sertao)]">
                 <div className="font-semibold">{p.title}</div>
                 <div className="opacity-70">{p.text}</div>
@@ -154,7 +155,8 @@ function HomePage() {
           </h2>
           <Link
             to="/categorias"
-            className="hidden items-center gap-1 text-sm text-[var(--clay)] hover:underline md:inline-flex"
+            className="hidden items-center gap-1 text-sm text-primary hover:underline md:inline-flex"
+
           >
             Ver todas <ArrowRight className="h-4 w-4" />
           </Link>
@@ -184,7 +186,7 @@ function HomePage() {
                     {c.count} produtos
                   </div>
                 </div>
-                <ArrowRight className="h-4 w-4 text-[var(--clay)]" />
+                <ArrowRight className="h-4 w-4 text-primary" />
               </div>
             </Link>
           ))}
@@ -204,7 +206,7 @@ function HomePage() {
           </div>
           <Link
             to="/categorias"
-            className="hidden items-center gap-1 text-sm text-[var(--clay)] hover:underline md:inline-flex"
+            className="hidden items-center gap-1 text-sm text-primary hover:underline md:inline-flex"
           >
             Ver tudo <ArrowRight className="h-4 w-4" />
           </Link>
@@ -212,7 +214,7 @@ function HomePage() {
         <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
           {isLoading ? (
             <div className="col-span-full flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-[var(--clay)]" />
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
             featured.map((p) => (

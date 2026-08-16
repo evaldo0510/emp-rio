@@ -30,8 +30,9 @@ export function SiteHeader() {
             <Link
               key={n.to}
               to={n.to}
-              className="text-sm text-[var(--sertao)] transition-colors hover:text-[var(--clay)]"
-              activeProps={{ className: "text-[var(--clay)] font-medium" }}
+              className="text-sm text-[var(--sertao)] transition-colors hover:text-primary"
+              activeProps={{ className: "text-primary font-medium" }}
+
               activeOptions={{ exact: n.to === "/" }}
             >
               {n.label}
@@ -77,7 +78,7 @@ export function SiteHeader() {
           >
             <ShoppingBag className="h-5 w-5" />
             {count > 0 && (
-              <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[var(--clay)] px-1 text-[10px] font-semibold text-[var(--clay-foreground)]">
+              <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
                 {count}
               </span>
             )}
@@ -126,7 +127,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-[var(--border)]">
         <div className="container-narrow flex flex-col items-center justify-between gap-2 py-5 text-xs text-[var(--muted-foreground)] md:flex-row">
-          <p>© {new Date().getFullYear()} Licuri Hub — Raízes que alimentam.</p>
+          <p>© {new Date().getFullYear()} Empório do Licuri — Do Sertão para sua vida.</p>
           <p>Feito com cuidado no Sertão.</p>
         </div>
       </div>
@@ -141,7 +142,7 @@ function FooterCol({ title, links }: { title: string; links: [string, string][] 
       <ul className="space-y-2 text-sm text-[var(--muted-foreground)]">
         {links.map(([to, label]) => (
           <li key={to + label}>
-            <Link to={to} className="hover:text-[var(--clay)]">
+            <Link to={to} className="hover:text-primary">
               {label}
             </Link>
           </li>

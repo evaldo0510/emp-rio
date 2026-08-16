@@ -8,9 +8,9 @@ export const Route = createFileRoute("/_app")({
 
 function AppLayout() {
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="flex min-h-screen flex-col bg-paper selection:bg-[var(--accent)] selection:text-[var(--accent-foreground)]">
       <SiteHeader />
-      <main>
+      <main className="flex-1">
         <Outlet />
       </main>
       <SiteFooter />
@@ -18,3 +18,4 @@ function AppLayout() {
     </div>
   );
 }
+
