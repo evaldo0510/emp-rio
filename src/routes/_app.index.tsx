@@ -101,24 +101,25 @@ function HomePage() {
             <div className="w-full px-6 md:px-12">
               <div className="max-w-xl text-[var(--cream)]">
                 <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.22em] backdrop-blur">
-                  <Sprout className="h-3.5 w-3.5" /> Origem Licuri certificada
+                  <Sprout className="h-3.5 w-3.5" /> Ecossistema Licuri
                 </p>
                 <h1 className="font-display text-balance text-4xl font-semibold leading-tight md:text-6xl">
-                  Do coração do Nordeste para sua casa
+                  Do Sertão para o Mundo.
                 </h1>
                 <p className="mt-5 max-w-md text-base text-[var(--cream)]/85 md:text-lg">
-                  Produtos feitos a partir do licuri, com amor, tradição e sustentabilidade.
+                  Produtos, histórias e oportunidades que nascem do licuri.
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Button asChild variant="hero" size="xl">
                     <Link to="/categorias">
-                      Comprar agora <ArrowRight className="h-4 w-4" />
+                      Explorar o Empório <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
                   <Button asChild variant="soft" size="xl">
-                    <Link to="/sobre">Conhecer história</Link>
+                    <Link to="/vendedor">Quero vender no Empório</Link>
                   </Button>
                 </div>
+
               </div>
             </div>
           </div>
