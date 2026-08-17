@@ -62,7 +62,7 @@ export const products: Product[] = [
     id: "p1",
     slug: "oleo-de-licuri-extra-virgem-200ml",
     name: "Óleo de Licuri Extra Virgem 200ml",
-    category: "produtos-licuri",
+    category: "licuri",
     price: 49.9, rating: 4.9, reviews: 78,
     shop: "Sertão Natural", region: "Bahia",
     image: img("oleo-de-licuri-extra-virgem-200ml"),
