@@ -6,13 +6,13 @@ import { useCart } from "@/lib/cart";
 
 const nav = [
   { to: "/", label: "Início" },
-  { to: "/categorias", label: "Marketplace" },
-  { to: "/licuri", label: "O Licuri" },
-  { to: "/sertao", label: "O Sertão" },
-  { to: "/sobre", label: "Manifesto" },
+  { to: "/categorias", label: "Mercado" },
+  { to: "/receitas", label: "Receitas" },
+  { to: "/licuri", label: "Licuri" },
+  { to: "/sertao", label: "Sertão" },
+  { to: "/origem", label: "Origem" },
   { to: "/vendedor", label: "Produtores" },
   { to: "/clube-do-licuri", label: "Clube" },
-  { to: "/casa-do-licuri", label: "A Casa" },
 ] as const;
 
 export function SiteHeader() {
@@ -109,6 +109,8 @@ export function SiteFooter() {
             ["/categorias", "Produtos"],
             ["/categorias", "Kits & Ofertas"],
             ["/curadoria", "Selo Curadoria"],
+            ["/receitas", "Receitas"],
+            ["/eventos", "Agenda cultural"],
           ]}
         />
         <FooterCol
@@ -116,9 +118,9 @@ export function SiteFooter() {
           links={[
             ["/licuri", "O Licuri"],
             ["/sertao", "O Sertão"],
+            ["/origem", "Origem & Mapa"],
             ["/casa-do-licuri", "Casa do Licuri"],
             ["/clube-do-licuri", "Clube do Licuri"],
-            ["/academia", "Academia"],
           ]}
         />
         <FooterCol
@@ -128,6 +130,7 @@ export function SiteFooter() {
             ["/empresas", "Para Empresas"],
             ["/impacto", "Impacto Social"],
             ["/laboratorio", "Laboratório"],
+            ["/academia", "Academia"],
             ["/admin", "Painel Admin"],
           ]}
         />
