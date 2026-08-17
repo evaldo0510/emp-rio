@@ -104,19 +104,19 @@ function HomePage() {
                   <Sprout className="h-3.5 w-3.5" /> Ecossistema Licuri
                 </p>
                 <h1 className="font-display text-balance text-4xl font-semibold leading-tight md:text-6xl uppercase">
-                  Do sertão para o mundo.
+                  DO SERTÃO PARA O MUNDO.
                 </h1>
                 <p className="mt-5 max-w-md text-base text-[var(--cream)]/85 md:text-lg">
-                  Onde a tradição encontra o futuro.
+                  Produtos, histórias e oportunidades que nascem do licuri.
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Button asChild variant="hero" size="xl">
                     <Link to="/categorias">
-                      Explorar o Empório <ArrowRight className="h-4 w-4" />
+                      COMPRAR AGORA <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
                   <Button asChild variant="soft" size="xl">
-                    <Link to="/vendedor" hash="registro">Quero vender no Empório</Link>
+                    <Link to="/licuri">CONHECER O LICURI</Link>
                   </Button>
                 </div>
 

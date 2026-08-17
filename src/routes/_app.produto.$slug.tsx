@@ -336,8 +336,16 @@ function ProductPage() {
                 <h3 className="font-display text-xl font-semibold text-[var(--coffee)] flex items-center gap-2">
                   <ChefHat className="h-5 w-5 text-primary" /> Como usar
                 </h3>
-                <p className="text-sm text-[var(--muted-foreground)]">Receitas e sugestões de uso variam conforme o produto, garantindo o melhor aproveitamento do licuri.</p>
-                <ul className="space-y-3">
+                <div className="text-sm text-[var(--muted-foreground)] space-y-4">
+                  <p>Exemplo (Licuri torrado):</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Consumir puro;</li>
+                    <li>Utilizar em receitas;</li>
+                    <li>Acompanhar café;</li>
+                    <li>Utilizar em preparações culinárias.</li>
+                  </ul>
+                </div>
+                <ul className="mt-6 space-y-3">
                   {benefits.map((b, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-[var(--sertao)]">
                       <CheckCircle2 className="h-4 w-4 mt-0.5 text-[var(--leaf)] shrink-0" />

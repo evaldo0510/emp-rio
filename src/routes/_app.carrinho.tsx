@@ -118,13 +118,20 @@ function CartPage() {
                     <Plus className="h-3.5 w-3.5" />
                   </button>
                 </div>
-                <button
-                  onClick={() => remove(i.id)}
-                  className="grid h-9 w-9 place-items-center rounded-full text-[var(--muted-foreground)] hover:bg-[var(--sand)] hover:text-[var(--destructive)]"
-                  aria-label="Remover"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                <div className="flex flex-col items-center gap-2 ml-4">
+                  <button
+                    onClick={() => remove(i.id)}
+                    className="grid h-9 w-9 place-items-center rounded-full text-[var(--muted-foreground)] hover:bg-[var(--sand)] hover:text-[var(--destructive)]"
+                    aria-label="Remover"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                  <button
+                    className="text-[10px] font-bold uppercase text-primary hover:underline"
+                  >
+                    Salvar para depois
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

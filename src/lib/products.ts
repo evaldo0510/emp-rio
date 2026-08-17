@@ -1,14 +1,20 @@
 import { supabase } from "./supabase";
 
 export type Category =
-  | "produtos-licuri"
+  | "licuri"
   | "alimentos"
+  | "farinhas"
+  | "oleos"
+  | "produtos-naturais"
   | "cosmeticos"
-  | "naturais"
+  | "bebidas"
+  | "doces"
+  | "snacks"
+  | "artesanato"
+  | "produtos-do-sertao"
   | "presentes"
-  | "produtos-regionais"
-  | "gastronomia"
-  | "artesanato";
+  | "kits"
+  | "marca-emporio";
 
 
 export type Product = {
@@ -32,14 +38,20 @@ export type Product = {
 const img = (slug: string) => `/products/${slug}.jpg`;
 
 export const categories: { id: Category; label: string; image: string; count: number }[] = [
-  { id: "produtos-licuri", label: "Produtos de Licuri", image: img("oleo-de-licuri-extra-virgem-200ml"), count: 42 },
+  { id: "licuri", label: "Licuri", image: img("oleo-de-licuri-extra-virgem-200ml"), count: 12 },
   { id: "alimentos", label: "Alimentos", image: img("farinha-de-licuri-artesanal-500g"), count: 32 },
+  { id: "farinhas", label: "Farinhas", image: img("farinha-de-licuri-artesanal-500g"), count: 8 },
+  { id: "oleos", label: "Óleos", image: img("oleo-de-licuri-extra-virgem-200ml"), count: 15 },
+  { id: "produtos-naturais", label: "Produtos Naturais", image: img("licuri-desidratado-premium"), count: 28 },
   { id: "cosmeticos", label: "Cosméticos", image: img("manteiga-corporal-de-licuri"), count: 24 },
+  { id: "bebidas", label: "Bebidas", image: img("doce-de-licuri-tradicional"), count: 5 },
+  { id: "doces", label: "Doces", image: img("doce-de-licuri-tradicional"), count: 20 },
+  { id: "snacks", label: "Snacks", image: img("pacoca-de-licuri"), count: 18 },
   { id: "artesanato", label: "Artesanato", image: img("cesto-artesanal-palha-de-licuri"), count: 15 },
-  { id: "presentes", label: "Presentes", image: img("kit-presente-raizes-do-nordeste"), count: 12 },
-  { id: "naturais", label: "Naturais", image: img("licuri-desidratado-premium"), count: 28 },
-  { id: "produtos-regionais", label: "Produtos Regionais", image: img("doce-de-licuri-tradicional"), count: 20 },
-  { id: "gastronomia", label: "Gastronomia", image: img("granola-de-licuri-artesanal"), count: 16 },
+  { id: "produtos-do-sertao", label: "Produtos do Sertão", image: img("doce-de-licuri-tradicional"), count: 12 },
+  { id: "presentes", label: "Presentes", image: img("kit-presente-raizes-do-nordeste"), count: 10 },
+  { id: "kits", label: "Kits", image: img("kit-presente-raizes-do-nordeste"), count: 6 },
+  { id: "marca-emporio", label: "Marca Empório do Licuri", image: img("kit-presente-raizes-do-nordeste"), count: 4 },
 ];
 
 
