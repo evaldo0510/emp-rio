@@ -16,16 +16,25 @@ import { Route as ApiExtractFromUrlRouteImport } from './routes/api/extract-from
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppVendedorRouteImport } from './routes/_app.vendedor'
 import { Route as AppSobreRouteImport } from './routes/_app.sobre'
+import { Route as AppSertaoRouteImport } from './routes/_app.sertao'
 import { Route as AppLojasRouteImport } from './routes/_app.lojas'
+import { Route as AppLicuriRouteImport } from './routes/_app.licuri'
+import { Route as AppLaboratorioRouteImport } from './routes/_app.laboratorio'
+import { Route as AppImpactoRouteImport } from './routes/_app.impacto'
+import { Route as AppIaraRouteImport } from './routes/_app.iara'
 import { Route as AppFavoritosRouteImport } from './routes/_app.favoritos'
+import { Route as AppEmpresasRouteImport } from './routes/_app.empresas'
 import { Route as AppCuradoriaRouteImport } from './routes/_app.curadoria'
 import { Route as AppContaRouteImport } from './routes/_app.conta'
+import { Route as AppClubeDoLicuriRouteImport } from './routes/_app.clube-do-licuri'
 import { Route as AppCheckoutRouteImport } from './routes/_app.checkout'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
+import { Route as AppCasaDoLicuriRouteImport } from './routes/_app.casa-do-licuri'
 import { Route as AppCarrinhoRouteImport } from './routes/_app.carrinho'
 import { Route as AppBlogRouteImport } from './routes/_app.blog'
 import { Route as AppAssistenteRouteImport } from './routes/_app.assistente'
 import { Route as AppAdminRouteImport } from './routes/_app.admin'
+import { Route as AppAcademiaRouteImport } from './routes/_app.academia'
 import { Route as AppAdminIndexRouteImport } from './routes/_app.admin.index'
 import { Route as AppVendedorLoginRouteImport } from './routes/_app.vendedor.login'
 import { Route as AppVendedorImportarRouteImport } from './routes/_app.vendedor.importar'
@@ -70,14 +79,44 @@ const AppSobreRoute = AppSobreRouteImport.update({
   path: '/sobre',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSertaoRoute = AppSertaoRouteImport.update({
+  id: '/sertao',
+  path: '/sertao',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppLojasRoute = AppLojasRouteImport.update({
   id: '/lojas',
   path: '/lojas',
   getParentRoute: () => AppRoute,
 } as any)
+const AppLicuriRoute = AppLicuriRouteImport.update({
+  id: '/licuri',
+  path: '/licuri',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLaboratorioRoute = AppLaboratorioRouteImport.update({
+  id: '/laboratorio',
+  path: '/laboratorio',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppImpactoRoute = AppImpactoRouteImport.update({
+  id: '/impacto',
+  path: '/impacto',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppIaraRoute = AppIaraRouteImport.update({
+  id: '/iara',
+  path: '/iara',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFavoritosRoute = AppFavoritosRouteImport.update({
   id: '/favoritos',
   path: '/favoritos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEmpresasRoute = AppEmpresasRouteImport.update({
+  id: '/empresas',
+  path: '/empresas',
   getParentRoute: () => AppRoute,
 } as any)
 const AppCuradoriaRoute = AppCuradoriaRouteImport.update({
@@ -90,6 +129,11 @@ const AppContaRoute = AppContaRouteImport.update({
   path: '/conta',
   getParentRoute: () => AppRoute,
 } as any)
+const AppClubeDoLicuriRoute = AppClubeDoLicuriRouteImport.update({
+  id: '/clube-do-licuri',
+  path: '/clube-do-licuri',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCheckoutRoute = AppCheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
@@ -98,6 +142,11 @@ const AppCheckoutRoute = AppCheckoutRouteImport.update({
 const AppCategoriasRoute = AppCategoriasRouteImport.update({
   id: '/categorias',
   path: '/categorias',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCasaDoLicuriRoute = AppCasaDoLicuriRouteImport.update({
+  id: '/casa-do-licuri',
+  path: '/casa-do-licuri',
   getParentRoute: () => AppRoute,
 } as any)
 const AppCarrinhoRoute = AppCarrinhoRouteImport.update({
@@ -118,6 +167,11 @@ const AppAssistenteRoute = AppAssistenteRouteImport.update({
 const AppAdminRoute = AppAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAcademiaRoute = AppAcademiaRouteImport.update({
+  id: '/academia',
+  path: '/academia',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
@@ -169,16 +223,25 @@ const AppVendedorImportarProcessandoRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/academia': typeof AppAcademiaRoute
   '/admin': typeof AppAdminRouteWithChildren
   '/assistente': typeof AppAssistenteRoute
   '/blog': typeof AppBlogRoute
   '/carrinho': typeof AppCarrinhoRoute
+  '/casa-do-licuri': typeof AppCasaDoLicuriRoute
   '/categorias': typeof AppCategoriasRoute
   '/checkout': typeof AppCheckoutRoute
+  '/clube-do-licuri': typeof AppClubeDoLicuriRoute
   '/conta': typeof AppContaRoute
   '/curadoria': typeof AppCuradoriaRoute
+  '/empresas': typeof AppEmpresasRoute
   '/favoritos': typeof AppFavoritosRoute
+  '/iara': typeof AppIaraRoute
+  '/impacto': typeof AppImpactoRoute
+  '/laboratorio': typeof AppLaboratorioRoute
+  '/licuri': typeof AppLicuriRoute
   '/lojas': typeof AppLojasRoute
+  '/sertao': typeof AppSertaoRoute
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRouteWithChildren
   '/api/chat': typeof ApiChatRoute
@@ -195,15 +258,24 @@ export interface FileRoutesByFullPath {
   '/vendedor/importar/processando': typeof AppVendedorImportarProcessandoRoute
 }
 export interface FileRoutesByTo {
+  '/academia': typeof AppAcademiaRoute
   '/assistente': typeof AppAssistenteRoute
   '/blog': typeof AppBlogRoute
   '/carrinho': typeof AppCarrinhoRoute
+  '/casa-do-licuri': typeof AppCasaDoLicuriRoute
   '/categorias': typeof AppCategoriasRoute
   '/checkout': typeof AppCheckoutRoute
+  '/clube-do-licuri': typeof AppClubeDoLicuriRoute
   '/conta': typeof AppContaRoute
   '/curadoria': typeof AppCuradoriaRoute
+  '/empresas': typeof AppEmpresasRoute
   '/favoritos': typeof AppFavoritosRoute
+  '/iara': typeof AppIaraRoute
+  '/impacto': typeof AppImpactoRoute
+  '/laboratorio': typeof AppLaboratorioRoute
+  '/licuri': typeof AppLicuriRoute
   '/lojas': typeof AppLojasRoute
+  '/sertao': typeof AppSertaoRoute
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRouteWithChildren
   '/api/chat': typeof ApiChatRoute
@@ -223,16 +295,25 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/_app/academia': typeof AppAcademiaRoute
   '/_app/admin': typeof AppAdminRouteWithChildren
   '/_app/assistente': typeof AppAssistenteRoute
   '/_app/blog': typeof AppBlogRoute
   '/_app/carrinho': typeof AppCarrinhoRoute
+  '/_app/casa-do-licuri': typeof AppCasaDoLicuriRoute
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/checkout': typeof AppCheckoutRoute
+  '/_app/clube-do-licuri': typeof AppClubeDoLicuriRoute
   '/_app/conta': typeof AppContaRoute
   '/_app/curadoria': typeof AppCuradoriaRoute
+  '/_app/empresas': typeof AppEmpresasRoute
   '/_app/favoritos': typeof AppFavoritosRoute
+  '/_app/iara': typeof AppIaraRoute
+  '/_app/impacto': typeof AppImpactoRoute
+  '/_app/laboratorio': typeof AppLaboratorioRoute
+  '/_app/licuri': typeof AppLicuriRoute
   '/_app/lojas': typeof AppLojasRoute
+  '/_app/sertao': typeof AppSertaoRoute
   '/_app/sobre': typeof AppSobreRoute
   '/_app/vendedor': typeof AppVendedorRouteWithChildren
   '/api/chat': typeof ApiChatRoute
@@ -253,16 +334,25 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/academia'
     | '/admin'
     | '/assistente'
     | '/blog'
     | '/carrinho'
+    | '/casa-do-licuri'
     | '/categorias'
     | '/checkout'
+    | '/clube-do-licuri'
     | '/conta'
     | '/curadoria'
+    | '/empresas'
     | '/favoritos'
+    | '/iara'
+    | '/impacto'
+    | '/laboratorio'
+    | '/licuri'
     | '/lojas'
+    | '/sertao'
     | '/sobre'
     | '/vendedor'
     | '/api/chat'
@@ -279,15 +369,24 @@ export interface FileRouteTypes {
     | '/vendedor/importar/processando'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/academia'
     | '/assistente'
     | '/blog'
     | '/carrinho'
+    | '/casa-do-licuri'
     | '/categorias'
     | '/checkout'
+    | '/clube-do-licuri'
     | '/conta'
     | '/curadoria'
+    | '/empresas'
     | '/favoritos'
+    | '/iara'
+    | '/impacto'
+    | '/laboratorio'
+    | '/licuri'
     | '/lojas'
+    | '/sertao'
     | '/sobre'
     | '/vendedor'
     | '/api/chat'
@@ -306,16 +405,25 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/_app/academia'
     | '/_app/admin'
     | '/_app/assistente'
     | '/_app/blog'
     | '/_app/carrinho'
+    | '/_app/casa-do-licuri'
     | '/_app/categorias'
     | '/_app/checkout'
+    | '/_app/clube-do-licuri'
     | '/_app/conta'
     | '/_app/curadoria'
+    | '/_app/empresas'
     | '/_app/favoritos'
+    | '/_app/iara'
+    | '/_app/impacto'
+    | '/_app/laboratorio'
+    | '/_app/licuri'
     | '/_app/lojas'
+    | '/_app/sertao'
     | '/_app/sobre'
     | '/_app/vendedor'
     | '/api/chat'
@@ -391,6 +499,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSobreRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/sertao': {
+      id: '/_app/sertao'
+      path: '/sertao'
+      fullPath: '/sertao'
+      preLoaderRoute: typeof AppSertaoRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/lojas': {
       id: '/_app/lojas'
       path: '/lojas'
@@ -398,11 +513,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLojasRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/licuri': {
+      id: '/_app/licuri'
+      path: '/licuri'
+      fullPath: '/licuri'
+      preLoaderRoute: typeof AppLicuriRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/laboratorio': {
+      id: '/_app/laboratorio'
+      path: '/laboratorio'
+      fullPath: '/laboratorio'
+      preLoaderRoute: typeof AppLaboratorioRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/impacto': {
+      id: '/_app/impacto'
+      path: '/impacto'
+      fullPath: '/impacto'
+      preLoaderRoute: typeof AppImpactoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/iara': {
+      id: '/_app/iara'
+      path: '/iara'
+      fullPath: '/iara'
+      preLoaderRoute: typeof AppIaraRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/favoritos': {
       id: '/_app/favoritos'
       path: '/favoritos'
       fullPath: '/favoritos'
       preLoaderRoute: typeof AppFavoritosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/empresas': {
+      id: '/_app/empresas'
+      path: '/empresas'
+      fullPath: '/empresas'
+      preLoaderRoute: typeof AppEmpresasRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/curadoria': {
@@ -419,6 +569,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppContaRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/clube-do-licuri': {
+      id: '/_app/clube-do-licuri'
+      path: '/clube-do-licuri'
+      fullPath: '/clube-do-licuri'
+      preLoaderRoute: typeof AppClubeDoLicuriRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/checkout': {
       id: '/_app/checkout'
       path: '/checkout'
@@ -431,6 +588,13 @@ declare module '@tanstack/react-router' {
       path: '/categorias'
       fullPath: '/categorias'
       preLoaderRoute: typeof AppCategoriasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/casa-do-licuri': {
+      id: '/_app/casa-do-licuri'
+      path: '/casa-do-licuri'
+      fullPath: '/casa-do-licuri'
+      preLoaderRoute: typeof AppCasaDoLicuriRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/carrinho': {
@@ -459,6 +623,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AppAdminRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/academia': {
+      id: '/_app/academia'
+      path: '/academia'
+      fullPath: '/academia'
+      preLoaderRoute: typeof AppAcademiaRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/admin/': {
@@ -567,16 +738,25 @@ const AppVendedorRouteWithChildren = AppVendedorRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
+  AppAcademiaRoute: typeof AppAcademiaRoute
   AppAdminRoute: typeof AppAdminRouteWithChildren
   AppAssistenteRoute: typeof AppAssistenteRoute
   AppBlogRoute: typeof AppBlogRoute
   AppCarrinhoRoute: typeof AppCarrinhoRoute
+  AppCasaDoLicuriRoute: typeof AppCasaDoLicuriRoute
   AppCategoriasRoute: typeof AppCategoriasRoute
   AppCheckoutRoute: typeof AppCheckoutRoute
+  AppClubeDoLicuriRoute: typeof AppClubeDoLicuriRoute
   AppContaRoute: typeof AppContaRoute
   AppCuradoriaRoute: typeof AppCuradoriaRoute
+  AppEmpresasRoute: typeof AppEmpresasRoute
   AppFavoritosRoute: typeof AppFavoritosRoute
+  AppIaraRoute: typeof AppIaraRoute
+  AppImpactoRoute: typeof AppImpactoRoute
+  AppLaboratorioRoute: typeof AppLaboratorioRoute
+  AppLicuriRoute: typeof AppLicuriRoute
   AppLojasRoute: typeof AppLojasRoute
+  AppSertaoRoute: typeof AppSertaoRoute
   AppSobreRoute: typeof AppSobreRoute
   AppVendedorRoute: typeof AppVendedorRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
@@ -587,16 +767,25 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAcademiaRoute: AppAcademiaRoute,
   AppAdminRoute: AppAdminRouteWithChildren,
   AppAssistenteRoute: AppAssistenteRoute,
   AppBlogRoute: AppBlogRoute,
   AppCarrinhoRoute: AppCarrinhoRoute,
+  AppCasaDoLicuriRoute: AppCasaDoLicuriRoute,
   AppCategoriasRoute: AppCategoriasRoute,
   AppCheckoutRoute: AppCheckoutRoute,
+  AppClubeDoLicuriRoute: AppClubeDoLicuriRoute,
   AppContaRoute: AppContaRoute,
   AppCuradoriaRoute: AppCuradoriaRoute,
+  AppEmpresasRoute: AppEmpresasRoute,
   AppFavoritosRoute: AppFavoritosRoute,
+  AppIaraRoute: AppIaraRoute,
+  AppImpactoRoute: AppImpactoRoute,
+  AppLaboratorioRoute: AppLaboratorioRoute,
+  AppLicuriRoute: AppLicuriRoute,
   AppLojasRoute: AppLojasRoute,
+  AppSertaoRoute: AppSertaoRoute,
   AppSobreRoute: AppSobreRoute,
   AppVendedorRoute: AppVendedorRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
