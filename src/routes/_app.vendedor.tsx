@@ -97,6 +97,17 @@ export function VendorDashboard() {
   const [logoInsight, setLogoInsight] = useState<any>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
 
+  // Form persistence for mobile/refresh
+  const [regData, setRegData] = useState(() => {
+    if (typeof window === "undefined") return { type: "store", name: "", desc: "" };
+    const saved = localStorage.getItem("vendor_reg_draft");
+    return saved ? JSON.parse(saved) : { type: "store", name: "", desc: "" };
+  });
+
+  useEffect(() => {
+    localStorage.setItem("vendor_reg_draft", JSON.stringify(regData));
+  }, [regData]);
+
   const [dailySales, setDailySales] = useState<any[]>([]);
   const maxSales = Math.max(...dailySales.map((s) => s.v), 1);
 
@@ -279,6 +290,8 @@ export function VendorDashboard() {
       ]);
 
       if (error) throw error;
+      localStorage.removeItem("vendor_reg_draft");
+      setRegData({ type: "store", name: "", desc: "" });
       toast.success("Perfil enviado para aprovação!");
       fetchDashboardData();
     } catch (e: any) {
@@ -451,6 +464,8 @@ export function VendorDashboard() {
                 <select
                   name="seller_type"
                   required
+                  value={regData.type}
+                  onChange={(e) => setRegData({ ...regData, type: e.target.value })}
                   className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)] text-sm"
                 >
                   <option value="store">Loja / Comércio</option>
@@ -466,6 +481,8 @@ export function VendorDashboard() {
                 <input
                   name="store_name"
                   required
+                  value={regData.name}
+                  onChange={(e) => setRegData({ ...regData, name: e.target.value })}
                   className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)]"
                   placeholder="Ex: Cooperativa Sertão Vivo"
                 />
@@ -477,6 +494,8 @@ export function VendorDashboard() {
                 <textarea
                   name="description"
                   required
+                  value={regData.desc}
+                  onChange={(e) => setRegData({ ...regData, desc: e.target.value })}
                   className="w-full h-24 rounded-xl border border-[var(--border)] bg-white px-4 py-3 outline-none focus:border-[var(--clay)]"
                   placeholder="Conte um pouco sobre sua produção..."
                 />
