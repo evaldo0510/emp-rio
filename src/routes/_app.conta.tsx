@@ -34,9 +34,10 @@ import { formatBRL } from "@/lib/products";
 const PAGE_SIZE = 5;
 const STATUS_LABEL: Record<string, string> = {
   pending: "Aguardando",
-  paid: "Pago",
-  processing: "Em preparo",
+  paid: "Pagamento aprovado",
+  processing: "Em preparação",
   shipped: "Enviado",
+  transit: "Em trânsito",
   delivered: "Entregue",
   canceled: "Cancelado",
   cancelled: "Cancelado",
@@ -369,20 +370,20 @@ function AccountPage() {
                           <div className="relative flex justify-between">
                             <StatusStep
                               icon={CheckCircle2}
-                              label="Pago"
-                              active={["paid", "processing", "shipped", "delivered"].includes(
+                              label="Aprovado"
+                              active={["paid", "processing", "shipped", "transit", "delivered"].includes(
                                 order.status,
                               )}
                             />
                             <StatusStep
                               icon={Clock}
-                              label="Em preparo"
-                              active={["processing", "shipped", "delivered"].includes(order.status)}
+                              label="Preparando"
+                              active={["processing", "shipped", "transit", "delivered"].includes(order.status)}
                             />
                             <StatusStep
                               icon={Truck}
                               label="Enviado"
-                              active={["shipped", "delivered"].includes(order.status)}
+                              active={["shipped", "transit", "delivered"].includes(order.status)}
                             />
                             <StatusStep
                               icon={Package}
