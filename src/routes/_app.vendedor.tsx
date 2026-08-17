@@ -373,28 +373,28 @@ export function VendorDashboard() {
   return (
     <div className="container-narrow py-10">
       <Outlet />
-      <header className="flex items-center justify-between">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
-            Painel do vendedor
+          <p className="text-[10px] uppercase tracking-[0.22em] text-primary font-bold">
+            Portal do Produtor
           </p>
-          <h1 className="font-display text-3xl font-semibold text-[var(--coffee)]">
-            Resumo do mês
+          <h1 className="font-display text-3xl font-semibold text-[var(--coffee)] md:text-4xl uppercase mt-2">
+            Dashboard
           </h1>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" size="sm" onClick={handleShare}>
             <Share2 className="mr-2 h-4 w-4" />
-            Compartilhar
+            Compartilhar Loja
           </Button>
           <div className="flex flex-col items-end gap-1">
-            <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
-              {sellerProfile?.store_name || "Vendedor não cadastrado"}
+            <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs font-bold text-[var(--coffee)]">
+              {sellerProfile?.store_name || "Visitante"}
             </span>
             {sellerProfile && !sellerProfile.approved && (
               <div className="flex flex-col items-end gap-1">
                 <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                  Aguardando Aprovação
+                  Fase de Avaliação
                 </span>
                 <span className="text-[9px] text-amber-700 max-w-[150px] text-right leading-tight">
                   Seu perfil está em análise. O marketplace e o selo de curadoria serão liberados após a aprovação.
@@ -411,7 +411,7 @@ export function VendorDashboard() {
           <div className="rounded-2xl border border-[var(--border)] bg-white p-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex-1">
               <h2 className="font-display text-xl font-semibold text-[var(--coffee)] mb-2">
-                Já possui uma loja?
+                Já é um parceiro?
               </h2>
               <p className="text-sm text-[var(--muted-foreground)]">
                 Acesse seu painel para gerenciar seus produtos, pedidos e finanças.
@@ -425,11 +425,20 @@ export function VendorDashboard() {
           {/* Formulário de Registro */}
           <div id="registro" className="rounded-2xl border border-[var(--clay)]/20 bg-[var(--sand)]/10 p-10 text-center scroll-mt-24">
             <h2 className="font-display text-2xl font-semibold text-[var(--coffee)] mb-2">
-              Torne-se um Vendedor
+              Seja um Produtor Parceiro
             </h2>
             <p className="text-[var(--muted-foreground)] mb-8">
-              Cadastre sua loja, associação ou cooperativa para começar a vender no Empório do Licuri.
+              Cadastre sua loja, associação ou cooperativa e conecte-se a consumidores que valorizam a origem e a sustentabilidade.
             </p>
+            <div className="max-w-2xl mx-auto mb-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                "Vitrine Digital", "Divulgação", "Gestão de Pedidos", "Campanhas"
+              ].map(benefit => (
+                <div key={benefit} className="bg-white/50 rounded-xl p-3 border border-[var(--clay)]/10 text-[10px] font-bold uppercase tracking-wider text-[var(--coffee)]">
+                  {benefit}
+                </div>
+              ))}
+            </div>
             <form onSubmit={handleRegisterSeller} className="max-w-md mx-auto space-y-4 text-left">
               <div className="space-y-1">
                 <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
@@ -935,136 +944,178 @@ export function VendorDashboard() {
 
           <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-lg font-semibold">Meus Produtos</h2>
-              <Button variant="hero" size="sm" onClick={() => setShowAddForm(!showAddForm)}>
-                <Plus className="mr-2 h-4 w-4" />
-                {showAddForm ? "Cancelar" : "Novo Produto"}
-              </Button>
-            </div>
-
-            {showAddForm && (
-              <div className="mb-8 p-6 rounded-xl border border-[var(--clay)]/20 bg-[var(--sand)]/30">
-                <h3 className="font-display text-md font-semibold mb-4 text-[var(--coffee)]">
-                  Cadastrar Novo Item
-                </h3>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                      Nome do Produto
-                    </label>
-                    <input
-                      value={newProduct.name}
-                      onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                      className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
-                      placeholder="Ex: Óleo de Licuri Premium"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                      Preço (R$)
-                    </label>
-                    <input
-                      type="number"
-                      value={newProduct.price}
-                      onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                      className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
-                      placeholder="0.00"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                      Loja / Associação
-                    </label>
-                    <input
-                      value={newProduct.shop_name}
-                      onChange={(e) => setNewProduct({ ...newProduct, shop_name: e.target.value })}
-                      className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
-                      placeholder="Nome da sua loja ou associação"
-                    />
-                  </div>
-                  <div className="space-y-1 md:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                      Descrição
-                    </label>
-                    <textarea
-                      value={newProduct.description}
-                      onChange={(e) =>
-                        setNewProduct({ ...newProduct, description: e.target.value })
-                      }
-                      className="w-full h-24 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
-                      placeholder="Descreva as qualidades e origem do produto..."
-                    />
-                  </div>
-                  <div className="space-y-1 md:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-                      Imagem (Upload ou URL)
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        value={newProduct.image_url}
-                        onChange={(e) =>
-                          setNewProduct({ ...newProduct, image_url: e.target.value })
-                        }
-                        className="flex-1 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--clay)]"
-                        placeholder="https://..."
-                      />
-                      <label className="cursor-pointer">
-                        <input
-                          type="file"
-                          className="hidden"
-                          onChange={handleFileUpload}
-                          accept="image/*"
-                          disabled={isUploading}
-                        />
-                        <Button variant="soft" disabled={isUploading}>
-                          {isUploading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Upload className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-6 flex justify-end">
-                  <Button
-                    variant="hero"
-                    onClick={async () => {
+              <h2 className="font-display text-lg font-semibold uppercase tracking-wider">Meus Produtos</h2>
+              <Dialog open={showAddForm} onOpenChange={setShowAddForm}>
+                <DialogTrigger asChild>
+                  <Button variant="hero" size="sm">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Cadastrar Produto
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Novo Produto</DialogTitle>
+                    <DialogDescription>
+                      Preencha as informações detalhadas para que seu produto se destaque.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
                       try {
                         const {
                           data: { user },
                         } = await supabase.auth.getUser();
-                        if (!user)
-                          throw new Error("Você precisa estar logado para cadastrar produtos.");
-
+                        if (!user) return;
                         const { error } = await supabase.from("products").insert([
                           {
                             ...newProduct,
                             price: parseFloat(newProduct.price),
+                            seller_id: user.id,
                             slug: newProduct.name
                               .toLowerCase()
                               .replace(/ /g, "-")
                               .replace(/[^\w-]+/g, ""),
-                            region: "Bahia",
-                            seller_id: user.id,
-                            vendor_id: user.id,
+                            active: true,
+                            is_draft: false,
                           },
                         ]);
                         if (error) throw error;
-                        toast.success("Produto cadastrado com sucesso!");
+                        toast.success("Produto enviado para análise!");
                         setShowAddForm(false);
                         fetchDashboardData();
                       } catch (e: any) {
-                        toast.error("Erro ao salvar: " + e.message);
+                        toast.error(e.message);
                       }
                     }}
+                    className="space-y-6 py-4"
                   >
-                    Salvar Produto
-                  </Button>
-                </div>
-              </div>
-            )}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Nome do Produto</Label>
+                        <Input
+                          value={newProduct.name}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, name: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Categoria</Label>
+                        <select
+                          className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                          value={newProduct.category}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, category: e.target.value })
+                          }
+                        >
+                          <option value="alimentos">Alimentos</option>
+                          <option value="farinhas">Farinhas</option>
+                          <option value="oleos">Óleos</option>
+                          <option value="cosmeticos">Cosméticos</option>
+                          <option value="artesanato">Artesanato</option>
+                          <option value="bebidas">Bebidas</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Preço (R$)</Label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={newProduct.price}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, price: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Estoque</Label>
+                        <Input
+                          type="number"
+                          value={newProduct.stock_quantity}
+                          onChange={(e) =>
+                            setNewProduct({
+                              ...newProduct,
+                              stock_quantity: parseInt(e.target.value),
+                            })
+                          }
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Peso (g)</Label>
+                        <Input type="number" placeholder="Ex: 500" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Descrição Completa</Label>
+                      <textarea
+                        className="w-full h-24 p-3 rounded-md border border-input bg-background"
+                        value={newProduct.description}
+                        onChange={(e) =>
+                          setNewProduct({ ...newProduct, description: e.target.value })
+                        }
+                        placeholder="Descreva a origem, ingredientes e benefícios..."
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-2">
+                        <Label>Origem (Comunidade/Cidade)</Label>
+                        <Input placeholder="Ex: Comunidade Quilombola..." />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Validade</Label>
+                        <Input placeholder="Ex: 12 meses" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>URL da Imagem</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="url"
+                          value={newProduct.image_url}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, image_url: e.target.value })
+                          }
+                          placeholder="Link da foto do produto"
+                          required
+                        />
+                         <label className="cursor-pointer">
+                          <input
+                            type="file"
+                            className="hidden"
+                            onChange={handleFileUpload}
+                            accept="image/*"
+                            disabled={isUploading}
+                          />
+                          <Button variant="soft" disabled={isUploading} type="button">
+                            {isUploading ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Upload className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </label>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit" variant="hero" className="w-full">
+                        Cadastrar e Enviar para Análise
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
 
             {dbProducts.length === 0 ? (
               <div className="flex flex-col items-center py-10 text-[var(--muted-foreground)]">
@@ -1072,31 +1123,27 @@ export function VendorDashboard() {
                 <p>Nenhum produto cadastrado no banco ainda.</p>
               </div>
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {dbProducts.map((p) => (
                   <div
                     key={p.id}
                     className="group relative overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--background)]"
                   >
-                    <div className="aspect-square overflow-hidden bg-[var(--sand)]">
+                    <div className="aspect-square overflow-hidden bg-[var(--sand)] relative">
                       <img
                         src={p.image_url}
                         alt={p.name}
                         className="h-full w-full object-cover transition-transform group-hover:scale-105"
                       />
-                      {!p.is_published && (
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-4 text-center">
-                          <span className="text-[10px] font-bold text-white uppercase tracking-widest bg-amber-600 px-2 py-1 rounded">
-                            Aguardando Aprovação do Vendedor
-                          </span>
-                        </div>
-                      )}
+                      <div className="absolute top-2 right-2">
+                        <span className="text-[8px] font-bold text-white uppercase tracking-widest bg-amber-600 px-2 py-0.5 rounded shadow-sm">
+                          Em Análise
+                        </span>
+                      </div>
                     </div>
                     <div className="p-3">
-                      <h3 className="font-medium text-sm text-[var(--coffee)] truncate">
-                        {p.name}
-                      </h3>
-                      <p className="text-xs text-[var(--muted-foreground)]">{formatBRL(p.price)}</p>
+                      <h3 className="font-bold text-xs text-[var(--coffee)] truncate">{p.name}</h3>
+                      <p className="text-[10px] font-bold text-primary mt-1">{formatBRL(p.price)}</p>
                     </div>
                   </div>
                 ))}
