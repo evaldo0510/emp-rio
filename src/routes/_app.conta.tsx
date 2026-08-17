@@ -261,6 +261,17 @@ function AccountPage() {
         </Button>
       </div>
 
+      <nav className="flex flex-wrap gap-4 mb-8 border-b border-[var(--border)] pb-4 overflow-x-auto scrollbar-hide">
+        {[
+          "Meu Perfil", "Meus Pedidos", "Rastreamento", "Endereços", "Favoritos",
+          "Cupons", "Sementes", "Clube do Licuri", "Avaliações", "Receitas Salvas", "Notificações", "Segurança"
+        ].map((item) => (
+          <button key={item} className="text-sm font-medium text-[var(--sertao)] hover:text-primary whitespace-nowrap">
+            {item}
+          </button>
+        ))}
+      </nav>
+
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
