@@ -17,12 +17,15 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppVendedorRouteImport } from './routes/_app.vendedor'
 import { Route as AppSobreRouteImport } from './routes/_app.sobre'
 import { Route as AppSertaoRouteImport } from './routes/_app.sertao'
+import { Route as AppReceitasRouteImport } from './routes/_app.receitas'
+import { Route as AppOrigemRouteImport } from './routes/_app.origem'
 import { Route as AppLojasRouteImport } from './routes/_app.lojas'
 import { Route as AppLicuriRouteImport } from './routes/_app.licuri'
 import { Route as AppLaboratorioRouteImport } from './routes/_app.laboratorio'
 import { Route as AppImpactoRouteImport } from './routes/_app.impacto'
 import { Route as AppIaraRouteImport } from './routes/_app.iara'
 import { Route as AppFavoritosRouteImport } from './routes/_app.favoritos'
+import { Route as AppEventosRouteImport } from './routes/_app.eventos'
 import { Route as AppEmpresasRouteImport } from './routes/_app.empresas'
 import { Route as AppCuradoriaRouteImport } from './routes/_app.curadoria'
 import { Route as AppContaRouteImport } from './routes/_app.conta'
@@ -84,6 +87,16 @@ const AppSertaoRoute = AppSertaoRouteImport.update({
   path: '/sertao',
   getParentRoute: () => AppRoute,
 } as any)
+const AppReceitasRoute = AppReceitasRouteImport.update({
+  id: '/receitas',
+  path: '/receitas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOrigemRoute = AppOrigemRouteImport.update({
+  id: '/origem',
+  path: '/origem',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppLojasRoute = AppLojasRouteImport.update({
   id: '/lojas',
   path: '/lojas',
@@ -112,6 +125,11 @@ const AppIaraRoute = AppIaraRouteImport.update({
 const AppFavoritosRoute = AppFavoritosRouteImport.update({
   id: '/favoritos',
   path: '/favoritos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEventosRoute = AppEventosRouteImport.update({
+  id: '/eventos',
+  path: '/eventos',
   getParentRoute: () => AppRoute,
 } as any)
 const AppEmpresasRoute = AppEmpresasRouteImport.update({
@@ -235,12 +253,15 @@ export interface FileRoutesByFullPath {
   '/conta': typeof AppContaRoute
   '/curadoria': typeof AppCuradoriaRoute
   '/empresas': typeof AppEmpresasRoute
+  '/eventos': typeof AppEventosRoute
   '/favoritos': typeof AppFavoritosRoute
   '/iara': typeof AppIaraRoute
   '/impacto': typeof AppImpactoRoute
   '/laboratorio': typeof AppLaboratorioRoute
   '/licuri': typeof AppLicuriRoute
   '/lojas': typeof AppLojasRoute
+  '/origem': typeof AppOrigemRoute
+  '/receitas': typeof AppReceitasRoute
   '/sertao': typeof AppSertaoRoute
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRouteWithChildren
@@ -269,12 +290,15 @@ export interface FileRoutesByTo {
   '/conta': typeof AppContaRoute
   '/curadoria': typeof AppCuradoriaRoute
   '/empresas': typeof AppEmpresasRoute
+  '/eventos': typeof AppEventosRoute
   '/favoritos': typeof AppFavoritosRoute
   '/iara': typeof AppIaraRoute
   '/impacto': typeof AppImpactoRoute
   '/laboratorio': typeof AppLaboratorioRoute
   '/licuri': typeof AppLicuriRoute
   '/lojas': typeof AppLojasRoute
+  '/origem': typeof AppOrigemRoute
+  '/receitas': typeof AppReceitasRoute
   '/sertao': typeof AppSertaoRoute
   '/sobre': typeof AppSobreRoute
   '/vendedor': typeof AppVendedorRouteWithChildren
@@ -307,12 +331,15 @@ export interface FileRoutesById {
   '/_app/conta': typeof AppContaRoute
   '/_app/curadoria': typeof AppCuradoriaRoute
   '/_app/empresas': typeof AppEmpresasRoute
+  '/_app/eventos': typeof AppEventosRoute
   '/_app/favoritos': typeof AppFavoritosRoute
   '/_app/iara': typeof AppIaraRoute
   '/_app/impacto': typeof AppImpactoRoute
   '/_app/laboratorio': typeof AppLaboratorioRoute
   '/_app/licuri': typeof AppLicuriRoute
   '/_app/lojas': typeof AppLojasRoute
+  '/_app/origem': typeof AppOrigemRoute
+  '/_app/receitas': typeof AppReceitasRoute
   '/_app/sertao': typeof AppSertaoRoute
   '/_app/sobre': typeof AppSobreRoute
   '/_app/vendedor': typeof AppVendedorRouteWithChildren
@@ -346,12 +373,15 @@ export interface FileRouteTypes {
     | '/conta'
     | '/curadoria'
     | '/empresas'
+    | '/eventos'
     | '/favoritos'
     | '/iara'
     | '/impacto'
     | '/laboratorio'
     | '/licuri'
     | '/lojas'
+    | '/origem'
+    | '/receitas'
     | '/sertao'
     | '/sobre'
     | '/vendedor'
@@ -380,12 +410,15 @@ export interface FileRouteTypes {
     | '/conta'
     | '/curadoria'
     | '/empresas'
+    | '/eventos'
     | '/favoritos'
     | '/iara'
     | '/impacto'
     | '/laboratorio'
     | '/licuri'
     | '/lojas'
+    | '/origem'
+    | '/receitas'
     | '/sertao'
     | '/sobre'
     | '/vendedor'
@@ -417,12 +450,15 @@ export interface FileRouteTypes {
     | '/_app/conta'
     | '/_app/curadoria'
     | '/_app/empresas'
+    | '/_app/eventos'
     | '/_app/favoritos'
     | '/_app/iara'
     | '/_app/impacto'
     | '/_app/laboratorio'
     | '/_app/licuri'
     | '/_app/lojas'
+    | '/_app/origem'
+    | '/_app/receitas'
     | '/_app/sertao'
     | '/_app/sobre'
     | '/_app/vendedor'
@@ -506,6 +542,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSertaoRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/receitas': {
+      id: '/_app/receitas'
+      path: '/receitas'
+      fullPath: '/receitas'
+      preLoaderRoute: typeof AppReceitasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/origem': {
+      id: '/_app/origem'
+      path: '/origem'
+      fullPath: '/origem'
+      preLoaderRoute: typeof AppOrigemRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/lojas': {
       id: '/_app/lojas'
       path: '/lojas'
@@ -546,6 +596,13 @@ declare module '@tanstack/react-router' {
       path: '/favoritos'
       fullPath: '/favoritos'
       preLoaderRoute: typeof AppFavoritosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/eventos': {
+      id: '/_app/eventos'
+      path: '/eventos'
+      fullPath: '/eventos'
+      preLoaderRoute: typeof AppEventosRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/empresas': {
@@ -750,12 +807,15 @@ interface AppRouteChildren {
   AppContaRoute: typeof AppContaRoute
   AppCuradoriaRoute: typeof AppCuradoriaRoute
   AppEmpresasRoute: typeof AppEmpresasRoute
+  AppEventosRoute: typeof AppEventosRoute
   AppFavoritosRoute: typeof AppFavoritosRoute
   AppIaraRoute: typeof AppIaraRoute
   AppImpactoRoute: typeof AppImpactoRoute
   AppLaboratorioRoute: typeof AppLaboratorioRoute
   AppLicuriRoute: typeof AppLicuriRoute
   AppLojasRoute: typeof AppLojasRoute
+  AppOrigemRoute: typeof AppOrigemRoute
+  AppReceitasRoute: typeof AppReceitasRoute
   AppSertaoRoute: typeof AppSertaoRoute
   AppSobreRoute: typeof AppSobreRoute
   AppVendedorRoute: typeof AppVendedorRouteWithChildren
@@ -779,12 +839,15 @@ const AppRouteChildren: AppRouteChildren = {
   AppContaRoute: AppContaRoute,
   AppCuradoriaRoute: AppCuradoriaRoute,
   AppEmpresasRoute: AppEmpresasRoute,
+  AppEventosRoute: AppEventosRoute,
   AppFavoritosRoute: AppFavoritosRoute,
   AppIaraRoute: AppIaraRoute,
   AppImpactoRoute: AppImpactoRoute,
   AppLaboratorioRoute: AppLaboratorioRoute,
   AppLicuriRoute: AppLicuriRoute,
   AppLojasRoute: AppLojasRoute,
+  AppOrigemRoute: AppOrigemRoute,
+  AppReceitasRoute: AppReceitasRoute,
   AppSertaoRoute: AppSertaoRoute,
   AppSobreRoute: AppSobreRoute,
   AppVendedorRoute: AppVendedorRouteWithChildren,

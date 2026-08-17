@@ -373,28 +373,28 @@ export function VendorDashboard() {
   return (
     <div className="container-narrow py-10">
       <Outlet />
-      <header className="flex items-center justify-between">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
-            Painel do vendedor
+          <p className="text-[10px] uppercase tracking-[0.22em] text-primary font-bold">
+            Portal do Produtor
           </p>
-          <h1 className="font-display text-3xl font-semibold text-[var(--coffee)]">
-            Resumo do mês
+          <h1 className="font-display text-3xl font-semibold text-[var(--coffee)] md:text-4xl uppercase mt-2">
+            Dashboard
           </h1>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" size="sm" onClick={handleShare}>
             <Share2 className="mr-2 h-4 w-4" />
-            Compartilhar
+            Compartilhar Loja
           </Button>
           <div className="flex flex-col items-end gap-1">
-            <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs">
-              {sellerProfile?.store_name || "Vendedor não cadastrado"}
+            <span className="rounded-full border border-[var(--border)] bg-[var(--cream)] px-3 py-1 text-xs font-bold text-[var(--coffee)]">
+              {sellerProfile?.store_name || "Visitante"}
             </span>
             {sellerProfile && !sellerProfile.approved && (
               <div className="flex flex-col items-end gap-1">
                 <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                  Aguardando Aprovação
+                  Fase de Avaliação
                 </span>
                 <span className="text-[9px] text-amber-700 max-w-[150px] text-right leading-tight">
                   Seu perfil está em análise. O marketplace e o selo de curadoria serão liberados após a aprovação.
@@ -411,7 +411,7 @@ export function VendorDashboard() {
           <div className="rounded-2xl border border-[var(--border)] bg-white p-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex-1">
               <h2 className="font-display text-xl font-semibold text-[var(--coffee)] mb-2">
-                Já possui uma loja?
+                Já é um parceiro?
               </h2>
               <p className="text-sm text-[var(--muted-foreground)]">
                 Acesse seu painel para gerenciar seus produtos, pedidos e finanças.
@@ -425,11 +425,20 @@ export function VendorDashboard() {
           {/* Formulário de Registro */}
           <div id="registro" className="rounded-2xl border border-[var(--clay)]/20 bg-[var(--sand)]/10 p-10 text-center scroll-mt-24">
             <h2 className="font-display text-2xl font-semibold text-[var(--coffee)] mb-2">
-              Torne-se um Vendedor
+              Seja um Produtor Parceiro
             </h2>
             <p className="text-[var(--muted-foreground)] mb-8">
-              Cadastre sua loja, associação ou cooperativa para começar a vender no Empório do Licuri.
+              Cadastre sua loja, associação ou cooperativa e conecte-se a consumidores que valorizam a origem e a sustentabilidade.
             </p>
+            <div className="max-w-2xl mx-auto mb-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                "Vitrine Digital", "Divulgação", "Gestão de Pedidos", "Campanhas"
+              ].map(benefit => (
+                <div key={benefit} className="bg-white/50 rounded-xl p-3 border border-[var(--clay)]/10 text-[10px] font-bold uppercase tracking-wider text-[var(--coffee)]">
+                  {benefit}
+                </div>
+              ))}
+            </div>
             <form onSubmit={handleRegisterSeller} className="max-w-md mx-auto space-y-4 text-left">
               <div className="space-y-1">
                 <label className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
