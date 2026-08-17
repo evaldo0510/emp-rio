@@ -40,7 +40,10 @@ function AboutPage() {
             <p className="mt-8 text-2xl font-display italic text-primary">
               "Nós acreditamos no sertão."
             </p>
-            <p className="mt-4 text-xl text-[var(--sertao)]">
+            <div className="mt-6 p-6 rounded-2xl bg-[var(--sand)]/20 border border-[var(--clay)]/20 text-xl text-[var(--sertao)] italic">
+              "O consumidor não compra somente 30g de produto. Ele compra produto + origem + história + experiência."
+            </div>
+            <p className="mt-8 text-xl text-[var(--sertao)] leading-relaxed">
               Acreditamos nas mãos que plantam. Nas mãos que colhem. Nas mãos que transformam.
               Acreditamos que tradição não precisa ficar presa ao passado. Ela pode virar inovação.
             </p>
