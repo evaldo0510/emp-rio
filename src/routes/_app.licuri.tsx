@@ -13,14 +13,24 @@ export const Route = createFileRoute("/_app/licuri")({
 function LicuriPage() {
   return (
     <div className="container-narrow py-16">
-      <div className="max-w-3xl">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-primary font-bold">Nossa Raiz</p>
+      <div className="max-w-4xl">
+        <p className="text-[10px] uppercase tracking-[0.22em] text-primary font-bold">Marca Própria • Identidade</p>
         <h1 className="mt-4 font-display text-4xl font-semibold text-[var(--coffee)] md:text-6xl uppercase">
-          A Palmeira do Sertão
+          Marca Empório do Licuri
         </h1>
         <p className="mt-6 text-xl text-[var(--sertao)] leading-relaxed">
-          O licuri (Syagrus coronata) é muito mais que uma planta. É a base de um ecossistema econômico, social e ambiental que resiste no coração do Semiárido brasileiro.
+          Nossa marca própria representa o ápice da curadoria. Produtos selecionados, com embalagens premium e garantia de origem, conectando o marketplace ao consumidor exigente.
         </p>
+      </div>
+
+      <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          "🌴 Licuri Torrado", "🌴 Farinha de Licuri", "🌴 Óleo de Licuri", "🌴 Snacks", "🌴 Doces", "🌴 Kits Premium"
+        ].map(item => (
+          <div key={item} className="p-4 rounded-2xl border border-[var(--border)] bg-white text-center font-display text-sm font-bold text-[var(--coffee)] uppercase tracking-wider">
+            {item}
+          </div>
+        ))}
       </div>
 
       <div className="mt-20 grid gap-12 md:grid-cols-2">

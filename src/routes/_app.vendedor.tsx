@@ -11,6 +11,10 @@ import {
   Wallet,
   ArrowUpRight,
   Share2,
+  Tag,
+  Megaphone,
+  Layout,
+  FileText,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -500,6 +504,39 @@ export function VendorDashboard() {
                   {item}
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Módulo de Marketing e Campanhas (Produtor) */}
+          <div className="mt-8 p-8 rounded-3xl border border-[var(--border)] bg-[var(--cream)]/30">
+            <h2 className="font-display text-xl font-bold text-[var(--coffee)] uppercase mb-6 flex items-center gap-2">
+              <Megaphone className="h-5 w-5 text-primary" /> Marketing & Campanhas
+            </h2>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="p-6 rounded-2xl bg-white border border-[var(--border)] shadow-sm">
+                <Tag className="h-6 w-6 text-primary mb-3" />
+                <h3 className="font-bold text-sm text-[var(--coffee)] uppercase mb-1">Cupons Ativos</h3>
+                <div className="space-y-2 mt-3">
+                  {["LICURI10", "BAHIA20", "PRIMEIRACOMPRA"].map(coupon => (
+                    <div key={coupon} className="flex items-center justify-between text-[10px] font-mono border-b border-[var(--border)] pb-1">
+                      <span>{coupon}</span>
+                      <span className="text-green-600 font-bold">ATIVO</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="p-6 rounded-2xl bg-white border border-[var(--border)] shadow-sm">
+                <Layout className="h-6 w-6 text-primary mb-3" />
+                <h3 className="font-bold text-sm text-[var(--coffee)] uppercase mb-1">Vitrines & Banners</h3>
+                <p className="text-[10px] text-[var(--muted-foreground)]">Gerencie como sua loja aparece no marketplace.</p>
+                <Button variant="soft" size="sm" className="w-full mt-4 text-[10px]">Configurar</Button>
+              </div>
+              <div className="p-6 rounded-2xl bg-white border border-[var(--border)] shadow-sm">
+                <FileText className="h-6 w-6 text-primary mb-3" />
+                <h3 className="font-bold text-sm text-[var(--coffee)] uppercase mb-1">Conteúdo & Blog</h3>
+                <p className="text-[10px] text-[var(--muted-foreground)]">Crie histórias para engajar seus clientes.</p>
+                <Button variant="soft" size="sm" className="w-full mt-4 text-[10px]">Escrever Artigo</Button>
+              </div>
             </div>
           </div>
 

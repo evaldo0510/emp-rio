@@ -14,7 +14,8 @@ export type Category =
   | "produtos-do-sertao"
   | "presentes"
   | "kits"
-  | "marca-emporio";
+  | "marca-emporio"
+  | "marca-propria";
 
 
 export type Product = {
