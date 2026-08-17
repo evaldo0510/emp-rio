@@ -15,15 +15,15 @@ function IaraPage() {
   return (
     <div className="container-narrow py-16">
       <div className="max-w-3xl mb-16">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-primary font-bold">Tecnologia & Inovação</p>
+        <p className="text-[10px] uppercase tracking-[0.22em] text-primary font-bold">Inteligência Artificial do Licuri</p>
         <h1 className="mt-4 font-display text-4xl font-semibold text-[var(--coffee)] md:text-6xl uppercase">
-          IARA
+          IARA DO LICURI
         </h1>
         <p className="mt-6 text-xl text-[var(--sertao)] leading-relaxed italic">
-          Inteligência Artificial de Relacionamento e Aprendizado.
+          "O que você procura hoje?"
         </p>
         <p className="mt-4 text-lg text-[var(--sertao)]">
-          IARA é a nossa ponte tecnológica entre o conhecimento ancestral do sertão e as possibilidades do futuro digital.
+          IARA é sua assistente inteligente. Ela ajuda a encontrar produtos, recomenda presentes de acordo com seu orçamento e explica a riqueza do licuri.
         </p>
       </div>
 

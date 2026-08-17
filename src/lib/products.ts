@@ -50,8 +50,8 @@ export const categories: { id: Category; label: string; image: string; count: nu
   { id: "artesanato", label: "Artesanato", image: img("cesto-artesanal-palha-de-licuri"), count: 15 },
   { id: "produtos-do-sertao", label: "Produtos do Sertão", image: img("doce-de-licuri-tradicional"), count: 12 },
   { id: "presentes", label: "Presentes", image: img("kit-presente-raizes-do-nordeste"), count: 10 },
-  { id: "kits", label: "Kits", image: img("kit-presente-raizes-do-nordeste"), count: 6 },
-  { id: "marca-emporio", label: "Marca Empório do Licuri", image: img("kit-presente-raizes-do-nordeste"), count: 4 },
+  { id: "kits", label: "Kits & Experiências", image: img("kit-presente-raizes-do-nordeste"), count: 8 },
+  { id: "marca-emporio", label: "Marca Empório", image: img("kit-presente-raizes-do-nordeste"), count: 4 },
 ];
 
 
