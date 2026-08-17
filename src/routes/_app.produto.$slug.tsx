@@ -17,7 +17,8 @@ import {
   History,
   CheckCircle2,
   MapPin,
-  Store
+  Store,
+  ArrowRight
 } from "lucide-react";
 
 import { useState, useEffect } from "react";
@@ -333,26 +334,27 @@ function ProductPage() {
             {/* COMO USAR E BENEFÍCIOS */}
             <div className="grid gap-8 sm:grid-cols-2">
               <div className="space-y-4">
-                <h3 className="font-display text-xl font-semibold text-[var(--coffee)] flex items-center gap-2">
+                <h3 className="font-display text-xl font-semibold text-[var(--coffee)] flex items-center gap-2 uppercase tracking-wider">
                   <ChefHat className="h-5 w-5 text-primary" /> Como usar
                 </h3>
                 <div className="text-sm text-[var(--muted-foreground)] space-y-4">
-                  <p>Exemplo (Licuri torrado):</p>
-                  <ul className="list-disc pl-5 space-y-1">
-                    <li>Consumir puro;</li>
-                    <li>Utilizar em receitas;</li>
-                    <li>Acompanhar café;</li>
-                    <li>Utilizar em preparações culinárias.</li>
+                  <p className="italic">Exemplos de preparo e consumo:</p>
+                  <ul className="space-y-3">
+                    {benefits.map((b, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-[var(--sertao)]">
+                        <CheckCircle2 className="h-4 w-4 mt-0.5 text-[var(--leaf)] shrink-0" />
+                        {b}
+                      </li>
+                    ))}
                   </ul>
                 </div>
-                <ul className="mt-6 space-y-3">
-                  {benefits.map((b, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-[var(--sertao)]">
-                      <CheckCircle2 className="h-4 w-4 mt-0.5 text-[var(--leaf)] shrink-0" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-8">
+                  <Button variant="soft" size="sm" className="w-full" asChild>
+                    <Link to="/receitas">
+                      Ver Receitas Sugeridas <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-6">
