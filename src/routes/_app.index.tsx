@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Leaf, Sprout, Sun, Truck, Loader2 } from "lucide-react";
+import { ArrowRight, Leaf, Sprout, Sun, Truck, Loader2, BookOpen, MapPin, Utensils, Heart, GraduationCap } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
@@ -156,30 +156,34 @@ function HomePage() {
       <section className="container-narrow mt-20">
         <div className="rounded-3xl border border-[var(--border)] bg-[var(--cream)] p-8 md:p-16">
           <div className="max-w-3xl">
-            <p className="text-[10px] uppercase tracking-[0.22em] text-primary">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-primary font-bold">
               Muito mais que uma loja
             </p>
-            <h2 className="mt-4 font-display text-3xl font-semibold text-[var(--coffee)] md:text-5xl">
-              O ecossistema que transforma o licuri em produtos, negócios e oportunidades.
+            <h2 className="mt-4 font-display text-3xl font-semibold text-[var(--coffee)] md:text-5xl uppercase leading-tight">
+              O ecossistema que transforma o licuri em cultura e inovação.
             </h2>
             <p className="mt-6 text-lg text-[var(--sertao)]">
-              Não queremos competir apenas por preço. Queremos criar <strong>VALOR PERCEBIDO</strong>. 
-              No Empório do Licuri, você não compra apenas um produto; você leva <strong>origem, história, experiência e identidade</strong>.
+              No Empório do Licuri, você não compra apenas um produto; você leva <strong>origem, história, experiência e identidade</strong>. Criamos valor percebido conectando o Sertão ao mundo.
             </p>
-
           </div>
 
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
+          <div className="mt-12 grid gap-6 md:grid-cols-4 lg:grid-cols-6">
             {[
-              { title: "Cultura", desc: "Sertão, Caatinga e histórias que inspiram.", icon: Sprout },
-              { title: "Tecnologia", desc: "IA e catálogo digital para facilitar vendas.", icon: Sun },
-              { title: "Negócios", desc: "Conexão entre marcas, produtores e inovação.", icon: Leaf },
+              { title: "História", to: "/licuri", icon: BookOpen },
+              { title: "Origem", to: "/origem", icon: MapPin },
+              { title: "Sertão", to: "/sertao", icon: Sun },
+              { title: "Receitas", to: "/receitas", icon: Utensils },
+              { title: "Impacto", to: "/impacto", icon: Heart },
+              { title: "Academia", to: "/academia", icon: GraduationCap },
             ].map((item) => (
-              <div key={item.title} className="rounded-2xl border border-[var(--border)]/50 bg-white/50 p-6">
-                <item.icon className="h-6 w-6 text-primary" />
-                <h3 className="mt-4 font-display text-xl font-semibold">{item.title}</h3>
-                <p className="mt-2 text-sm text-[var(--muted-foreground)]">{item.desc}</p>
-              </div>
+              <Link 
+                key={item.title} 
+                to={item.to}
+                className="group rounded-2xl border border-[var(--border)]/50 bg-white p-6 text-center hover:border-primary/30 hover:shadow-lg transition-all"
+              >
+                <item.icon className="h-6 w-6 text-primary mx-auto group-hover:scale-110 transition-transform" />
+                <h3 className="mt-4 font-display text-sm font-bold text-[var(--coffee)] uppercase tracking-wider">{item.title}</h3>
+              </Link>
             ))}
           </div>
         </div>
