@@ -487,6 +487,22 @@ export function VendorDashboard() {
 
       {sellerProfile && (
         <>
+          {/* Painel Administrador Mockup */}
+          <div className="mt-8 mb-12 p-8 rounded-3xl border border-[var(--border)] bg-white shadow-sm">
+            <h2 className="font-display text-xl font-bold text-[var(--coffee)] uppercase mb-6 flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" /> Painel Central
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] font-bold uppercase tracking-widest text-[var(--sertao)]">
+              {[
+                "Vendas", "Pedidos", "Clientes", "Produtores", "Comissões", "Estoque", "Sementes", "Financeiro"
+              ].map(item => (
+                <div key={item} className="p-3 bg-[var(--cream)] rounded-xl border border-[var(--border)] text-center">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Logo Generation Tool */}
           <div className="mt-8 rounded-2xl border border-[var(--clay)]/20 bg-[var(--sand)]/5 p-6">
             <div className="flex items-center justify-between mb-4">

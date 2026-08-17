@@ -52,19 +52,27 @@ function ImpactoPage() {
 
         <div className="rounded-3xl bg-[var(--coffee)] p-10 text-[var(--cream)] relative overflow-hidden">
           <Heart className="absolute -right-8 -bottom-8 h-40 w-40 text-white/5" />
-          <h3 className="font-display text-2xl font-bold uppercase mb-6">Métricas de Mudança</h3>
+          <h3 className="font-display text-2xl font-bold uppercase mb-6 text-primary">Impacto do Empório</h3>
           <div className="space-y-8">
             <div>
-              <div className="text-4xl font-bold text-primary">+500</div>
-              <p className="text-sm opacity-80 uppercase tracking-widest mt-1">Famílias Impactadas</p>
+              <div className="text-4xl font-bold text-white">1.250</div>
+              <p className="text-[10px] opacity-80 uppercase tracking-[0.2em] mt-1">Produtores Cadastrados</p>
             </div>
             <div>
-              <div className="text-4xl font-bold text-primary">15</div>
-              <p className="text-sm opacity-80 uppercase tracking-widest mt-1">Comunidades Parceiras</p>
+              <div className="text-4xl font-bold text-white">32</div>
+              <p className="text-[10px] opacity-80 uppercase tracking-[0.2em] mt-1">Comunidades Alcançadas</p>
             </div>
             <div>
-              <div className="text-4xl font-bold text-primary">100%</div>
-              <p className="text-sm opacity-80 uppercase tracking-widest mt-1">Origem Rastreável</p>
+              <div className="text-4xl font-bold text-white">15.000</div>
+              <p className="text-[10px] opacity-80 uppercase tracking-[0.2em] mt-1">Produtos Vendidos</p>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-white">R$ 480 mil</div>
+              <p className="text-[10px] opacity-80 uppercase tracking-[0.2em] mt-1">Movimentados no Sertão</p>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-white">25</div>
+              <p className="text-[10px] opacity-80 uppercase tracking-[0.2em] mt-1">Projetos Apoiados</p>
             </div>
           </div>
         </div>

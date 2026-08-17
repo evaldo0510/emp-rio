@@ -29,18 +29,18 @@ function EmpresasPage() {
         {[
           {
             icon: ShoppingBag,
-            title: "Venda no Atacado",
-            desc: "Fornecimento de óleos, farinhas e ingredientes para indústrias alimentícias e de cosméticos."
+            title: "Compra em Atacado",
+            desc: "Fornecimento de óleos, farinhas e ingredientes para restaurantes, hotéis, cafeterias, mercados e indústrias."
           },
           {
             icon: Handshake,
-            title: "Presentes Corporativos",
-            desc: "Kits exclusivos com história e propósito para seus colaboradores e clientes."
+            title: "Kits Corporativos",
+            desc: "Presentes personalizados com história e propósito para empresas, distribuidores e eventos exclusivos."
           },
           {
             icon: TrendingUp,
-            title: "Parcerias de Impacto",
-            desc: "Projetos de responsabilidade socioambiental vinculados à cadeia do licuri."
+            title: "Parcerias & Soluções",
+            desc: "Projetos de responsabilidade socioambiental e soluções sob medida para fornecimento contínuo."
           }
         ].map((item, i) => (
           <div key={i} className="p-8 rounded-3xl border border-[var(--border)] bg-white shadow-sm hover:shadow-md transition-shadow">

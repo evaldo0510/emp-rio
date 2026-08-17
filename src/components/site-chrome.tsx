@@ -152,7 +152,7 @@ function FooterCol({ title, links }: { title: string; links: [string, string][] 
       <ul className="space-y-2 text-sm text-[var(--muted-foreground)]">
         {links.map(([to, label]) => (
           <li key={to + label}>
-            <Link to={to} className="hover:text-primary">
+            <Link to={to} className="hover:text-primary flex items-center gap-2">
               {label}
             </Link>
           </li>
