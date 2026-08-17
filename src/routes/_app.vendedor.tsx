@@ -1150,15 +1150,6 @@ export function VendorDashboard() {
               </div>
             )}
           </div>
-                        {p.name}
-                      </h3>
-                      <p className="text-xs text-[var(--muted-foreground)]">{formatBRL(p.price)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
 
           <p className="mt-10 text-xs text-[var(--muted-foreground)]">
             Dados de demonstração. Cadastro de produtos, gestão de pedidos e métricas em tempo real
