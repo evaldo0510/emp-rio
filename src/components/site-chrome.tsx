@@ -6,11 +6,13 @@ import { useCart } from "@/lib/cart";
 
 const nav = [
   { to: "/", label: "Início" },
-  { to: "/categorias", label: "Categorias" },
-  { to: "/lojas", label: "Lojas" },
-  { to: "/assistente", label: "Licuri IA" },
-  { to: "/sobre", label: "Sobre" },
-  { to: "/blog", label: "Blog" },
+  { to: "/categorias", label: "Marketplace" },
+  { to: "/licuri", label: "O Licuri" },
+  { to: "/sertao", label: "O Sertão" },
+  { to: "/sobre", label: "Manifesto" },
+  { to: "/vendedor", label: "Produtores" },
+  { to: "/clube-do-licuri", label: "Clube" },
+  { to: "/casa-do-licuri", label: "A Casa" },
 ] as const;
 
 export function SiteHeader() {
@@ -101,27 +103,32 @@ export function SiteFooter() {
           </p>
         </div>
         <FooterCol
-          title="Loja"
+          title="Marketplace"
           links={[
-            ["/categorias", "Todos os produtos"],
-            ["/lojas", "Lojas parceiras"],
             ["/categorias", "Categorias"],
+            ["/categorias", "Produtos"],
+            ["/categorias", "Kits & Ofertas"],
+            ["/curadoria", "Selo Curadoria"],
           ]}
         />
         <FooterCol
-          title="Sobre"
+          title="O Ecossistema"
           links={[
-            ["/sobre", "Nossa história"],
-            ["/blog", "Blog"],
-            ["/sobre", "Sustentabilidade"],
+            ["/licuri", "O Licuri"],
+            ["/sertao", "O Sertão"],
+            ["/casa-do-licuri", "Casa do Licuri"],
+            ["/clube-do-licuri", "Clube do Licuri"],
+            ["/academia", "Academia"],
           ]}
         />
         <FooterCol
-          title="Vendedores"
+          title="Negócios & Social"
           links={[
-            ["/vendedor", "Painel do vendedor"],
-            ["/admin", "Painel admin"],
-            ["/conta", "Minha conta"],
+            ["/vendedor", "Seja um Produtor"],
+            ["/empresas", "Para Empresas"],
+            ["/impacto", "Impacto Social"],
+            ["/laboratorio", "Laboratório"],
+            ["/admin", "Painel Admin"],
           ]}
         />
       </div>
