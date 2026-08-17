@@ -263,11 +263,15 @@ function AccountPage() {
 
       <nav className="flex flex-wrap gap-4 mb-8 border-b border-[var(--border)] pb-4 overflow-x-auto scrollbar-hide">
         {[
-          "Meu Perfil", "Meus Pedidos", "Rastreamento", "Endereços", "Favoritos",
-          "Cupons", "Sementes", "Clube do Licuri", "Avaliações", "Receitas Salvas", "Notificações", "Segurança"
+          { label: "Meu Perfil", to: "/conta" },
+          { label: "Meus Pedidos", to: "/conta" },
+          { label: "Rastreamento", to: "/conta" },
+          { label: "Sementes", to: "/clube-do-licuri" },
+          { label: "Receitas Salvas", to: "/receitas" },
+          { label: "Segurança", to: "/conta" }
         ].map((item) => (
-          <button key={item} className="text-sm font-medium text-[var(--sertao)] hover:text-primary whitespace-nowrap">
-            {item}
+          <button key={item.label} className="text-sm font-bold uppercase tracking-wider text-[var(--sertao)] hover:text-primary whitespace-nowrap">
+            {item.label}
           </button>
         ))}
       </nav>
