@@ -1066,9 +1066,10 @@ export function VendorDashboard() {
                           data: { user },
                         } = await supabase.auth.getUser();
                         if (!user) return;
+                        const { status, origin, validity, weight, ...prodData } = newProduct;
                         const { error } = await supabase.from("products").insert([
                           {
-                            ...newProduct,
+                            ...prodData,
                             price: parseFloat(newProduct.price),
                             seller_id: user.id,
                             slug: newProduct.name
@@ -1077,9 +1078,10 @@ export function VendorDashboard() {
                               .replace(/[\u0300-\u036f]/g, "")
                               .replace(/ /g, "-")
                               .replace(/[^\w-]+/g, ""),
-                            active: newProduct.status === "active",
+                            active: status === "active",
                             is_draft: false,
                             shop_name: sellerProfile?.store_name,
+                            origin: origin,
                           },
                         ]);
                         if (error) throw error;
@@ -1165,7 +1167,27 @@ export function VendorDashboard() {
                       </div>
                       <div className="space-y-2">
                         <Label>Peso (g)</Label>
-                        <Input type="number" placeholder="Ex: 500" />
+                        <Input
+                          type="number"
+                          placeholder="Ex: 500"
+                          value={newProduct.weight}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, weight: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Status</Label>
+                        <select
+                          className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                          value={newProduct.status}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, status: e.target.value })
+                          }
+                        >
+                          <option value="active">Ativo</option>
+                          <option value="inactive">Inativo</option>
+                        </select>
                       </div>
                     </div>
 
@@ -1183,13 +1205,25 @@ export function VendorDashboard() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                       <div className="space-y-2">
+                      <div className="space-y-2">
                         <Label>Origem (Comunidade/Cidade)</Label>
-                        <Input placeholder="Ex: Comunidade Quilombola..." />
+                        <Input
+                          placeholder="Ex: Comunidade Quilombola..."
+                          value={newProduct.origin}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, origin: e.target.value })
+                          }
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label>Validade</Label>
-                        <Input placeholder="Ex: 12 meses" />
+                        <Input
+                          placeholder="Ex: 12 meses"
+                          value={newProduct.validity}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, validity: e.target.value })
+                          }
+                        />
                       </div>
                     </div>
 
