@@ -91,6 +91,10 @@ export function VendorDashboard() {
     image_url: "",
     shop_name: "",
     stock_quantity: 10,
+    status: "active",
+    origin: "",
+    validity: "",
+    weight: "",
   });
 
   const [isGeneratingLogo, setIsGeneratingLogo] = useState(false);
@@ -104,9 +108,27 @@ export function VendorDashboard() {
     return saved ? JSON.parse(saved) : { type: "store", name: "", desc: "" };
   });
 
+  const [prodDraft, setProdDraft] = useState(() => {
+    if (typeof window === "undefined") return null;
+    const saved = localStorage.getItem("vendor_product_draft");
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  useEffect(() => {
+    if (prodDraft && !newProduct.name && !newProduct.price) {
+      setNewProduct(prodDraft);
+    }
+  }, []);
+
   useEffect(() => {
     localStorage.setItem("vendor_reg_draft", JSON.stringify(regData));
   }, [regData]);
+
+  useEffect(() => {
+    if (newProduct.name || newProduct.price || newProduct.description) {
+      localStorage.setItem("vendor_product_draft", JSON.stringify(newProduct));
+    }
+  }, [newProduct]);
 
   const [dailySales, setDailySales] = useState<any[]>([]);
   const maxSales = Math.max(...dailySales.map((s) => s.v), 1);
@@ -355,23 +377,28 @@ export function VendorDashboard() {
       setIsUploading(true);
       const url = await uploadProductImage(file);
 
-      // For demo, create a product with this image
-      const { error } = await supabase.from("products").insert([
-        {
-          name: "Novo Produto",
-          slug: `novo-produto-${Math.random().toString(36).substr(2, 5)}`,
-          category: "alimentos",
-          price: 0,
-          shop: "Sertão Natural",
-          region: "Bahia",
-          image_url: url,
-          short_description: "Descrição curta do novo produto",
-        },
-      ]);
-
-      if (error) throw error;
-
-      toast.success("Imagem enviada e produto criado!");
+      // If in product form, update the image URL
+      if (showAddForm) {
+        setNewProduct((prev) => ({ ...prev, image_url: url }));
+        toast.success("Imagem enviada!");
+      } else {
+        // Legacy flow (create product directly) - could be removed but keeping for safety
+        const { error } = await supabase.from("products").insert([
+          {
+            name: "Novo Produto",
+            slug: `novo-produto-${Math.random().toString(36).substr(2, 5)}`,
+            category: "alimentos",
+            price: 0,
+            shop: sellerProfile?.store_name || "Sertão Natural",
+            region: "Bahia",
+            image_url: url,
+            short_description: "Descrição curta do novo produto",
+            seller_id: (await supabase.auth.getUser()).data.user?.id,
+          },
+        ]);
+        if (error) throw error;
+        toast.success("Imagem enviada e produto criado!");
+      }
       fetchDashboardData();
     } catch (error) {
       console.error(error);
@@ -1039,22 +1066,41 @@ export function VendorDashboard() {
                           data: { user },
                         } = await supabase.auth.getUser();
                         if (!user) return;
+                        const { status, origin, validity, weight, ...prodData } = newProduct;
                         const { error } = await supabase.from("products").insert([
                           {
-                            ...newProduct,
+                            ...prodData,
                             price: parseFloat(newProduct.price),
                             seller_id: user.id,
                             slug: newProduct.name
                               .toLowerCase()
+                              .normalize("NFD")
+                              .replace(/[\u0300-\u036f]/g, "")
                               .replace(/ /g, "-")
                               .replace(/[^\w-]+/g, ""),
-                            active: true,
+                            active: status === "active",
                             is_draft: false,
+                            shop_name: sellerProfile?.store_name,
+                            origin: origin,
                           },
                         ]);
                         if (error) throw error;
-                        toast.success("Produto enviado para análise!");
+                        localStorage.removeItem("vendor_product_draft");
+                        toast.success("Produto cadastrado com sucesso!");
                         setShowAddForm(false);
+                        setNewProduct({
+                          name: "",
+                          price: "",
+                          category: "alimentos",
+                          description: "",
+                          image_url: "",
+                          shop_name: sellerProfile?.store_name || "",
+                          stock_quantity: 10,
+                          status: "active",
+                          origin: "",
+                          validity: "",
+                          weight: "",
+                        });
                         fetchDashboardData();
                       } catch (e: any) {
                         toast.error(e.message);
@@ -1121,7 +1167,27 @@ export function VendorDashboard() {
                       </div>
                       <div className="space-y-2">
                         <Label>Peso (g)</Label>
-                        <Input type="number" placeholder="Ex: 500" />
+                        <Input
+                          type="number"
+                          placeholder="Ex: 500"
+                          value={newProduct.weight}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, weight: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Status</Label>
+                        <select
+                          className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                          value={newProduct.status}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, status: e.target.value })
+                          }
+                        >
+                          <option value="active">Ativo</option>
+                          <option value="inactive">Inativo</option>
+                        </select>
                       </div>
                     </div>
 
@@ -1139,13 +1205,25 @@ export function VendorDashboard() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                       <div className="space-y-2">
+                      <div className="space-y-2">
                         <Label>Origem (Comunidade/Cidade)</Label>
-                        <Input placeholder="Ex: Comunidade Quilombola..." />
+                        <Input
+                          placeholder="Ex: Comunidade Quilombola..."
+                          value={newProduct.origin}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, origin: e.target.value })
+                          }
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label>Validade</Label>
-                        <Input placeholder="Ex: 12 meses" />
+                        <Input
+                          placeholder="Ex: 12 meses"
+                          value={newProduct.validity}
+                          onChange={(e) =>
+                            setNewProduct({ ...newProduct, validity: e.target.value })
+                          }
+                        />
                       </div>
                     </div>
 
